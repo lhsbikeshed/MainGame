@@ -1,0 +1,52 @@
+# Blender MTL File: 'station.blend'
+# Material Count: 5
+
+newmtl None
+Ns 92.156863
+Ka 0.000000 0.000000 0.000000
+Kd 0.512000 0.512000 0.512000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd C:\Users\tom\Documents\spacetest\Assets\tex\station3.png
+
+newmtl Nonecrate.jp
+Ns 92.156863
+Ka 0.000000 0.000000 0.000000
+Kd 0.512000 0.512000 0.512000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd C:\Users\tom\Documents\spacetest\Assets\tex\station3.png
+
+newmtl Nonedoor.png
+Ns 92.156863
+Ka 0.000000 0.000000 0.000000
+Kd 0.512000 0.512000 0.512000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd C:\Users\tom\Documents\spacetest\Assets\tex\station3.png
+
+newmtl Nonegirder_7
+Ns 92.156863
+Ka 0.000000 0.000000 0.000000
+Kd 0.512000 0.512000 0.512000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd C:\Users\tom\Documents\spacetest\Assets\tex\station3.png
+
+newmtl Nonegirder_7_NONE
+Ns 92.156863
+Ka 0.000000 0.000000 0.000000
+Kd 0.512000 0.512000 0.512000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd C:\Users\tom\Documents\spacetest\Assets\tex\station3.png

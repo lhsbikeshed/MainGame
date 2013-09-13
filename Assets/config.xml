@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<config>
+	<testmode>true</testmode>
+	<client name="TacticalStation">10.0.0.2:12004</client>
+	<client name="EngineerStation">10.0.0.1:12001</client>
+	<client name="PilotStation">10.0.0.4:12002</client>
+	<client name="ModStation">127.0.0.1:12005</client>
+	<client name="CaptainStation">10.0.0.3:12003</client>
+	<client name="Recorder">127.0.0.1:12010</client>
+
+</config>
