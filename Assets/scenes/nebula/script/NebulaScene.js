@@ -39,6 +39,8 @@ class NebulaScene extends GenericScene {
 	private var theShip : GameObject;
 	private var lostVan : VanBehaviour;
 	
+	var evilLightningPrefab : GameObject;		//we spawn this to strike lightning at things
+	private var gateDead : boolean = false;
 	
 	
 	private var puzzleRunning : boolean = false;
@@ -129,6 +131,19 @@ class NebulaScene extends GenericScene {
 		
 	
 	}
+	
+	private function blowupGate(){
+			if(gateDead){return; };
+			gateDead = true;
+			var cloud = GameObject.Find("GasCloudEvil").GetComponent.<EvilCloudBehaviour>();
+			var jg = GameObject.Find("JumpGate");
+			var newPos = jg.transform.position + Random.onUnitSphere * 500;
+			cloud.resetTo(newPos);
+			cloud.targetStrike = jg.transform;
+			cloud.strikeAtTarget();
+			jg.GetComponent.<JumpNode>().explode();
+	}
+	
 
 	private function findIdleStorm() : int {
 		
@@ -213,6 +228,9 @@ class NebulaScene extends GenericScene {
 				var msg2 : OSCMessage = OSCMessage("/system/powerManagement/lightningStrike");	
 				msg2.Append.<int>(Random.Range(1,3));		
 				OSCHandler.Instance.SendMessageToAll(msg2);
+				break;
+			case "blowUpGate":
+				blowupGate();
 				break;
 				
 		}

@@ -17,6 +17,8 @@ class IncomingMissile extends TargettableObject {
 	var damping : float = 2.2f;
 	var lifeTime : float = 240;
 	
+	var isDummy : boolean = false; //dummies just die but dont cause damage to ship
+	
 	private var randVel : float;
 	
 	
@@ -85,8 +87,10 @@ class IncomingMissile extends TargettableObject {
 	}
 	
 	function OnTriggerEnter(c : Collider){
-		if(c.collider.name == "TheShip"){
-			c.gameObject.GetComponent.<ship>().damageShip(Random.Range(8,12), "Exploded by missile");
+		if(c.collider.name == "TheShip" ){
+			if(!isDummy){
+				c.gameObject.GetComponent.<ship>().damageShip(Random.Range(8,12), "Exploded by missile");
+			}
 			c.rigidbody.rigidbody.AddExplosionForce(500, transform.position, 100,0,ForceMode.Impulse);
 		}
 		explode();

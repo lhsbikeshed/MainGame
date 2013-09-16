@@ -2,7 +2,12 @@
 
 class LaunchScene extends GenericScene {
 
-
+	
+	var missileSpawning: boolean = false;
+	var missileObj: GameObject;
+	private var lastMissileTime : float;
+	var missileSpawnTime : float = 1.0;
+	
 	private var dockChamber : DockChamberScript;
 	private var theShip : Transform;
 	
@@ -16,7 +21,19 @@ class LaunchScene extends GenericScene {
 	
 	}
 	
-	
+	function FixedUpdate(){
+		if(missileSpawning){
+			if(lastMissileTime + missileSpawnTime < Time.fixedTime){
+				lastMissileTime = Time.fixedTime;
+				var pos : Vector3 = transform.position + Random.onUnitSphere * 1500.0f;
+				var miss : GameObject  = Instantiate(missileObj, pos, Quaternion.identity);
+				miss.GetComponent.<IncomingMissile>().isDummy = true;
+				miss.GetComponent.<IncomingMissile>().targetTransform = theShip;
+				miss.GetComponent.<IncomingMissile>().trackingPlayer = true;
+				theShip.GetComponentInChildren.<TargettingSystem>().addObject(miss);
+			}
+		}
+	}	
 	
 	function ProcessOSCMessage(message : OSCPacket){
 	
@@ -47,6 +64,14 @@ class LaunchScene extends GenericScene {
 				//var dockingBayScript = GameObject.Find("DockChamber").GetComponent.<DockChamberScript>();
 				if (dockChamber == null){ return; }
 				dockChamber.setGravity( message.Data[0] == 1 ? true : false );
+				break;
+			case "trainingMissiles":
+				//turn on the missile spawner
+				missileSpawning = message.Data[0] == 1 ? true : false ;
+				break;
+			case "targetGate":
+				var tgt : boolean = message.Data[0] == 1 ? true : false;
+				GameObject.Find("JumpGate").GetComponent.<GeneralTrackableTarget>().highlighted = tgt;
 				break;
 		}
 	
