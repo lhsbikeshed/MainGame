@@ -8,6 +8,7 @@ var destinationSector : int[];
 
 var gateEnabled : boolean = true;
 
+
 var test : boolean = false;
 
 
@@ -21,6 +22,8 @@ function Start () {
 	theShip = GameObject.Find("TheShip");
 	oscSender = GameObject.Find("PersistentScripts").GetComponent.<OSCSystem>();
 }
+
+
 function OnTriggerEnter (other : Collider) {
 	if(gateEnabled){
 		if (other.gameObject == theShip){
@@ -50,6 +53,7 @@ function explode(){
 	var bf : BlinkenFlareBehaviour[] = GetComponentsInChildren.<BlinkenFlareBehaviour>();
 	for (var b in bf){
 		b.blinking = false;
+		b.flickerAndDie();
 	}
 	
 	//disable collider
@@ -59,7 +63,10 @@ function explode(){
 	var part : ParticleSystem = GetComponentInChildren.<ParticleSystem>();
 	part.enableEmission = false;
 	
-	for(var t : Transform in transform){
+	
+	
+	for(var t : Transform in GetComponentsInChildren.<Transform>()){
+		Debug.Log(t.name);
 		if(t.name.Contains("Plane")){
 			t.parent = null;
 			t.gameObject.AddComponent.<Rigidbody>();
@@ -70,6 +77,8 @@ function explode(){
 			
 		}
 	}
+	
+	
 	
 }
 	

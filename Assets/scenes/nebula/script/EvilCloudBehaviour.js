@@ -49,6 +49,7 @@ public class EvilCloudBehaviour extends DynamicFieldObjectBehaviour{
 			lineRenderer.SetPosition(i, randomPts[i]);
 		}
 		
+		lineRenderer.SetPosition(9, targetStrike.position);
 		
 	}
 	
@@ -109,6 +110,10 @@ public class EvilCloudBehaviour extends DynamicFieldObjectBehaviour{
 					}
 					lineRenderer.SetPosition(i, randomPts[i]);
 				}
+				if(targetStrike != null){
+					lineRenderer.SetPosition(9, targetStrike.position);
+				}
+				
 				lastPosSwitch = Time.fixedTime;	
 			}
 		}

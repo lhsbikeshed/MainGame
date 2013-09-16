@@ -27,6 +27,11 @@ class NebulaScene extends GenericScene {
 	var logSounds : AudioClip[];
 	private var audioSource : AudioSource;
 	
+	//escape route
+	var spaceAnomaly : GameObject;
+	
+	
+	
 	//virus parts
 	var infected : boolean = false;
 	var infectedTime :float = 0;
@@ -37,7 +42,7 @@ class NebulaScene extends GenericScene {
 	private var lightningPoolLength : int;
 	
 	private var theShip : GameObject;
-	private var lostVan : VanBehaviour;
+	var lostVan : VanBehaviour;
 	
 	var evilLightningPrefab : GameObject;		//we spawn this to strike lightning at things
 	private var gateDead : boolean = false;
@@ -48,7 +53,8 @@ class NebulaScene extends GenericScene {
 	function Start () {
 		theShip = gameObject.Find("TheShip");
 		theShip.GetComponentInChildren.<ShipCamera>().setSkyboxState(true);
-		lostVan = GameObject.Find("van").GetComponent.<VanBehaviour>();
+//		lostVan = GameObject.Find("van").GetComponent.<VanBehaviour>();
+		
 		//set the ships camera up for a multi cam scene
 		//set to DONOTCLEAR
 		lightningPool = new List.<Transform>();
@@ -65,6 +71,8 @@ class NebulaScene extends GenericScene {
 			
 			lightningPool.Add(t);
 		}
+		
+		
 	}
 	
 	function startPuzzle(){
@@ -137,13 +145,30 @@ class NebulaScene extends GenericScene {
 			gateDead = true;
 			var cloud = GameObject.Find("GasCloudEvil").GetComponent.<EvilCloudBehaviour>();
 			var jg = GameObject.Find("JumpGate");
-			var newPos = jg.transform.position + Random.onUnitSphere * 500;
+			var newPos = jg.transform.position + Random.onUnitSphere * 1500;
 			cloud.resetTo(newPos);
 			cloud.targetStrike = jg.transform;
 			cloud.strikeAtTarget();
 			jg.GetComponent.<JumpNode>().explode();
+			jg.GetComponent.<GeneralTrackableTarget>().objectName = "Broken Jumpgate";
 	}
 	
+	
+	//take the van and reposition it just slightly off of the ships current direction
+	function repositionVan(){
+	
+		//flash the "reacquiring signal" message on the tactical/pilot console
+		OSCHandler.Instance.DisplayBannerAtClient("TacticalStation", "Radio Error", "Re-acquiring Signal...", 2000);
+		OSCHandler.Instance.DisplayBannerAtClient("PilotStation", "Radio Error", "Re-acquiring Signal...", 2000);
+		
+		//get distance to van
+		var sp : Vector3 = lostVan.GetComponent.<DynamicMapObject>().getWorldPosition();
+		var vanDistance : float = Mathf.Abs((theShip.transform.position - sp).magnitude);
+		
+		//take the current direction and van distance, put the ship there but with a random offset
+		lostVan.GetComponent.<DynamicMapObject>().setWorldPosition(theShip.transform.TransformDirection(Vector3.forward * vanDistance));
+		
+	}
 
 	private function findIdleStorm() : int {
 		
@@ -232,7 +257,9 @@ class NebulaScene extends GenericScene {
 			case "blowUpGate":
 				blowupGate();
 				break;
-				
+			case "repositionVan":
+				repositionVan();
+				break;
 		}
 	
 	

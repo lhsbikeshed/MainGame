@@ -19,6 +19,21 @@ function getSectorAsVec() : Vector3 {
 
 }
 
+function getWorldPosition(){
+	return getSectorAsVec() * mapController.cellSize + originalPosition;
+}
+
+function setWorldPosition(pos : Vector3){
+	sectorCoord[0] = pos.x / mapController.cellSize;
+	sectorCoord[1] = pos.y / mapController.cellSize;
+	sectorCoord[2] = pos.z / mapController.cellSize;
+	
+	originalPosition.x = pos.x % mapController.cellSize;
+	originalPosition.y = pos.y % mapController.cellSize;
+	originalPosition.z = pos.z % mapController.cellSize;
+}
+	
+
 function Awake () {
 	//gameObject.active = false;
 	tag = "dynamic";
