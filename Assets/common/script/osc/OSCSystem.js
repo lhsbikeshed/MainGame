@@ -282,6 +282,18 @@ function controlMessage(message : OSCPacket){
 			shipSystem.weaponsPower = message.Data[3];
 			shipSystem.sensorPower = message.Data[2];
 			break;
+			
+		case "grapplingHookState":
+			var ghState : boolean = message.Data[0] == 1 ? true : false;
+			playerShip.GetComponent.<TargettingSystem>().hookArmed = ghState;
+			if(ghState){
+				OSCHandler.Instance.DisplayBannerAtClient("EngineerStation", "Grappling Hook", "Launcher enabled", 2000);
+				OSCHandler.Instance.DisplayBannerAtClient("TacticalStation", "Grappling Hook", "Launcher enabled", 2000);
+			} else {
+				OSCHandler.Instance.DisplayBannerAtClient("EngineerStation", "Grappling Hook", "Launcher disabled", 2000);
+				OSCHandler.Instance.DisplayBannerAtClient("TacticalStation", "Grappling Hook", "Launcher disabled", 2000);
+			}
+			break;
 	}
 			
 		

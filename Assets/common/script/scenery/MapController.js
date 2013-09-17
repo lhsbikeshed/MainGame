@@ -187,7 +187,12 @@ function Update () {
 		
 		//let the current scene know we moved sectors
 		currentScene.MapSectorChanged(oldPos, Vector3 ( sectorPos[0], sectorPos[1], sectorPos[2]) );
-		
+		//alert clients that we changed sector
+		var msg : OSCMessage = OSCMessage("/ship/sectorChanged");
+		msg.Append.<int>(sectorPos[0]);
+		msg.Append.<int>(sectorPos[1]);
+		msg.Append.<int>(sectorPos[2]);
+		OSCHandler.Instance.SendMessageToAll(msg);
 
 		
 		updateObjects();

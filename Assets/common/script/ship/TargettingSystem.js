@@ -3,6 +3,8 @@
 var theShip : GameObject;
 var objectList : List.<TargettableObject>;
 var targettedObject : Transform;
+var hookArmed : boolean = false;
+
 
 private var grapplingHook : GrapplingHook;
 
@@ -78,20 +80,25 @@ function processOSCMessage(message : OSCMessage){
 			}
 			break;
 		case "fireGrappling":
-			if(targettedObject != null && targettedObject.GetComponent.<TargettableObject>().grappleable == true){
-				if((theShip.transform.position - targettedObject.position).magnitude  < 100){
-					grapplingHook.setTarget(targettedObject);
-					
-					grapplingHook.Fire();
-				} else {
-					OSCHandler.Instance.DisplayBannerAtClient("TacticalStation", "No Target", "Target out of range, must be < 100m away", 2000);
-				}
+			if(grapplingHook.inUse){
+				grapplingHook.Release();
 			} else {
-				OSCHandler.Instance.DisplayBannerAtClient("TacticalStation", "No Target", "No Target Selected", 1000);
+				if(targettedObject != null && targettedObject.GetComponent.<TargettableObject>().grappleable == true){
+					if((theShip.transform.position - targettedObject.position).magnitude  < 100){
+						grapplingHook.setTarget(targettedObject);
+						
+						grapplingHook.Fire();
+					} else {
+						OSCHandler.Instance.DisplayBannerAtClient("TacticalStation", "No Target", "Target out of range, must be < 100m away", 2000);
+					}
+				} else {
+					OSCHandler.Instance.DisplayBannerAtClient("TacticalStation", "No Target", "No Target Selected", 1000);
+				}
 			}
 			break;
 			
 		case "releaseGrappling":
+			Debug.Log("Release grapple..");
 			grapplingHook.Release();
 			break;
 			
