@@ -28,7 +28,8 @@ class VanBehaviour extends TargettableObject {
 		statValues = new float[2];
 		statNames[0] = "health";
 		statNames[1] = "";
-		
+		objectName = "SIGNAL SOURCE";
+		stateText = "";
 		GameObject.Find("TheShip").GetComponent.<TargettingSystem>().addObject(this);
 		
 	}
@@ -50,7 +51,10 @@ class VanBehaviour extends TargettableObject {
 	function OnTriggerEnter(c : Collider){
 		if(c.gameObject.name == "TheShip" && !grappled){
 			GameObject.Find("SceneScripts").GetComponent.<LostVanBehaviour>().foundShip();
-			GetComponent.<VanBehaviour>().highlighted = true;
+			highlighted = true;
+			objectName = "LHSB-001";
+			stateText = "*not responding*";
+			//GetComponent.<VanBehaviour>().
 		}
 	}
 		
@@ -58,7 +62,7 @@ class VanBehaviour extends TargettableObject {
 	function OnTriggerExit(c : Collider){
 		if(c.gameObject.name == "TheShip" && !grappled){
 			GameObject.Find("SceneScripts").GetComponent.<LostVanBehaviour>().lostShip();
-			GetComponent.<VanBehaviour>().highlighted = false;
+			highlighted = false;
 		}
 	}
 	
