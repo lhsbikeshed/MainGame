@@ -61,6 +61,12 @@ function getSectorAsVec() : Vector3 {
 }
 
 
+
+function getShipWorldPosition(){
+	return getSectorAsVec() * cellSize + ship.transform.position;
+}
+
+
 function OnDrawGizmo(){
 	Gizmos.color = Color(255,255,0);
 	Gizmos.DrawCube(Vector3.zero, Vector3.one * cellSize);

@@ -50,6 +50,8 @@ class NebulaScene extends GenericScene {
 	
 	private var puzzleRunning : boolean = false;
 	
+	private var mapController : MapController ;
+	
 	function Start () {
 		theShip = gameObject.Find("TheShip");
 		theShip.GetComponentInChildren.<ShipCamera>().setSkyboxState(true);
@@ -71,7 +73,8 @@ class NebulaScene extends GenericScene {
 			
 			lightningPool.Add(t);
 		}
-		
+		spaceAnomaly.GetComponent.<DynamicMapObject>().Deactivate();
+		mapController  = GameObject.Find("SceneScripts").GetComponent.<MapController>();
 		
 	}
 	
@@ -166,14 +169,27 @@ class NebulaScene extends GenericScene {
 		var vanDistance : float = Mathf.Abs((theShip.transform.position - sp).magnitude);
 		
 		//take the current direction and van distance, put the ship there but with a random offset
-		lostVan.GetComponent.<DynamicMapObject>().setWorldPosition(theShip.transform.TransformDirection(Vector3.forward * vanDistance));
-		
-	}
-
-	private function findIdleStorm() : int {
+		lostVan.GetComponent.<DynamicMapObject>().setWorldPosition(theShip.transform.TransformDirection(Vector3.forward * vanDistance) + mapController.getShipWorldPosition());
 		
 	}
 	
+	//take the van and reposition it just slightly off of the ships current direction
+	function spawnAnomaly(){
+	
+		//flash the "spatial anomaly detected" message on the tactical/pilot console
+		OSCHandler.Instance.DisplayBannerAtClient("TacticalStation", "Sensor Alert", "Spatial distortion detected", 2000);
+		OSCHandler.Instance.DisplayBannerAtClient("PilotStation", "Sensor Alert", "Spatial distortion detected", 2000);
+		
+		
+		var spawnDistance : float = 3500 + Random.Range(500,1000);
+		
+		//take the current direction and van distance, put the ship there but with a random offset
+		//lostVan.GetComponent.<DynamicMapObject>().setWorldPosition(theSh1
+		
+		var np : Vector3 = theShip.transform.TransformDirection(Vector3.forward * spawnDistance) + mapController.getShipWorldPosition();
+		spaceAnomaly.GetComponent.<DynamicMapObject>().setWorldPosition(np);
+	}
+
 	function strikeAtPlayers(){
 	}
 	
@@ -260,6 +276,11 @@ class NebulaScene extends GenericScene {
 			case "repositionVan":
 				repositionVan();
 				break;
+				
+			case "spawnAnomaly":
+				spawnAnomaly();
+				break;
+				
 		}
 	
 	

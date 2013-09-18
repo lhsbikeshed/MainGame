@@ -31,6 +31,7 @@ function setWorldPosition(pos : Vector3){
 	originalPosition.x = pos.x % mapController.cellSize;
 	originalPosition.y = pos.y % mapController.cellSize;
 	originalPosition.z = pos.z % mapController.cellSize;
+	mapController.updateObject(this.gameObject);
 }
 	
 
