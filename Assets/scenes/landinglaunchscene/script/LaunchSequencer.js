@@ -23,8 +23,9 @@ var lerp : float = 0.0f;
 
 
 function Start () {
-objectToMove = GameObject.Find("TheShip").transform;
-	
+	if(objectToMove == null){
+		objectToMove = GameObject.Find("TheShip").transform;
+	}	
 }
 
 function OnTriggerEnter(c : Collider){

@@ -30,6 +30,8 @@ class NebulaScene extends GenericScene {
 	//escape route
 	var spaceAnomaly : GameObject;
 	
+	var hackComplete : boolean = false;	//has the hacking puzzle been completed?
+	
 	
 	
 	//virus parts
@@ -251,7 +253,7 @@ class NebulaScene extends GenericScene {
 						theShip.GetComponentInChildren.<GrapplingHook>().lockState = false;
 						lostVan.hasBeenHacked = true;
 						audioSource.Stop();
-						
+						hackComplete = true;
 						
 					}
 				} 

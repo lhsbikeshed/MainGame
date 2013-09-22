@@ -21,6 +21,14 @@ class LaunchScene extends GenericScene {
 	
 	}
 	
+	function beginLaunch(){
+		GameObject.Find("NPCInternalDoor").GetComponent.<DoorScript>().openDoor();
+		GameObject.Find("NPCShipMover").GetComponent.<LaunchSequencer>().begin();
+		
+		GameObject.Find("InternalDoor").GetComponent.<DoorScript>().openDoor();
+		GameObject.Find("ShipMover").GetComponent.<LaunchSequencer>().begin();
+	}
+	
 	function FixedUpdate(){
 		if(missileSpawning){
 			if(lastMissileTime + missileSpawnTime < Time.fixedTime){
@@ -45,8 +53,7 @@ class LaunchScene extends GenericScene {
 		
 		switch(operation){
 			case "startLaunch":
-				GameObject.Find("InternalDoor").GetComponent.<DoorScript>().openDoor();
-				GameObject.Find("ShipMover").GetComponent.<LaunchSequencer>().begin();
+				beginLaunch();
 				break;
 				
 			case "dockingBay":			//-----open docking bay hal -----

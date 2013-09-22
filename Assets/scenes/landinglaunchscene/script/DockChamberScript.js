@@ -60,11 +60,12 @@ function closeDoor(){
 }
 
 function OnTriggerEnter(other : Collider){
-	if(ignoringCollisions == false && other.name == "TheShip"){
+	
+	if(other.attachedRigidbody.transform.name == "TheShip"){
 		inBay = true;
 		theShip.GetComponent.<PropulsionSystem>().inBay = true;
 		ignoringCollisions = true;
-		//Physics.IgnoreCollision(theShip.GetComponent.<Collider>(), stationCollider,  true);
+		
 		stationCollider.isTrigger = true;
 		Debug.Log("Enter : Disabled collider");
 		if(theShip.parent == null){	//and were in contact with the docking bay
@@ -73,15 +74,19 @@ function OnTriggerEnter(other : Collider){
 				networkView.RPC ("Enter", RPCMode.Others);
 			}
 		}
+	} else {
+		other.attachedRigidbody.transform.parent = transform;
 	}
+
 }
 
 function OnTriggerExit(other: Collider){
-	if(ignoringCollisions == true && other.name == "TheShip"){
+	
+	if(other.attachedRigidbody.transform.name == "TheShip"){
 		inBay = false;
 		theShip.GetComponent.<PropulsionSystem>().inBay = false;
 		ignoringCollisions = false;
-		//Physics.IgnoreCollision(theShip.GetComponent.<Collider>(), stationCollider, false);
+		
 		stationCollider.isTrigger = false;
 		Debug.Log("leave : enable collider");
 		theShip.parent = null;
@@ -89,8 +94,10 @@ function OnTriggerExit(other: Collider){
 		if(PersistentScene.networkReady == true){
 			networkView.RPC ("Exit", RPCMode.Others);
 		}
-		
+	} else {
+		other.attachedRigidbody.transform.parent = null;
 	}
+	
 }
 
 @RPC
