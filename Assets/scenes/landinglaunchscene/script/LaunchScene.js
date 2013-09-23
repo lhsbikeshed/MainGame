@@ -12,6 +12,7 @@ class LaunchScene extends GenericScene {
 	private var theShip : Transform;
 	
 	var autopilotRoutes : GameObject[];
+	var clamp : Transform;
 	
 	function Start () {
 		dockChamber = GameObject.Find("DockChamber").GetComponent.<DockChamberScript>();
@@ -28,7 +29,8 @@ class LaunchScene extends GenericScene {
 		otherShip.SetReactorState(true);
 		yield WaitForSeconds(1.5);
 		GameObject.Find("npcvan").GetComponent.<UndercarriageBehaviour>().setGearState(false);
-		yield WaitForSeconds(1.5);
+		clamp.GetComponent.<UndercarriageBehaviour>().setGearState(false);
+		yield WaitForSeconds(3.5);
 		otherShip.transform.rigidbody.constraints = RigidbodyConstraints.None;
 		otherShip.SetAutopilotRoute(autopilotRoutes[0]);
 		otherShip.StartFlight();

@@ -16,6 +16,7 @@ var forPlayer : boolean = true;
 private var contactsThisFrame : boolean[];	//has the collider contacted this frame?
 var wheelUpPos : float = 0.1;
 var wheelDownPos : float = -0.7;
+var speed : float = 0.1f;
 private var wheelPosition : float = -0.7;
 
 static var UP : int = 0;
@@ -45,7 +46,7 @@ function Update () {
 	var g : Transform;
 	if(state == TRANSIT_DOWN){
 		if(wheelPosition >= wheelDownPos){
-			wheelPosition = Mathf.MoveTowards(wheelPosition, wheelDownPos - 0.01, 0.1 * Time.deltaTime);
+			wheelPosition = Mathf.MoveTowards(wheelPosition, wheelDownPos - 0.01, speed * Time.deltaTime);
 		} else {
 			state = DOWN;
 			if(extendedSound != null){
@@ -61,7 +62,7 @@ function Update () {
 		
 	} else if(state == TRANSIT_UP){
 		if(wheelPosition <= wheelUpPos){
-			wheelPosition = Mathf.MoveTowards(wheelPosition, wheelUpPos + 0.01, 0.1 * Time.deltaTime);
+			wheelPosition = Mathf.MoveTowards(wheelPosition, wheelUpPos + 0.01, speed * Time.deltaTime);
 		} else {
 			state = UP;
 			if(retractedSound != null){

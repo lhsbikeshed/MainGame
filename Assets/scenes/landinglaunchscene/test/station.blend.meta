@@ -4,6 +4,8 @@ ModelImporter:
   fileIDToRecycleName:
     4300000: bay_001
     4300002: rock
+    4300004: Cube
+    4300006: Rail
     7400000: Default Take //// station
   serializedVersion: 10
   materials:
@@ -49,6 +51,19 @@ ModelImporter:
       data:
         first: 111
         second: 605fa900
+    Rail:
+      data:
+        first: 1
+        second: a6860100
+      data:
+        first: 4
+        second: 861a0600
+      data:
+        first: 23
+        second: 64182300
+      data:
+        first: 33
+        second: a45a3200
     bay_001:
       data:
         first: 1

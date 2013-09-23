@@ -4,6 +4,8 @@ var waypoints : SequenceWaypoint[];
 
 var targetWaypoint : int = 0;
 var objectToMove : Transform;
+var clamp : Transform;
+private var clampOffset : Vector3;
 var intitialPause : float = 5.0f;
 
 var canBeUsed : boolean = false;
@@ -26,6 +28,9 @@ function Start () {
 	if(objectToMove == null){
 		objectToMove = GameObject.Find("TheShip").transform;
 	}	
+	if(clamp != null){
+		clampOffset = objectToMove.transform.position - clamp.position;
+	}
 }
 
 function OnTriggerEnter(c : Collider){
@@ -108,6 +113,11 @@ function FixedUpdate(){
 			lerp = (Time.fixedTime - startTime) / duration;
 			objectToMove.transform.position = Vector3.Lerp(startPos, waypoints[targetWaypoint].transform.position, lerp);
 			objectToMove.transform.rotation = Quaternion.Slerp(startRot, waypoints[targetWaypoint].transform.rotation, lerp);
+		
+			if(clamp != null){
+				clamp.transform.position = objectToMove.transform.position - clampOffset;
+				clamp.transform.rotation = objectToMove.transform.rotation;
+			}
 		}
 	}
 }
