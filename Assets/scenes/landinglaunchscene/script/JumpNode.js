@@ -97,5 +97,5 @@ function Update () {
 		test = false;
 		explode();
 	}
-	transform.rotation *= Quaternion.Euler(0.01,0,0);
+	//transform.rotation *= Quaternion.Euler(0.01,0,0);
 }

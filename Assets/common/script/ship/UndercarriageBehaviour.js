@@ -11,9 +11,11 @@ var transitSound : AudioClip;
 var retractedSound : AudioClip;
 var extendedSound : AudioClip;
 
+var forPlayer : boolean = true;
+
 private var contactsThisFrame : boolean[];	//has the collider contacted this frame?
-private var wheelUpPos : float = 0.1;
-private var wheelDownPos : float = -0.7;
+var wheelUpPos : float = 0.1;
+var wheelDownPos : float = -0.7;
 private var wheelPosition : float = -0.7;
 
 static var UP : int = 0;
@@ -29,6 +31,8 @@ function Start () {
 	
 	
 	contactsThisFrame = new boolean[colliders.Length];
+	wheelPosition = wheelDownPos;
+	
 }
 //true for collide, false for not
 function updateFootColliders(st : boolean){
@@ -44,11 +48,15 @@ function Update () {
 			wheelPosition = Mathf.MoveTowards(wheelPosition, wheelDownPos - 0.01, 0.1 * Time.deltaTime);
 		} else {
 			state = DOWN;
-			AudioSource.PlayClipAtPoint(extendedSound, transform.position);
+			if(extendedSound != null){
+				AudioSource.PlayClipAtPoint(extendedSound, transform.position);
+			}
 			//updateFootColliders(true);
-			var msg : OSCMessage = OSCMessage("/ship/undercarriage");
-			msg.Append.<int>(state);
-			OSCHandler.Instance.SendMessageToAll(msg);
+			if(forPlayer){
+				var msg : OSCMessage = OSCMessage("/ship/undercarriage");
+				msg.Append.<int>(state);
+				OSCHandler.Instance.SendMessageToAll(msg);
+			}
 		}
 		
 	} else if(state == TRANSIT_UP){
@@ -56,11 +64,15 @@ function Update () {
 			wheelPosition = Mathf.MoveTowards(wheelPosition, wheelUpPos + 0.01, 0.1 * Time.deltaTime);
 		} else {
 			state = UP;
-			AudioSource.PlayClipAtPoint(retractedSound, transform.position);
+			if(retractedSound != null){
+				AudioSource.PlayClipAtPoint(retractedSound, transform.position);
+			}
 			//updateFootColliders(false);
-			var msg2 : OSCMessage = OSCMessage("/ship/undercarriage");
-			msg2.Append.<int>(state);
-			OSCHandler.Instance.SendMessageToAll(msg2);
+				if(forPlayer){
+				var msg2 : OSCMessage = OSCMessage("/ship/undercarriage");
+				msg2.Append.<int>(state);
+				OSCHandler.Instance.SendMessageToAll(msg2);
+			}
 		}
 		
 	}
@@ -86,18 +98,24 @@ function setGearState (newState : boolean){
 	if(state == DOWN){
 		if(newState == false){	//pull em up!
 			state = TRANSIT_UP;
-			AudioSource.PlayClipAtPoint(transitSound, transform.position);
+			if(transitSound != null){
+				AudioSource.PlayClipAtPoint(transitSound, transform.position);
+			}
 		}
 	} else if (state == UP){
 		if(newState == true){
 			state = TRANSIT_DOWN;
-			AudioSource.PlayClipAtPoint(transitSound, transform.position);
+			if(transitSound != null){
+				AudioSource.PlayClipAtPoint(transitSound, transform.position);
+			}
 		}
 	}
 	msg.Append.<int>(state);
-	OSCHandler.Instance.SendMessageToAll(msg);
-	if(PersistentScene.networkReady == true){
-		networkView.RPC ("setGearState", RPCMode.Others, newState);
+	if(forPlayer){
+		OSCHandler.Instance.SendMessageToAll(msg);
+		if(PersistentScene.networkReady == true){
+			networkView.RPC ("setGearState", RPCMode.Others, newState);
+		}
 	}
 }
 
@@ -122,14 +140,15 @@ function OnCollisionStay(c : Collision){
 	}
 	
 	if(howManyInContact != ct){
-		
-		var msg : OSCMessage = OSCMessage("/ship/undercarriage/contact");
-		if(ct >= 3){		//number of feet in contact has changed and its now 4, let everyone know clamp can be used
-			msg.Append.<int>(1);
-			OSCHandler.Instance.SendMessageToAll(msg);
-		} else if(howManyInContact >= 3){		//number of feet has changed and it WAS 4, clamp disabled
-			msg.Append.<int>(0);
-			OSCHandler.Instance.SendMessageToAll(msg);
+		if(forPlayer){
+			var msg : OSCMessage = OSCMessage("/ship/undercarriage/contact");
+			if(ct >= 3){		//number of feet in contact has changed and its now 4, let everyone know clamp can be used
+				msg.Append.<int>(1);
+				OSCHandler.Instance.SendMessageToAll(msg);
+			} else if(howManyInContact >= 3){		//number of feet has changed and it WAS 4, clamp disabled
+				msg.Append.<int>(0);
+				OSCHandler.Instance.SendMessageToAll(msg);
+			}
 		}
 	}
 	

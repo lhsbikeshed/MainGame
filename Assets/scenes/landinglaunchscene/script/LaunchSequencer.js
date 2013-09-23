@@ -29,7 +29,7 @@ function Start () {
 }
 
 function OnTriggerEnter(c : Collider){
-	if(c.name == "TheShip" && canBeUsed == false){
+	if(c.name == objectToMove.name && canBeUsed == false){
 	
 		canBeUsed = true;
 		var m : OSCMessage = OSCMessage("/scene/launchland/grabberState");
@@ -40,7 +40,7 @@ function OnTriggerEnter(c : Collider){
 }
 
 function OnTriggerExit(c : Collider){
-	if(c.name == "TheShip" && canBeUsed == true){
+	if(c.name == objectToMove.name && canBeUsed == true){
 	
 		canBeUsed = false;
 		var m : OSCMessage = OSCMessage("/scene/launchland/grabberState");

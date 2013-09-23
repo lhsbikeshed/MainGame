@@ -11,6 +11,8 @@ class LaunchScene extends GenericScene {
 	private var dockChamber : DockChamberScript;
 	private var theShip : Transform;
 	
+	var autopilotRoutes : GameObject[];
+	
 	function Start () {
 		dockChamber = GameObject.Find("DockChamber").GetComponent.<DockChamberScript>();
 		theShip = GameObject.Find("TheShip").transform;
@@ -19,6 +21,18 @@ class LaunchScene extends GenericScene {
 	
 	function Update () {
 	
+	}
+	
+	function launchOtherShip(){
+		var otherShip : NPCShip = GameObject.Find("npcvan").GetComponent.<NPCShip>();
+		otherShip.SetReactorState(true);
+		yield WaitForSeconds(1.5);
+		GameObject.Find("npcvan").GetComponent.<UndercarriageBehaviour>().setGearState(false);
+		yield WaitForSeconds(1.5);
+		otherShip.transform.rigidbody.constraints = RigidbodyConstraints.None;
+		otherShip.SetAutopilotRoute(autopilotRoutes[0]);
+		otherShip.StartFlight();
+		
 	}
 	
 	function beginLaunch(){
@@ -79,6 +93,9 @@ class LaunchScene extends GenericScene {
 			case "targetGate":
 				var tgt : boolean = message.Data[0] == 1 ? true : false;
 				GameObject.Find("JumpGate").GetComponent.<GeneralTrackableTarget>().highlighted = tgt;
+				break;
+			case "launchOtherShip":
+				launchOtherShip();
 				break;
 		}
 	

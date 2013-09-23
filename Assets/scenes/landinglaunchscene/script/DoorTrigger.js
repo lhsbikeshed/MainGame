@@ -7,10 +7,10 @@ function Start () {
 }
 
 function OnTriggerExit(collider : Collider){
-
-	dockChamber.closeDoor();
-	GameObject.Find("AmbientLight").GetComponent.<Light>().enabled = true;
-	
+	if(collider.name == "TheShip"){
+		dockChamber.closeDoor();
+		GameObject.Find("AmbientLight").GetComponent.<Light>().enabled = true;
+	}
 	
 }
 
