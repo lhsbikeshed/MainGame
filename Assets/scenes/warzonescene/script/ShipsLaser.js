@@ -38,6 +38,10 @@ function fireAtTarget(pos : Transform){
 
 }
 
+function getState() : int{
+	return state;
+}
+
 function Update () {
 	if(target == null){
 		state = 0;

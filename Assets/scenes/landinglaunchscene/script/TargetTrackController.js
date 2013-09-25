@@ -5,7 +5,7 @@ var numberOfTargets : int;
 var targetObject : Transform;
 var destPoint : Transform;
 var srcPoint : Transform;
-private var objectList : Transform[];
+var objectList : Transform[];
 
 private var theShip : Transform;
 

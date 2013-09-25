@@ -8,6 +8,9 @@ var startTest : boolean = false;
 var rotationDamping : float = 1.0f;
 var maxVelocity : float = 15.0f;
 
+var shipsLaser : ShipsLaser;
+private var laserCooldown : float = 1.0f;
+
 private var running : boolean = false;
 private var velocity : float = 0.0f;
 
@@ -76,6 +79,14 @@ function SetReactorState(newState : boolean){
 	}
 }
 
+function OnTriggerEnter(c : Collider){
+	var target  = c.GetComponent.<TargettableObject>();
+	if(target != null && shipsLaser.getState() == 0){
+		shipsLaser.fireAtTarget(c.transform);
+	}
+}
+
+
 function Update () {
 	if(reactorRunning){
 		engineParticles.emissionRate = 50 + (velocity / maxVelocity) * 350;
@@ -117,27 +128,6 @@ function Update () {
 			
 		}
 	}
-		
-	/*
-		
-			velocity = 40 + (targetTransform.rigidbody.velocity.magnitude * 0.8f) + randVel;
-			velocity *= Mathf.Abs(Vector3.Dot((transform.position - targetTransform.position).normalized, transform.TransformDirection(Vector3.forward)));
-			
-			transform.Translate(Vector3.forward * velocity * Time.deltaTime);
-			var rotation = Quaternion.LookRotation(targetTransform.position - transform.position);
 	
-	        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * damping);
-	        lifeTime -= Time.deltaTime;
-	        if(lifeTime <= 0){
-	        	explode();
-	        }
-			
-		}
-		//close to waypoint? Go to next one
-		var dist : float = Mathf.Abs( (targetTransform.position - transform.position).magnitude) ;
-		if( dist > maxDistance ){
-			explode();
-		} 
-		*/
 
 }

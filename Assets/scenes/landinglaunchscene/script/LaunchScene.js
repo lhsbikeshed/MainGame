@@ -14,6 +14,10 @@ class LaunchScene extends GenericScene {
 	var autopilotRoutes : GameObject[];
 	var clamp : Transform;
 	
+	var autoPilotPrefab : Transform;
+	
+	var test : boolean = false;
+	
 	function Start () {
 		dockChamber = GameObject.Find("DockChamber").GetComponent.<DockChamberScript>();
 		theShip = GameObject.Find("TheShip").transform;
@@ -21,7 +25,41 @@ class LaunchScene extends GenericScene {
 	}
 	
 	function Update () {
+		if(test){
+			test = false;
+			
+			flyToGate();
+		}
+	}
 	
+	//set to route 2
+	//first route2 needs populating
+	function flyToGate(){
+		var tgtTrack : TargetTrackController = GameObject.Find("TargetTrack").GetComponent.<TargetTrackController>();
+		var posList : Transform[] = tgtTrack.objectList;
+		var route : GameObject = GameObject.Find("Route2");
+		var i : int = 0;
+		for (var t : Transform in posList){
+			if(t != null){
+				var g : Transform = Instantiate(autoPilotPrefab, t.position, Quaternion.identity);
+				g.GetComponent.<SequenceWaypoint>().newVelocity = 50;
+				g.GetComponent.<SequenceWaypoint>().sensorDistance = 20;
+				g.gameObject.name = "wp." + i;
+				g.parent = route.transform;
+				i++;
+			}
+		}
+		var jgPos : Transform = GameObject.Find("JumpGate").transform;
+		g = Instantiate(autoPilotPrefab, jgPos.position, Quaternion.identity);
+		g.GetComponent.<SequenceWaypoint>().newVelocity = 50;
+		g.gameObject.name = "wp." + i;
+		
+		
+		g.parent = route.transform;
+		
+		var otherShip : NPCShip = GameObject.Find("npcvan").GetComponent.<NPCShip>();
+		otherShip.SetAutopilotRoute(autopilotRoutes[1]);
+		otherShip.StartFlight();
 	}
 	
 	function launchOtherShip(){
@@ -98,6 +136,9 @@ class LaunchScene extends GenericScene {
 				break;
 			case "launchOtherShip":
 				launchOtherShip();
+				break;
+			case "otherShipToGate":
+				flyToGate();
 				break;
 		}
 	
