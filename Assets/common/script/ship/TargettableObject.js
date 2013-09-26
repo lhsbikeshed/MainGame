@@ -48,6 +48,9 @@ class TargettableObject  extends MonoBehaviour{
 	
 	function explode() : IEnumerator{}
 	
+	function onTarget(){}
+	function onUnTarget(){}
+	
 	function gotGrappled() {}
 	function releaseGrapple(){}
 }

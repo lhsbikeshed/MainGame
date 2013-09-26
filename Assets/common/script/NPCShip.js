@@ -16,6 +16,7 @@ private var velocity : float = 0.0f;
 
  var reactorRunning : boolean = false;
 
+private var jumping : boolean = false;
 
 //refs
 var engineParticles : ParticleSystem;
@@ -34,9 +35,18 @@ function StartFlight(){
 	}
 	nextWaypoint = waypointList[0];
 	running = true;
+	waypointIndex = 0;
 	
 }
 
+function startJump(){
+	if(!jumping){
+		gameObject.Find("JumpEffects").GetComponent.<ParticleSystem>().enableEmission = true;
+		jumping = true;
+	}
+}
+	
+	
 function SetAutopilotRoute(container : GameObject){
 	var wl : SequenceWaypoint[] = container.GetComponentsInChildren.<SequenceWaypoint>();
 	waypointList.Clear();
@@ -72,7 +82,7 @@ function SetReactorState(newState : boolean){
 			engineParticles.emissionRate = 0;
 			engineLight.intensity = 0;
 			for(var bf in GetComponentsInChildren.<BlinkenFlareBehaviour>()){
-				bf.blinking = false;
+				bf.flickerAndDie();
 			}
 			reactorRunning = false;
 		}
@@ -81,8 +91,8 @@ function SetReactorState(newState : boolean){
 
 function OnTriggerEnter(c : Collider){
 	var target  = c.GetComponent.<TargettableObject>();
-	if(target != null && shipsLaser.getState() == 0){
-		shipsLaser.fireAtTarget(c.transform);
+	if(target != null && shipsLaser.getState() == 0 && target.damageable == true){
+		shipsLaser.npcFireAtTarget(c.transform);
 	}
 }
 
@@ -96,7 +106,7 @@ function Update () {
 	
 	if(startTest){
 		startTest = false;
-		StartFlight();
+		startJump();
 	}
 	if(running){
 		
@@ -127,7 +137,8 @@ function Update () {
 			
 			
 		}
+	} else if (jumping){
+		rigidbody.AddRelativeForce(Vector3.forward * 500, ForceMode.Acceleration);
 	}
-	
 
 }

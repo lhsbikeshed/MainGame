@@ -14,28 +14,72 @@ private var laserTexture : Material;
 
 private var state : int; // 0 = off, 1 = firing
 private var target : Transform;
+private var theShip : Transform;
 
 
 function Start () {
 	laserRenderer = GetComponent.<LineRenderer>();
 	laserTexture = laserRenderer.material;
-	
+	theShip = transform.parent;
 	
 	laserRenderer.enabled = false;
 	soundSource = gameObject.AddComponent.<AudioSource>();
 	soundSource.volume = 0.2f;
 }
 
-//fire at a fixed position
-function fireAtTarget(pos : Transform){
-	
-	if (state == 0){
-		state = 1;
-		fireTime = Time.fixedTime;	
-		target = pos;
+//fire at a target taking distance etc into account
+
+function fireAtTarget(targettedObject : Transform){
+	var msg : OSCMessage ;
+	if(targettedObject == null){
+
+		msg = new OSCMessage("/tactical/weapons/noTarget");
+		Debug.Log("no target for firing");
+		OSCHandler.Instance.SendMessageToClient("TacticalStation", msg);
+		OSCHandler.Instance.DisplayBannerAtClient("TacticalStation", "No Target", "No Target Selected", 1000);
+		return;
+	}
+
+	var tscript : TargettableObject = targettedObject.GetComponent.<TargettableObject>();
+	if(tscript.exploding == false && state == 0){
+		
+		var targetRange : float = (theShip.transform.position - targettedObject.position).magnitude;
+		var wp : int = theShip.GetComponent.<ship>().weaponsPower;
+		var maxBeamRange : float = 1000 + wp * 300;
+		if(targetRange > maxBeamRange){
+			msg = new OSCMessage("/tactical/weapons/targetRange");
+			msg.Append.<int>(tscript.targetId);
+			OSCHandler.Instance.SendMessageToClient("TacticalStation", msg);
+			OSCHandler.Instance.DisplayBannerAtClient("TacticalStation", "ERROR", "Target Out Of Range, current range: " + targetRange, 1000);
+		} else {
+			msg = new OSCMessage("/tactical/weapons/firingAtTarget");
+			msg.Append.<int>(tscript.targetId);
+			OSCHandler.Instance.SendMessageToClient("TacticalStation", msg);
+			var damage : float = (1.0 - (targetRange / maxBeamRange)) * (  wp  / 3.0f) * tscript.baseDamage;
+			
+			
+			tscript.GetShot(damage);
+		
+		
+			state = 1;
+			fireTime = Time.fixedTime;	
+			target = targettedObject;
+		}
 		
 	}
 
+}
+
+/* for the npc ship to fire with, distance etc isnt important */
+function npcFireAtTarget(targettedObject : Transform){
+	if(state  == 0){
+		state = 1;
+		fireTime = Time.fixedTime;	
+		target = targettedObject;
+		Debug.Log("npc fire");
+		var tscript : TargettableObject = targettedObject.GetComponent.<TargettableObject>();
+		tscript.GetShot(1.0f);
+	}
 }
 
 function getState() : int{

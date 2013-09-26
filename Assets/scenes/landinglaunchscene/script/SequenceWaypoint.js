@@ -11,6 +11,7 @@ var newVelocity : float = 0;
 var hyperOut : boolean = false;
 var visited : boolean = false;
 var sensorDistance : float = 0.0f;
+var matchRotation : Transform;
 
 var inSound : AudioClip;
 var outSound : AudioClip;
@@ -21,6 +22,9 @@ function Start () {
 }
 
 function Update () {
+	if(matchRotation != null){
+		transform.rotation = matchRotation.rotation;
+	}
 
 }
 

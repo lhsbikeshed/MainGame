@@ -97,6 +97,11 @@ class LaunchScene extends GenericScene {
 		}
 	}	
 	
+	function hyperspaceOtherShip(){
+		var otherShip : NPCShip = GameObject.Find("npcvan").GetComponent.<NPCShip>();
+		otherShip.startJump();
+	}
+	
 	function ProcessOSCMessage(message : OSCPacket){
 	
 		var msgAddress = message.Address.Split(separator);
@@ -139,6 +144,9 @@ class LaunchScene extends GenericScene {
 				break;
 			case "otherShipToGate":
 				flyToGate();
+				break;
+			case "otherShipHyperspace":
+				hyperspaceOtherShip();
 				break;
 		}
 	

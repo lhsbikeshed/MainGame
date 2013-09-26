@@ -148,12 +148,18 @@ class NebulaScene extends GenericScene {
 	private function blowupGate(){
 			if(gateDead){return; };
 			gateDead = true;
-			var cloud = GameObject.Find("GasCloudEvil").GetComponent.<EvilCloudBehaviour>();
+			
 			var jg = GameObject.Find("JumpGate");
-			var newPos = jg.transform.position + Random.onUnitSphere * 1500;
-			cloud.resetTo(newPos);
-			cloud.targetStrike = jg.transform;
-			cloud.strikeAtTarget();
+			for(var i = 0; i < 4; i++){
+				var newPos = jg.transform.position + Random.onUnitSphere * 1500;
+				var newCloud = Instantiate(evilLightningPrefab, newPos, Quaternion.identity);
+				var cloud = newCloud.GetComponent.<EvilCloudBehaviour>();
+				newCloud.name = "aids";
+				
+				
+				cloud.targetStrike = jg.transform;
+				cloud.strikeAtTarget();
+			}
 			jg.GetComponent.<JumpNode>().explode();
 			jg.GetComponent.<GeneralTrackableTarget>().objectName = "Broken Jumpgate";
 	}

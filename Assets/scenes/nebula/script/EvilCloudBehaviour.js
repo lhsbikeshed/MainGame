@@ -13,6 +13,7 @@ public class EvilCloudBehaviour extends DynamicFieldObjectBehaviour{
 	private var theShip :GameObject;
 	private var flashTimer : float;
 	var targetStrike : Transform;
+	var strikingTarget : boolean = false;
 	private var randomPts : Vector3[];
 	private var lineRenderer : LineRenderer;
 	private var lastPosSwitch : float = 0; //last time the bolt flickered;
@@ -38,7 +39,7 @@ public class EvilCloudBehaviour extends DynamicFieldObjectBehaviour{
 		flashing = true;
 		flashTimer = Time.fixedTime;
 		randomPts = new Vector3[10];
-		
+		lineRenderer = GetComponent.<LineRenderer>();
 		
 		for( var i = 0; i < 10; i++){
 			randomPts[i] = Vector3.Slerp(transform.position, targetStrike.position, i / 10.0f);
@@ -50,7 +51,7 @@ public class EvilCloudBehaviour extends DynamicFieldObjectBehaviour{
 		}
 		
 		lineRenderer.SetPosition(9, targetStrike.position);
-		
+		strikingTarget = true;
 	}
 	
 	function strikeAtRandom(){
@@ -96,6 +97,9 @@ public class EvilCloudBehaviour extends DynamicFieldObjectBehaviour{
 			}
 			if( col <= 0){
 				flashing = false;
+				if(targetStrike != null){
+					targetStrike = null;
+				}
 			}
 			if(lastPosSwitch + 0.1f < Time.fixedTime){
 				

@@ -59,6 +59,7 @@ function processOSCMessage(message : OSCMessage){
 					if(m.targetId == tgt && m.targettable){
 						m.targetted = true;
 						targettedObject = m.transform;
+						m.onTarget();
 						Debug.Log("Target ok: " + tgt);
 					} else {
 						m.targetted = false;
@@ -75,6 +76,7 @@ function processOSCMessage(message : OSCMessage){
 				
 				if(m != null && m.targetId == tg){
 					m.targetted = false;
+					m.onUnTarget();
 					targettedObject = null;
 				} 
 			}
@@ -103,43 +105,15 @@ function processOSCMessage(message : OSCMessage){
 			break;
 			
 		case "fireAtTarget":	//fire at targetted object
-			var msg : OSCMessage ;
 			
 			
-			if(targettedObject != null ){
-				var tscript : TargettableObject = targettedObject.GetComponent.<TargettableObject>();
-				if(tscript.exploding == false){
-					var targetRange : float = (theShip.transform.position - targettedObject.position).magnitude;
-					var wp : int = theShip.GetComponent.<ship>().weaponsPower;
-					var maxBeamRange : float = 1000 + wp * 300;
-					if(targetRange > maxBeamRange){
-						msg = new OSCMessage("/tactical/weapons/targetRange");
-						msg.Append.<int>(tscript.targetId);
-						OSCHandler.Instance.SendMessageToClient("TacticalStation", msg);
-						OSCHandler.Instance.DisplayBannerAtClient("TacticalStation", "ERROR", "Target Out Of Range, current range: " + targetRange, 1000);
-					} else {
-						msg = new OSCMessage("/tactical/weapons/firingAtTarget");
-						msg.Append.<int>(tscript.targetId);
-						OSCHandler.Instance.SendMessageToClient("TacticalStation", msg);
-						
-						theShip.GetComponent.<ship>().laserTurret.fireAtTarget(targettedObject);
-						
-						
-						var damage : float = (1.0 - (targetRange / maxBeamRange)) * (  wp  / 3.0f) * tscript.baseDamage;
-						
-						
-						tscript.GetShot(damage);
-					}
-				}
+			
+//			if(targettedObject != null ){
+				
+			theShip.GetComponent.<ship>().laserTurret.fireAtTarget(targettedObject);
 				
 				
-			} else {
-				msg = new OSCMessage("/tactical/weapons/noTarget");
-				Debug.Log("no target for firing");
-				OSCHandler.Instance.SendMessageToClient("TacticalStation", msg);
-				OSCHandler.Instance.DisplayBannerAtClient("TacticalStation", "No Target", "No Target Selected", 1000);
-			}
-		
+			
 			break;
 		}
 	}
