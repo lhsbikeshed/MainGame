@@ -69,7 +69,7 @@ function Update () {
 				AudioSource.PlayClipAtPoint(retractedSound, transform.position);
 			}
 			//updateFootColliders(false);
-				if(forPlayer){
+			if(forPlayer){
 				var msg2 : OSCMessage = OSCMessage("/ship/undercarriage");
 				msg2.Append.<int>(state);
 				OSCHandler.Instance.SendMessageToAll(msg2);
@@ -114,9 +114,9 @@ function setGearState (newState : boolean){
 	msg.Append.<int>(state);
 	if(forPlayer){
 		OSCHandler.Instance.SendMessageToAll(msg);
-		if(PersistentScene.networkReady == true){
-			networkView.RPC ("setGearState", RPCMode.Others, newState);
-		}
+//		if(PersistentScene.networkReady == true){
+//			networkView.RPC ("setGearState", RPCMode.Others, newState);
+//		}
 	}
 }
 

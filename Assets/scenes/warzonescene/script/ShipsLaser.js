@@ -15,7 +15,7 @@ private var laserTexture : Material;
 private var state : int; // 0 = off, 1 = firing
 private var target : Transform;
 private var theShip : Transform;
-
+var weaponsPower : int = 2;
 
 function Start () {
 	laserRenderer = GetComponent.<LineRenderer>();
@@ -44,8 +44,8 @@ function fireAtTarget(targettedObject : Transform){
 	if(tscript.exploding == false && state == 0){
 		
 		var targetRange : float = (theShip.transform.position - targettedObject.position).magnitude;
-		var wp : int = theShip.GetComponent.<ship>().weaponsPower;
-		var maxBeamRange : float = 1000 + wp * 300;
+		weaponsPower =  theShip.GetComponent.<ship>().weaponsPower;
+		var maxBeamRange : float = 1000 + weaponsPower * 300;
 		if(targetRange > maxBeamRange){
 			msg = new OSCMessage("/tactical/weapons/targetRange");
 			msg.Append.<int>(tscript.targetId);
@@ -55,7 +55,7 @@ function fireAtTarget(targettedObject : Transform){
 			msg = new OSCMessage("/tactical/weapons/firingAtTarget");
 			msg.Append.<int>(tscript.targetId);
 			OSCHandler.Instance.SendMessageToClient("TacticalStation", msg);
-			var damage : float = (1.0 - (targetRange / maxBeamRange)) * (  wp  / 3.0f) * tscript.baseDamage;
+			var damage : float = (1.0 - Mathf.Clamp(targetRange / maxBeamRange, 0,1)) * (  weaponsPower  / 3.0f) * tscript.baseDamage;
 			
 			
 			tscript.GetShot(damage);

@@ -141,6 +141,7 @@ public class OSCHandler : MonoBehaviour
 		clientScreens["EngineerStation"] = "power";
 		clientScreens["PilotStation"] = "docking";
 		clientScreens["TacticalStation"] = "weapons";
+		clientScreens["CommsStation"] = "idleDisplay";
 	}
 	
 	

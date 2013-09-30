@@ -151,8 +151,12 @@ function FixedUpdate(){
 				} else if (pkt.Address.IndexOf("/game/") == 0){
 					gameMessage(pkt);
 					
-				} else if (pkt.Address.IndexOf("/display/captain/incomingCall") == 0){
+				} else if (pkt.Address.IndexOf("/clientscreen/CommsStation/incomingCall") == 0){
 					AudioSource.PlayClipAtPoint(hailingSound, playerShip.transform.position);
+					OSCHandler.Instance.ChangeClientScreen("CommsStation", "videoDisplay");
+				} else if (pkt.Address.IndexOf("/clientscreen/CommsStation/hangUp") == 0){
+					
+					OSCHandler.Instance.RevertClientScreen("CommsStation");
 				} 
 				
 				lastTimeStampProcessed =  pkt.TimeStamp;    

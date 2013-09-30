@@ -26,6 +26,8 @@ class WormholeBehaviour extends TargettableObject{
 	private var cloudColor : Color;
 	private var coreScale : float;
 	private var coreAnimTime : float;
+
+	private var lastOSCTime : float = 0.0f;
 	
 	
 	function Start () {
@@ -114,6 +116,18 @@ class WormholeBehaviour extends TargettableObject{
 			}
 			stateText = "CLOSING";
 		}
+		
+		if(targetted && lastOSCTime + 0.25f < Time.fixedTime){
+			//send an engineer update with the wormhole state in
+			var msg : OSCMessage = new OSCMessage("/engineer/wormholeStatus/holeState");
+			msg.Append(energyLevel);
+			msg.Append(mode);
+			
+			OSCHandler.Instance.SendMessageToClient("EngineerStation", msg);
+			lastOSCTime = Time.fixedTime;
+		}
+		
+		
 	}
 	
 	function close(){
@@ -150,7 +164,8 @@ class WormholeBehaviour extends TargettableObject{
 	function onTarget(){
 		Debug.Log("I got targetted");
 		OSCHandler.Instance.ChangeClientScreen("EngineerStation", "wormholeStatus");			//give the engineer power man console
-
+		//now start pushing out OSC updates about aperture diameters
+		
 	}
 	function onUnTarget(){
 		OSCHandler.Instance.RevertClientScreen("EngineerStation");

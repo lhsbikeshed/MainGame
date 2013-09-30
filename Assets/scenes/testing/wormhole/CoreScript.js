@@ -18,6 +18,12 @@ function OnTriggerEnter(c : Collider){
 	if(c.name == "body_low_001"){
 		c.transform.parent.transform.position = Vector3(10000,10000,10400);
 		Debug.Log("WEEEEEE!");
+		var msg : OSCMessage = new OSCMessage("/scene/nebulascene/shipHasLeft");
+		
+			
+		OSCHandler.Instance.SendMessageToAll(msg);
+		
+		
 	} else if(c.name == "TheShip"){
 		theShip.GetComponent.<ship>().inGate = true;
 		

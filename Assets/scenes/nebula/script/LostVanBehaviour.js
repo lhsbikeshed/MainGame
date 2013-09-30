@@ -77,7 +77,8 @@ function foundShip(){
 function signalUpdate(){
 	var shipPos : Vector3 ;	
 	var direction : Vector3 ;
-	
+	ourPos = Vector3(dynObj.sectorCoord[0], dynObj.sectorCoord[1], dynObj.sectorCoord[2]);
+
 	shipPos = Vector3(mapController.sectorPos[0], mapController.sectorPos[1], mapController.sectorPos[2]);	
 	/* WRONG! use the vans original dynamic pos */
 	direction  = ((ourPos * 6000 + dynObj.originalPosition) - (shipPos * 6000 + theShip.transform.position)).normalized;

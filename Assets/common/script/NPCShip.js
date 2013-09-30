@@ -108,6 +108,11 @@ function Update () {
 		startTest = false;
 		startJump();
 	}
+	
+
+}
+
+function FixedUpdate(){
 	if(running){
 		
 		//var velocity : float = nextWaypoint.newVelocity;
@@ -140,5 +145,4 @@ function Update () {
 	} else if (jumping){
 		rigidbody.AddRelativeForce(Vector3.forward * 500, ForceMode.Acceleration);
 	}
-
 }

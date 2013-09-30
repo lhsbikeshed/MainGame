@@ -5,7 +5,9 @@ var previewCamera : Camera;
 var shaking : boolean = false;
 var shakeAmount : float = 0.05;
 
+
 var cameras : Camera[];
+private var skyboxCamera : Camera;
 
 
 private var originalPos  :Vector3;
@@ -15,6 +17,12 @@ function Start () {
 	
 }
 
+function OnLevelWasLoaded (level : int) {
+	var scam : GameObject = GameObject.Find("skyboxCamera");
+	skyboxCamera = scam.GetComponent.<Camera>();
+}  
+
+
 function Update () {
 	if(shaking){
 		transform.localPosition = originalPos + Vector3(Random.Range(-shakeAmount, shakeAmount), Random.Range(-shakeAmount,shakeAmount),0);
@@ -23,6 +31,23 @@ function Update () {
 		transform.localPosition = originalPos;
 		previewCamera.transform.localPosition = transform.localPosition;
 	}
+	
+
+	
+	
+}
+
+function setFovs(fov : float){
+	for(var c : Camera in cameras){
+		c.fov = fov;
+	}
+	if(skyboxCamera != null){
+		skyboxCamera.fov = fov;
+	}
+}
+
+function FixedUpdate(){
+	
 }
 
 function setSkyboxState(state : boolean){

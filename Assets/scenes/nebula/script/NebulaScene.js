@@ -106,7 +106,7 @@ class NebulaScene extends GenericScene {
 					theShip.GetComponent.<Reactor>().reactorOverload(120);
 					triggeredOverload = true;
 				}
-				if(Random.Range(0,100) < 6){
+				if(Random.Range(0,100) < 5){
 					//trigger a ship damage effect
 					var msg : OSCMessage = OSCMessage("/ship/damage");	
 					msg.Append.<float>(0);		
@@ -167,7 +167,9 @@ class NebulaScene extends GenericScene {
 	
 	//take the van and reposition it just slightly off of the ships current direction
 	function repositionVan(){
-	
+		//broken atm
+		return;
+		
 		//flash the "reacquiring signal" message on the tactical/pilot console
 		OSCHandler.Instance.DisplayBannerAtClient("TacticalStation", "Radio Error", "Re-acquiring Signal...", 2000);
 		OSCHandler.Instance.DisplayBannerAtClient("PilotStation", "Radio Error", "Re-acquiring Signal...", 2000);
@@ -196,6 +198,8 @@ class NebulaScene extends GenericScene {
 		
 		var np : Vector3 = theShip.transform.TransformDirection(Vector3.forward * spawnDistance) + mapController.getShipWorldPosition();
 		spaceAnomaly.GetComponent.<DynamicMapObject>().setWorldPosition(np);
+		spaceAnomaly.GetComponent.<WormholeBehaviour>().highlighted = true;
+		lostVan.GetComponent.<VanBehaviour>().highlighted = false;
 	}
 
 	function strikeAtPlayers(){

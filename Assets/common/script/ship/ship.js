@@ -103,7 +103,7 @@ function Start () {
 	controlsLocked = false;
 	if(didWeWarpIn){
 		restoreFov = true;
-		//theCamera.camera.fov = 180.0f;
+		shipCamera.setFovs(180);
 	}
 	
 	//get subsystem refs
@@ -338,6 +338,7 @@ function OnLevelWasLoaded (level : int) {
 		jumpEnd();
 		setJumpEffectState(false);
 		didWeWarpIn = false;
+		shipCamera.setFovs(180);
 	}
 }   
 
@@ -455,7 +456,7 @@ function FixedUpdate(){
 		if(Time.fixedTime - jumpStartTime > 4){	//turn on effects at 4 seconds
 			
 			setJumpEffectState(true);
-			//theCamera.camera.fov = 85 + ((Time.fixedTime - jumpStartTime - 4) / 3.0f ) * 30;
+			shipCamera.setFovs(85 + ((Time.fixedTime - jumpStartTime - 4) / 3.0f ) * 30);
 		}
 			
 		//JUMP!
@@ -479,10 +480,11 @@ function FixedUpdate(){
 	
 	//restore fov after a jump - not used until i split the guilayer and game into seperate cameras
 	if (restoreFov){
-		//theCamera.camera.fov = Mathf.Lerp(theCamera.camera.fov,85,Time.deltaTime * 5.0);
-		//if (theCamera.camera.fov <= 85.0f){
-		//	restoreFov = false;
-		//}
+		shipCamera.setFovs( Mathf.Lerp(theCamera.camera.fov,85,Time.deltaTime * 5.0) );
+		if (theCamera.camera.fov <= 85.0f){
+			shipCamera.setFovs(85.0f);
+			restoreFov = false;
+		}
 		
 	}
 	
