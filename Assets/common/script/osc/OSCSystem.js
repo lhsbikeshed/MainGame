@@ -65,15 +65,17 @@ function Awake(){
 function init(){
 	currentScene = GameObject.Find("SceneScripts").GetComponent.<GenericScene>();
 	currentScene.configureClientScreens();
-
+	
 	playerShip = GameObject.Find("TheShip");
-	propulsionSystem = playerShip.GetComponent.<PropulsionSystem>();
-	shipSystem = playerShip.GetComponent.<ship>();
-	miscSystem = playerShip.GetComponent.<MiscSystem>();
-	jumpSystem = playerShip.GetComponent.<JumpSystem>();
-	targettingSystem = playerShip.GetComponent.<TargettingSystem>();
-	//get a list of all radar visible objects
-	targettingSystem.updateTrackingList();
+	if(playerShip != null){
+		propulsionSystem = playerShip.GetComponent.<PropulsionSystem>();
+		shipSystem = playerShip.GetComponent.<ship>();
+		miscSystem = playerShip.GetComponent.<MiscSystem>();
+		jumpSystem = playerShip.GetComponent.<JumpSystem>();
+		targettingSystem = playerShip.GetComponent.<TargettingSystem>();
+		//get a list of all radar visible objects
+		targettingSystem.updateTrackingList();
+	}
 }
 
 
@@ -229,6 +231,13 @@ function gameMessage(message : OSCPacket){
 				//FIXME destroy the persistent things
 				
 			//}
+			break;
+		case "gameWin":
+			var msgd  = OSCMessage("/system/reactor/stateUpdate");		
+			msgd.Append.<int>( 0 );		
+			msgd.Append.<String>( "" );									
+			OSCHandler.Instance.SendMessageToAll(msgd);
+			GameObject.Find("PersistentScripts").GetComponent.<PersistentScene>().gameWin();
 			break;
 		case "KillPlayers":
 		Debug.Log(message.Data[0]);

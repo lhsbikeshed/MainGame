@@ -248,6 +248,7 @@ class NebulaScene extends GenericScene {
 				
 				break;
 			case "diskInsert":
+				Debug.Log("Disk insert");
 				var state : int = message.Data[0];
 				var msg : OSCMessage = OSCMessage("/system/boot/diskInsert");	
 				msg.Append.<int>(state);		

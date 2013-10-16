@@ -19,7 +19,11 @@ function Start () {
 
 function OnLevelWasLoaded (level : int) {
 	var scam : GameObject = GameObject.Find("skyboxCamera");
-	skyboxCamera = scam.GetComponent.<Camera>();
+	if(scam != null){
+		skyboxCamera = scam.GetComponent.<Camera>();
+	} else {
+		skyboxCamera = null;
+	}
 }  
 
 

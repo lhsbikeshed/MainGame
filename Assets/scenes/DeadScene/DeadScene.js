@@ -8,6 +8,10 @@ class DeadScene extends GenericScene{
 	public var ps : PersistentScene;
 	
 	public var deadSound : AudioClip;
+	public var mainText :GUIText;
+	public var subText :GUIText;
+	public var sounds : AudioClip[];
+	
 	
 	function Start () {
 		
@@ -18,7 +22,13 @@ class DeadScene extends GenericScene{
 		sceneStartTime = Time.fixedTime;
 		ps = GameObject.Find("PersistentScripts").GetComponent.<PersistentScene>();
 		//AudioSource.PlayClipAtPoint(deadSound, Vector3(0,1,-10));
-		
+		if(ps.survivedTheGame){
+			mainText.text = "You Arent Dead";
+			subText.text = "you shortly to lead you to safety";
+			deadSound = sounds[1];
+		} else {
+			deadSound = sounds[0];
+		}
 	}
 	
 	function FixedUpdate () {

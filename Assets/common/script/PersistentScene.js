@@ -7,6 +7,7 @@ var hyperspaceDestination : int; //destination for our hyperspace exit
 var forcedHyperspaceFail : boolean; //do we force a failure?
 var useNetwork : boolean = true;
 public var deathReason : String = "";
+public var survivedTheGame : boolean = false;
 @HideInInspector
 
 
@@ -24,6 +25,10 @@ function Start () {
 
 function Update () {
 
+}
+function gameWin(){
+	survivedTheGame = true;
+	Application.LoadLevel(5);
 }
 
 /* we died, do the global OHYOUBEDEAD things */
