@@ -8,6 +8,8 @@ public var gravityOn : boolean = false;
 var dockingDoor : DoorScript;
 var inBay : boolean;
 
+var bayLights : GravityLight[];
+
 function Start () {
 	theShip = GameObject.Find("TheShip").transform;
 	
@@ -18,6 +20,16 @@ function setGravity(st : boolean){
 	var m : OSCMessage = OSCMessage("/scene/launchland/bayGravity");
 	m.Append.<int>( st == true ? 1 : 0 );
 	OSCHandler.Instance.SendMessageToAll(m);
+	
+	if(gravityOn){
+		for(var l : GravityLight in bayLights){
+			l.setState(false);
+		}
+	} else {
+		for(var l : GravityLight in bayLights){
+			l.setState(true);
+		}
+	}
 }
 
 function FixedUpdate(){
