@@ -6,5 +6,5 @@
 	<client name="PilotStation">127.0.0.1:12002</client>
 	<client name="ModStation">192.168.0.10:12005</client>
 	<client name="CommsStation">127.0.0.1:12003</client>
-	
+	<client name="OldModStation">127.0.0.1:12005</client>
 </config>
