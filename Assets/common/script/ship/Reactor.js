@@ -80,11 +80,12 @@ class Reactor extends MonoBehaviour{
 	}
 	
 	function reactorState(st :int){
-	Debug.Log(st);
+	//Debug.Log(st);
 		if(st - 1 >= 0 && st - 1 < startupSounds.Length){
 			speechSource.Stop();
 			speechSource.clip = startupSounds[st - 1];
-			speechSource.Play();
+			//speechSource.Play();
+			CabinEffects.Instance().QueueVoiceOver(startupSounds[st - 1]);
 			//AudioSource.PlayClipAtPoint(startupSounds[st - 1],transform.position);
 		}
 	}
@@ -186,7 +187,10 @@ class Reactor extends MonoBehaviour{
 			soundSource.pitch = 1.0;
 			soundSource.clip =  failSound;
 			soundSource.loop = false;
-			soundSource.Play();
+			//soundSource.Play();
+			
+			CabinEffects.Instance().QueueVoiceOver(failSound);
+			
 			var msg : OSCMessage = OSCMessage("/ship/damage");
 			OSCHandler.Instance.SendMessageToAll(msg);		
 			yield WaitForSeconds(1.5);

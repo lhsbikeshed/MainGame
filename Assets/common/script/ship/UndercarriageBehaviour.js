@@ -50,7 +50,8 @@ function Update () {
 		} else {
 			state = DOWN;
 			if(extendedSound != null){
-				AudioSource.PlayClipAtPoint(extendedSound, transform.position);
+				//AudioSource.PlayClipAtPoint(extendedSound, transform.position);
+				CabinEffects.Instance().QueueVoiceOver(extendedSound);
 			}
 			//updateFootColliders(true);
 			if(forPlayer){
@@ -66,7 +67,8 @@ function Update () {
 		} else {
 			state = UP;
 			if(retractedSound != null){
-				AudioSource.PlayClipAtPoint(retractedSound, transform.position);
+				//AudioSource.PlayClipAtPoint(retractedSound, transform.position);
+				CabinEffects.Instance().QueueVoiceOver(retractedSound);
 			}
 			//updateFootColliders(false);
 			if(forPlayer){
