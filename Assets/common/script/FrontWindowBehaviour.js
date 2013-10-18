@@ -1,5 +1,9 @@
 #pragma strict
 
+/* controls the Behaviour of the front window
+ * can be cracked if hit hard enough
+ */
+
 var crashTextures : Texture2D[];
 var crackPrefab : Transform;
 var airleakPrefab : Transform;
@@ -90,8 +94,8 @@ function spawnCrack(howHard : float){
 			//particles.push(t);
 			leaking = true;
 			leakStartTime = Time.fixedTime;
-			AudioSource.PlayClipAtPoint(leakSound, transform.position);
-			
+			//AudioSource.PlayClipAtPoint(leakSound, transform.position);
+			CabinEffects.Instance().QueueVoiceOver(leakSound);
 		}
 		planes.push(p);
 }

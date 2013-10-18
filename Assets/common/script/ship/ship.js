@@ -242,7 +242,7 @@ function damageShip(amount : float, deathText : String){
 		if(hullBreachSFX.isPlaying == false){
 			hullBreachSFX.Play();
 		}
-	} else (
+	} else {
 		if(hullBreachSFX.isPlaying == true){
 			hullBreachSFX.Stop();
 		}
