@@ -239,13 +239,12 @@ function damageShip(amount : float, deathText : String){
 		yield WaitForSeconds(2) ;
 		GameObject.Find("PersistentScripts").GetComponent.<PersistentScene>().shipDead(deathText);
 	} else if (hullState <= 15.0f){
-		if(hullBreachSFX.isPlaying == false){
-			hullBreachSFX.Play();
-		}
+//		if(hullBreachSFX.isPlaying == false){
+//			hullBreachSFX.Play();
+//		}
+		CabinEffects.Instance().setRedAlert(true);
 	} else {
-		if(hullBreachSFX.isPlaying == true){
-			hullBreachSFX.Stop();
-		}
+		CabinEffects.Instance().setRedAlert(false);
 	}
 }
 

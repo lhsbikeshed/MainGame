@@ -95,7 +95,7 @@ function spawnCrack(howHard : float){
 			leaking = true;
 			leakStartTime = Time.fixedTime;
 			//AudioSource.PlayClipAtPoint(leakSound, transform.position);
-			CabinEffects.Instance().QueueVoiceOver(leakSound);
+			CabinEffects.Instance().QueueVoiceOver(leakSound,1);
 		}
 		planes.push(p);
 }

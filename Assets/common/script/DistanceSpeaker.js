@@ -5,9 +5,20 @@
 private var theShip : Transform;
 var sounds : AudioClip[];
 private var speaking : boolean = false;
+
+public static var _instance : DistanceSpeaker;
+
 function Start () {
-	
+	_instance = this;
+
 }
+
+
+public static function Instance() : DistanceSpeaker {
+	
+	return _instance;
+}
+
 
 function Update () {
 
@@ -17,11 +28,11 @@ function DistancePart(clip : int, fig : int){
 	AudioSource.PlayClipAtPoint(sounds[clip], transform.position);
 	yield WaitForSeconds(sounds[clip].length);
 	if(fig == 1000){
-		Debug.Log(clip + "thousand");
+		//Debug.Log(clip + "thousand");
 		AudioSource.PlayClipAtPoint(sounds[11], transform.position);
 		yield WaitForSeconds(sounds[11].length);
 	} else if (fig == 100){
-		Debug.Log(clip + "hundred");
+		//Debug.Log(clip + "hundred");
 		
 		AudioSource.PlayClipAtPoint(sounds[10], transform.position);
 		yield WaitForSeconds(sounds[10].length);

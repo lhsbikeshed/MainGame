@@ -152,8 +152,8 @@ class Reactor extends MonoBehaviour{
 		OSCHandler.Instance.RevertClientScreen("TacticalStation");			
 		OSCHandler.Instance.RevertClientScreen("EngineerStation");	
 		OSCHandler.Instance.RevertClientScreen("CommsStation");		
-		AudioSource.PlayClipAtPoint(destructAbort, transform.position);
-			
+		//AudioSource.PlayClipAtPoint(destructAbort, transform.position);
+		CabinEffects.Instance().QueueVoiceOver(destructAbort, 0);
 		
 	}
 	
@@ -166,7 +166,9 @@ class Reactor extends MonoBehaviour{
 		if(!overloading){
 			overloading = true;
 			overloadStart = Time.fixedTime;
-			AudioSource.PlayClipAtPoint(destructStart, transform.position);
+			//AudioSource.PlayClipAtPoint(destructStart, transform.position);
+			CabinEffects.Instance().QueueVoiceOver(destructStart, 0);
+			
 			overloadTime = seconds;
 			
 			OSCHandler.Instance.ChangeClientScreen("PilotStation", "selfdestruct");			//give the pilot a radar
