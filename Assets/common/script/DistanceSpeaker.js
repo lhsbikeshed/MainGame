@@ -8,6 +8,7 @@ private var speaking : boolean = false;
 
 public static var _instance : DistanceSpeaker;
 
+
 function Start () {
 	_instance = this;
 

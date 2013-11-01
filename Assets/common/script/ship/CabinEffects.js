@@ -19,6 +19,19 @@ private var clipQueue : List.<AudioEntry>;
 
 private var playing : boolean = false;
 
+
+//lighting
+private var previousLightMode : int = 0;
+private var lightMode : int = 0;
+private var lightState : boolean = false;
+
+public static final var LIGHT_IDLE : int = 0;
+public static final var LIGHT_WARP : int = 1;
+public static final var LIGHT_REDALERT : int = 3;
+public static final var LIGHT_BRIEFING : int = 3;
+
+
+
 public static function Instance() : CabinEffects {
 	
 	return _instance;
@@ -51,6 +64,28 @@ function FixedUpdate () {
 		
 		
 	
+}
+
+
+function setCabinLightingMode(state : int){
+	previousLightMode = lightMode;
+	lightMode = state;
+	var msg : OSCMessage = OSCMessage("/system/effect/lightingMode");
+	msg.Append.<int>(state);
+	OSCHandler.Instance.SendMessageToAll(msg);
+}
+
+function restoreCabinLightingMode(){
+	lightingMode = previousLightMode;
+	var msg : OSCMessage = OSCMessage("/system/effect/lightingMode");
+	msg.Append.<int>(lightingMode);
+	OSCHandler.Instance.SendMessageToAll(msg);
+}
+
+function setCabinLightPower(state : boolean){
+	var msg : OSCMessage = OSCMessage("/system/effect/lightingPower");
+	msg.Append.<int>(state == true ? 1 : 0);
+	OSCHandler.Instance.SendMessageToAll(msg);
 }
 
 /* for now just play what were passed*/
@@ -86,7 +121,9 @@ function setRedAlert(state : boolean){
 	if(state){
 		loopingAudioSource.loop = true;
 		loopingAudioSource.Play();
+		setCabinLightingMode(LIGHT_REDALERT);
 	} else {
+		restoreCabinLightingMode();
 		loopingAudioSource.Stop();
 	}
 }

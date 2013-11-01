@@ -29,7 +29,7 @@ class WarzoneScene2 extends GenericScene {
 
 	private var missilesEnabled  : boolean = false;
 	
-	var flarePrefab : Transform;
+
 /* beaming sutff */
 	
 	var beamInSfx : AudioClip;
@@ -166,9 +166,6 @@ class WarzoneScene2 extends GenericScene {
 		switch(target){
 			
 				
-			case "fireFlare":
-				var flar = Instantiate(flarePrefab, theShip.transform.position, theShip.rotation);
-				break;
 			case "createBastard":
 				dynShitField.createABastard();
 				break;

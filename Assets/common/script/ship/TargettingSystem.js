@@ -4,7 +4,7 @@ var theShip : GameObject;
 var objectList : List.<TargettableObject>;
 var targettedObject : Transform;
 var hookArmed : boolean = false;
-
+var flarePrefab : Transform;
 
 private var grapplingHook : GrapplingHook;
 
@@ -114,6 +114,10 @@ function processOSCMessage(message : OSCMessage){
 				
 				
 			
+			break;
+			
+		case "fireFlare":
+			var flar = Instantiate(flarePrefab, theShip.transform.position, theShip.transform.rotation);
 			break;
 		}
 	}
