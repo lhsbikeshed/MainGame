@@ -6,6 +6,8 @@ var shaking : boolean = false;
 var shakeAmount : float = 0.05;
 
 
+var singleCameraMode = false;
+
 var cameras : Camera[];
 private var skyboxCamera : Camera;
 
@@ -64,10 +66,15 @@ function setSkyboxState(state : boolean){
 	} else {
 		for(var c : Camera in cameras){
 			c.clearFlags = CameraClearFlags.Depth;
+			
+			if(c.gameObject.name.EndsWith("D")){
+				c.clearFlags = CameraClearFlags.Skybox;
+			}
 		}
+		
 		//take the last 2 cameras and set them to clear to skybox
-		cameras[cameras.length -1].clearFlags = CameraClearFlags.Skybox;
-		cameras[cameras.length -2].clearFlags = CameraClearFlags.Skybox;		
+//		cameras[cameras.length -1].clearFlags = CameraClearFlags.Skybox;
+//		cameras[cameras.length -2].clearFlags = CameraClearFlags.Skybox;		
 	}
 }
 

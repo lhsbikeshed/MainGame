@@ -111,7 +111,7 @@ function Start () {
 	propulsion = GetComponent.<PropulsionSystem>();
 	shieldSystem = GetComponent.<ShieldSubsystem>();
 	jumpSystem = GetComponent.<JumpSystem>();
-	shipCamera = gameObject.Find("camera").GetComponent.<ShipCamera>();
+	shipCamera = gameObject.GetComponentInChildren.<ShipCamera>(); //Find("camera").GetComponent.<ShipCamera>();
 	undercarriage = GetComponentInChildren.<UndercarriageBehaviour>();
 	miscSystem = GetComponent.<MiscSystem>();
 	

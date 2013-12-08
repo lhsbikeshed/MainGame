@@ -5,7 +5,7 @@
 	<client name="EngineerStation">127.0.0.1:12001</client>
 	<client name="PilotStation">127.0.0.1:12002</client>
 	<client name="ModStation">127.0.0.1:12005</client>
-	<client name="Tablet">172.31.24.169:12005</client>
+	<client name="Tablet">192.168.0.12:12005</client>
 	<client name="CommsStation">127.0.0.1:12003</client>
 	<client name="OldModStation">127.0.0.1:12005</client>
 </config>
