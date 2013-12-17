@@ -24,6 +24,7 @@ private var playing : boolean = false;
 private var previousLightMode : int = 0;
 private var lightMode : int = 0;
 private var lightState : boolean = false;
+private var airlockLightState : boolean = false;
 
 public static final var LIGHT_IDLE : int = 0;
 public static final var LIGHT_WARP : int = 1;
@@ -64,6 +65,13 @@ function FixedUpdate () {
 		
 		
 	
+}
+
+function setAirlockLightState(state : boolean){
+	var msg : OSCMessage = OSCMessage("/system/effect/airlockLight");
+	msg.Append.<int>( state == true ? 1 : 0);
+	OSCHandler.Instance.SendMessageToAll(msg);
+	airlockLightState = state;
 }
 
 
