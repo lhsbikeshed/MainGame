@@ -115,6 +115,10 @@ class Hyperspace extends GenericScene {
 				OSCHandler.Instance.SendMessageToAll(msg);
 				//see if there is a planet in the scene and fire it off
 				AudioSource.PlayClipAtPoint(gravityFailSfx, transform.position);
+				//SPIN THE MOTHERFUCKING SHIP YO
+				theShip.rigidbody.constraints = RigidbodyConstraints.FreezePosition;
+				theShip.rigidbody.angularDrag = 0.0f;
+				theShip.rigidbody.AddRelativeTorque(Vector3(0.0f, 0.0f, 450.0f), ForceMode.Impulse); 
 				
 				
 			} else{
@@ -128,6 +132,7 @@ class Hyperspace extends GenericScene {
 			theShip.rigidbody.constraints = RigidbodyConstraints.None;
 			theShip.GetComponent.<ship>().didWeWarpIn = true;
 			theShip.GetComponent.<MiscSystem>().consuming = true; //reenable air consumption
+			theShip.rigidbody.angularDrag = 0.5f;
 			Application.LoadLevel(ps.hyperspaceDestination);
 		}
 		
