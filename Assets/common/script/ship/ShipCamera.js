@@ -63,11 +63,12 @@ function setSkyboxState(state : boolean){
 		for(var c : Camera in cameras){
 			c.clearFlags = CameraClearFlags.Depth;
 		}
+		
 	} else {
 		for(var c : Camera in cameras){
 			c.clearFlags = CameraClearFlags.Depth;
 			
-			if(c.gameObject.name.EndsWith("D")){
+			if(c.gameObject.name.EndsWith("P")){
 				c.clearFlags = CameraClearFlags.Skybox;
 			}
 		}
