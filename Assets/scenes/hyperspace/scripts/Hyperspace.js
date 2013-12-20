@@ -52,7 +52,10 @@ class Hyperspace extends GenericScene {
 		ps = GameObject.Find("PersistentScripts").GetComponent.<PersistentScene>();
 		oscSender = GameObject.Find("PersistentScripts").GetComponent.<OSCSystem>();
 		warpParticles = GameObject.Find("warp bits").GetComponent.<ParticleSystem>();
-		theShip.GetComponent.<MiscSystem>().consuming = false;	//temporarily disable oxygen consumption 
+		theShip.GetComponent.<MiscSystem>().consuming = false;	//temporarily disable oxygen consumption
+		
+		 theShip.GetComponent.<PropulsionSystem>().throttleDisabled = true;
+		  
 	}
 	
 	function FixedUpdate () {
@@ -133,6 +136,8 @@ class Hyperspace extends GenericScene {
 			theShip.GetComponent.<ship>().didWeWarpIn = true;
 			theShip.GetComponent.<MiscSystem>().consuming = true; //reenable air consumption
 			theShip.rigidbody.angularDrag = 0.5f;
+		 	theShip.GetComponent.<PropulsionSystem>().throttleDisabled = false;
+
 			Application.LoadLevel(ps.hyperspaceDestination);
 		}
 		

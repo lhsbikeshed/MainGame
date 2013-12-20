@@ -29,6 +29,7 @@ class DropScene extends GenericScene {
 	private var fireBallSound : AudioSource; //sound of the fireball
 	private var fireballObject : Transform;
 	private var dustBallObject : ParticleSystem;
+	public var fireballLight : Light;
 	
 	private var sceneEntryTime : float; //time we entered the scene
 	
@@ -165,6 +166,7 @@ class DropScene extends GenericScene {
 					fireBallSound.volume -= 0.2;
 				}
 				fireBallSound.pitch = map(altitude, maxAltitude, minAltitude, 0.2, 1.0);
+				fireballLight.intensity = 2.0f + fireBallSound.pitch * 5.0f;
 			} else {
 				pAlt =  Mathf.FloorToInt( ( prevFrameAltitude - minAltitude) / 100.0f);
 			 	tAlt = Mathf.FloorToInt((altitude - minAltitude) / 100.0f);
@@ -173,6 +175,7 @@ class DropScene extends GenericScene {
 				}
 				heating = false;
 				if(fireBall.enableEmission == true){
+					fireballLight.intensity = 0.0f;
 					fireBall.enableEmission = false;
 					fireBallSound.clip = windClip;
 					fireBallSound.volume = 1.0;
