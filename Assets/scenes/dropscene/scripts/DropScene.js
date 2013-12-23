@@ -166,7 +166,7 @@ class DropScene extends GenericScene {
 					fireBallSound.volume -= 0.2;
 				}
 				fireBallSound.pitch = map(altitude, maxAltitude, minAltitude, 0.2, 1.0);
-				fireballLight.intensity = 2.0f + fireBallSound.pitch * 5.0f;
+				fireballLight.intensity = 2.0f + fireBallSound.pitch * 5.0f + Random.Range(-1.0f, 1.0f);
 			} else {
 				pAlt =  Mathf.FloorToInt( ( prevFrameAltitude - minAltitude) / 100.0f);
 			 	tAlt = Mathf.FloorToInt((altitude - minAltitude) / 100.0f);
