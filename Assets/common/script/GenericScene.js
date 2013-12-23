@@ -2,6 +2,9 @@
 
 class GenericScene extends MonoBehaviour{
 
+	
+	var skyboxCameraActive : boolean = false; //does this scene use a skybox camera?
+
 	var networkObjects : Component[]; 
 	var rpcOnly : boolean[];
 	protected var separator : char[] = ["/"[0]];

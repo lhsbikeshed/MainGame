@@ -9,6 +9,8 @@ private var mapController : MapController;
 
 function Awake () {
 	mapController = GameObject.Find("SceneScripts").GetComponent.<MapController>();
+	GameObject.Find("SceneScripts").GetComponent.<GenericScene>().skyboxCameraActive = true;
+	
 	theShip = GameObject.Find("TheShip").transform;
 	//theShip.Find("camera").GetComponent.<Camera>().clearFlags = CameraClearFlags.Depth;
 	//theShip.Find("cameraP").GetComponent.<Camera>().clearFlags = CameraClearFlags.Depth;
