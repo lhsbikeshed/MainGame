@@ -9,14 +9,30 @@ var shakeAmount : float = 0.05;
 var singleCameraMode = false;
 
 var cameras : Camera[];
+var canopyCamera : Camera;
+
+var useExternalCamera : boolean  = false;
+
 private var skyboxCamera : Camera;
 
 
 private var originalPos  :Vector3;
 
+
+
 function Start () {
 	originalPos = transform.localPosition;
-	
+	if(useExternalCamera){
+		//move all cameras to the left and shrink width by half
+		for(var c : Camera in cameras){
+			c.rect.x = 0;
+			c.rect.width = 0.5f;
+		}
+		if(canopyCamera){
+			canopyCamera.rect.x = 0;
+			canopyCamera.rect.width = 0.5f;
+		}
+	}
 }
 
 function OnLevelWasLoaded (level : int) {
