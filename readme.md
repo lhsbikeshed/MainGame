@@ -1,12 +1,31 @@
 LHS BIKESHED
 ============
 
+This is the main code for the [LHS
+Bikeshed](http://lhsbikeshed.tumblr.com/) space simulator. The game is
+written using Unity, but it also talks to Processing and Arduino code
+which runs the physical consoles via OSC:
+
+* [GM Console](https://github.com/lhsbikeshed/modconsole)
+* Tactical [Console](https://github.com/lhsbikeshed/tacticalconsole) & [Arduino](https://github.com/lhsbikeshed/tacticalArduino)
+* Pilot [Console](https://github.com/lhsbikeshed/pilotconsole) & [Arduino](https://github.com/lhsbikeshed/pilotArduino)
+* Engineer [Console](https://github.com/lhsbikeshed/engineerconsole), [Main Arduino](https://github.com/lhsbikeshed/engineerMainArduino), and [Lower Arduino](https://github.com/lhsbikeshed/engineerLowerArduino)
+* Comms [Console](https://github.com/lhsbikeshed/commsconsole) & [Arduino](https://github.com/lhsbikeshed/commsArduino)
+
+Required Software
+-----------------
+
+These specific versions of software are required to run/develop the
+game - if you use other versions you may experience compatibility issues:
+
+* [Unity](http://unity3d.com/) 3.5.7 (We use the free license)
+* [Blender](http://www.blender.org/) 2.67b
+
 Main sim code
 -------------
 
 Main screen and game 
-currently configured for the cloned display system were using in the van. 
-
+currently configured for the cloned display system we're using in the van. 
 
 Notes
 -----
