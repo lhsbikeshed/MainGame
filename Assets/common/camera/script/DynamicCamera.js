@@ -39,6 +39,7 @@ function Start () {
 			skyboxCamera.depth = camera.depth;
 			camera.depth += 1;
 			camera.clearFlags = CameraClearFlags.Depth;
+			camera.cullingMask = camera.cullingMask & ~(1 << LayerMask.NameToLayer("skybox"));
 			skyboxCamera.rect = camera.rect;
 			skyboxCamera.clearFlags = CameraClearFlags.Skybox;
 			depthSkyboxObject = sbNew.transform;
@@ -75,14 +76,15 @@ function Update(){
 		depthSkyboxObject.position = (basePos + transform.position) * 0.01f;
 	
 	}
+	if(lookAtShip){
+		transform.LookAt(theShip);
+		
+	}
 }
 
 function FixedUpdate () {
 	//transform.position = currentLocation.position;
 	//transform.rotation = currentLocation.rotation;
-	if(lookAtShip){
-		transform.LookAt(theShip);
-		
-	}
+	
 
 }

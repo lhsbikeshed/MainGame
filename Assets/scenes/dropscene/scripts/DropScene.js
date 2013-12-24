@@ -180,7 +180,6 @@ class DropScene extends GenericScene {
 					fireBallSound.clip = windClip;
 					fireBallSound.volume = 1.0;
 					fireBallSound.Play();
-					dustBallObject.enableEmission = true;
 					
 				}
 			}
