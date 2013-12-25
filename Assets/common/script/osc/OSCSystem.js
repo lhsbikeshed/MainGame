@@ -257,7 +257,22 @@ function gameMessage(message : OSCPacket){
 			
 			OSCHandler.Instance.SendMessageToClient(station, m);
 			Debug.Log("Hello from " + station);
-			
+			break;	
+		case "setNames":		//set the playernames
+			var pName : String = message.Data[0];
+			var tName : String = message.Data[1];
+			var eName : String = message.Data[2];
+			var cName : String = message.Data[3];
+			var gName : String = message.Data[4];
+			PersistentScene._instance.pilotName = pName;
+			PersistentScene._instance.tacticalName = tName;
+			PersistentScene._instance.engineerName = eName;
+			PersistentScene._instance.captainName = cName;
+			PersistentScene._instance.gmName = gName;
+
+		
+		
+			break; 
 		
 	}
 }

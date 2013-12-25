@@ -8,12 +8,27 @@ var forcedHyperspaceFail : boolean; //do we force a failure?
 var useNetwork : boolean = true;
 public var deathReason : String = "";
 public var survivedTheGame : boolean = false;
+
+public var pilotName : String = "pilotname";
+public var tacticalName : String = "tacticalname";
+public var engineerName : String = "engineername";
+public var captainName : String = "captainname";
+public var gmName : String = "gmname";
+
+
+public static var _instance : PersistentScene;
+
+
+
 @HideInInspector
+
+
 
 
 function Awake(){
 	DontDestroyOnLoad(this);
 	networkEnabled = useNetwork;
+	_instance = this;
 }
 
 function Start () {

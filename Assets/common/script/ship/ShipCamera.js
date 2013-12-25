@@ -21,6 +21,15 @@ private var originalPos  :Vector3;
 
 
 function Start () {
+	var ratio : float = Screen.width / Screen.height;
+	
+	if(ratio > 1){
+		Debug.Log("using preview camera");
+		useExternalCamera = true;
+	} else {
+		useExternalCamera = false;
+	}
+		
 	originalPos = transform.localPosition;
 	if(useExternalCamera){
 		//move all cameras to the left and shrink width by half
@@ -28,9 +37,18 @@ function Start () {
 			c.rect.x = 0;
 			c.rect.width = 0.5f;
 		}
-		if(canopyCamera){
+		if(canopyCamera){ 
 			canopyCamera.rect.x = 0;
 			canopyCamera.rect.width = 0.5f;
+		}
+	} else {
+		for(var c : Camera in cameras){
+			c.rect.x = 0;
+			c.rect.width = 1.0f;
+		}
+		if(canopyCamera){ 
+			canopyCamera.rect.x = 0;
+			canopyCamera.rect.width = 1.0f;
 		}
 	}
 }

@@ -12,8 +12,32 @@ class DeadScene extends GenericScene{
 	public var subText :GUIText;
 	public var sounds : AudioClip[];
 	
+	public var leftCamera : Camera;
+	public var rightCamera : Camera;
+	
+	var useExternalCamera : boolean = false;
 	
 	function Start () {
+	
+		var ratio : float = Screen.width / Screen.height;
+		
+		if(ratio > 1){
+			useExternalCamera = true;
+			Debug.Log("using preview camera");
+			leftCamera.rect.x = 0.0f;
+			leftCamera.rect.width = 0.5f;
+			rightCamera.enabled = true;
+			rightCamera.rect.x = 0.5f;
+			rightCamera.rect.width = 0.5f;
+			
+			
+			
+		} else {
+			leftCamera.rect.x = 0.0f;
+			leftCamera.rect.width = 1.0f;
+			rightCamera.enabled = false;
+		
+		}
 		
 		Destroy(GameObject.Find("TheShip"));
 		Destroy(GameObject.Find("ExplosionOverlay"));
@@ -26,6 +50,9 @@ class DeadScene extends GenericScene{
 			mainText.text = "You Arent Dead";
 			subText.text = "you shortly to lead you to safety";
 			deadSound = sounds[1];
+			
+			
+			
 		} else {
 			deadSound = sounds[0];
 		}
@@ -36,6 +63,8 @@ class DeadScene extends GenericScene{
 			overlay.color.a = 0;
 			AudioSource.PlayClipAtPoint(deadSound, Vector3(0,1,-10));
 			sentMessage = true;
+			GameObject.Find("CreditRoller").GetComponent.<CreditRoller>().scrolling = true;
+			
 		}
 
 
