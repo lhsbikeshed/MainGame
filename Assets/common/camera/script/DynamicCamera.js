@@ -4,6 +4,7 @@ var theShip : Transform;
 
 var currentLocation : Transform;
 var lookAtShip : boolean;
+var followingShip : boolean;
 
 private var skyboxCamera : Camera;
 private var useSkyboxCamera : boolean=  false;
@@ -74,14 +75,18 @@ function Start () {
 function setLocation(t : Transform){
 	transform.parent = t;
 	transform.localPosition = Vector3.zero;
+	followingShip = false;
 }
 
 function resetToShip(){
-	transform.parent = GameObject.Find("DefaultDynamicCamera").transform;
+	//transform.parent = GameObject.Find("DefaultDynamicCamera").transform;
+	followingShip = true;
+	transform.position = GameObject.Find("DefaultDynamicCamera").transform.position;
 	transform.localPosition = Vector3.zero;
 	transform.localRotation = Quaternion.identity;
 	transform.LookAt(theShip);
 	camera.fov = 60.0;
+	lookAtShip = true;
 }
 
 function Update(){
@@ -92,15 +97,18 @@ function Update(){
 		depthSkyboxObject.position = (basePos + transform.position) * 0.01f;
 	
 	}
-	if(lookAtShip){
-		transform.LookAt(theShip);
-		
-	}
+	
+	
 }
 
 function FixedUpdate () {
 	//transform.position = currentLocation.position;
 	//transform.rotation = currentLocation.rotation;
-	
-
+	if(lookAtShip){
+		transform.LookAt(theShip);
+		
+	}
+if(followingShip){
+		transform.position = GameObject.Find("DefaultDynamicCamera").transform.position;
+	}
 }

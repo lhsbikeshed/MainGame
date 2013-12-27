@@ -11,10 +11,17 @@ class PropulsionSystem extends BaseSubsystem
 	
 	var throttleDisabled : boolean = true;
 	var rotationDisabled : boolean = true;
+	var throttle : float = 0.0f;
 	
 	var inBay : boolean = false;
 	
 	var propulsionPowerModifier : float[];
+	
+	var engineParticles : ParticleSystem;
+	var particleRate : AnimationCurve;
+	var baseEmissionRate : float;
+	var engineLight : Light;
+	
 	
 	function Start(){
 		super.Start();
@@ -35,6 +42,7 @@ class PropulsionSystem extends BaseSubsystem
 		propulsionModifier = 0.0f;
 		throttleDisabled = true;
 		rotationDisabled = true;
+		engineParticles.enableEmission = false;
 	}
 	
 	function enableSystem(){
@@ -42,6 +50,11 @@ class PropulsionSystem extends BaseSubsystem
 		theShip.rigidbody.drag = 0.5f;
 		throttleDisabled = false;
 		rotationDisabled = false;
+		engineParticles.enableEmission = true;
+		engineParticles.emissionRate = baseEmissionRate * particleRate.Evaluate(throttle);
+		engineParticles.startSpeed = -baseEmissionRate * particleRate.Evaluate(throttle);
+		
+		
 	}
 	
 	function FixedUpdate () {
@@ -54,6 +67,9 @@ class PropulsionSystem extends BaseSubsystem
 			}
 			propulsionModifier = power / (energyConsumptionRate * maxPowerState);
 			
+			engineParticles.emissionRate = 380.0f * particleRate.Evaluate(throttle);
+			engineParticles.startSpeed = -1.14f * particleRate.Evaluate(throttle);
+			engineLight.intensity = 9.0f * particleRate.Evaluate(throttle);
 		} 
 		propulsionModifier = propulsionPowerModifier[theShip.GetComponent.<ship>().propulsionPower - 1]; //(1 + theShip.GetComponent.<ship>().propulsionPower) / 4.0f;
 		if(inBay){

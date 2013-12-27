@@ -15,7 +15,7 @@ private var startZoom : boolean = false;
 function Start () {
 	//gameObject.tag = "CameraPoint";
 	cam = GameObject.Find("DynamicCamera").GetComponent.<DynamicCamera>();
-	
+	//Debug.Log("Piss: " + GameObject.Find("DynamicCamera"));
 }
 
 function Update () {
@@ -30,8 +30,12 @@ function FixedUpdate(){
 
 
 function OnTriggerEnter(col : Collider){
-
+	Debug.Log(col.transform.name);
 	if(col.gameObject.name == "TheShip"){
+		if(cam == null){
+			cam = GameObject.Find("DynamicCamera").GetComponent.<DynamicCamera>();
+		}
+		Debug.Log("Switching to camera: " + transform.name);
 		cam.setLocation(transform);
 		cam.lookAtShip = followShip;
 		if(!followShip){

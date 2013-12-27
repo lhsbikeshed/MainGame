@@ -18,6 +18,8 @@ class WarzoneScene2 extends GenericScene {
 	
 	
 
+	/* camera points */
+	var cameraPointPrefab : Transform;
 	
 
 /* missile stuff */
@@ -193,7 +195,10 @@ class WarzoneScene2 extends GenericScene {
 				
 				break;
 			case "spawnGate":
-				mapController.spawnGate();				
+				mapController.spawnGate();	
+				var pos : Vector3 = GameObject.Find("JumpGate").transform.position;
+				var cp : Transform = Instantiate(cameraPointPrefab, pos, Quaternion.identity);
+				cp.GetComponent.<SphereCollider>().radius = 200.0f;		
 				
 				break;
 			case "missileRate":

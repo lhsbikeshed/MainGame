@@ -413,6 +413,7 @@ function FixedUpdate(){
 	}
 	//read the controls just dont apply them unless controlsLocked is false
 	scaledThrottle = translateJoyPos.z;
+	propulsion.throttle = scaledThrottle;
 	
 	thrust = (maxThrust * propulsion.propulsionModifier) * scaledThrottle;
    

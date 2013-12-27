@@ -9,6 +9,8 @@ var startDelay : float = 75.0f;
 var dying : boolean = false;
 var deadTime : float = 0;
 
+var target : Transform;
+
 private var theShip : Transform;
 private var mat : Material;
 private var state: boolean  =false;
@@ -35,7 +37,11 @@ function Update () {
 		
 			
 		
-		transform.LookAt(theShip);
+		if(target == null){
+			transform.LookAt(theShip);
+		} else {
+			transform.LookAt(target);
+		}
 	} 
 }
 
