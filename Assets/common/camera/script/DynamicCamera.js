@@ -56,6 +56,9 @@ function Start () {
 				skyboxCamera.rect.width = 0.5f;
 				skyboxCamera.rect.x = 0.5f;
 				skyboxCamera.rect.height = 1.0f;
+				sourceSkyboxObject.camera.rect.width = 0.5f;
+				sourceSkyboxObject.camera.rect.x = 0.0f;
+				
 				
 			}
 			camera.rect.x = 0.5f;

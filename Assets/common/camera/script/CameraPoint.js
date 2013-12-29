@@ -30,7 +30,7 @@ function FixedUpdate(){
 
 
 function OnTriggerEnter(col : Collider){
-	Debug.Log(col.transform.name);
+	//Debug.Log(col.transform.name);
 	if(col.gameObject.name == "TheShip"){
 		if(cam == null){
 			cam = GameObject.Find("DynamicCamera").GetComponent.<DynamicCamera>();
