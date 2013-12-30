@@ -37,7 +37,15 @@ game - if you use other versions you may experience compatibility issues:
 Main sim code
 -------------
 
-Main screen and game currently configured for the cloned display system we're using in the van. If you build and run the project you will get a resolution picker and a windowed option. 
+Game is now configured to use two different resolution settings:
+* anything where aspect ratio is close to 4:3 will use a single display
+* anything above that will generate a second view with a chase cam
+
+The resolution picker no longer works, size has to be set by cmdline options. Use the following ones
+* -screen-width and -screen-height - set the window size. Van uses 1024x768 or 2048x768 for chasecam view
+* -popup-window - causes the window to render with no border. Used because unity cant fullscreen mode on dual monitors
+
+
 
 Notes
 -----
