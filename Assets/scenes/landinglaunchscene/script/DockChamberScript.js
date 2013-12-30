@@ -9,6 +9,7 @@ var dockingDoor : DoorScript;
 var inBay : boolean;
 
 var bayLights : GravityLight[];
+var gravitySound : AudioClip;
 
 function Start () {
 	theShip = GameObject.Find("TheShip").transform;
@@ -29,6 +30,7 @@ function setGravity(st : boolean){
 		for(var l : GravityLight in bayLights){
 			l.setState(true);
 		}
+		AudioSource.PlayClipAtPoint(gravitySound, theShip.position);
 	}
 }
 
