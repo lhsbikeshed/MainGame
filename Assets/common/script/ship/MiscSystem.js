@@ -15,6 +15,7 @@ class MiscSystem extends BaseSubsystem
 	
 	var oxygenLevel : float = 100.0f;
 	private var expOverlay : ExplosionOverlayBehaviour;
+	var dockingClamp : UndercarriageBehaviour;
 	
 	function Start () {
 		super();
@@ -111,6 +112,10 @@ class MiscSystem extends BaseSubsystem
 		} else if (operation == "dockingClamp"){
 			if(message.Data[0] == 1){  	//enable the clamp
 				theShip.GetComponent.<ship>().releaseDock();
+				if(dockingClamp){
+					
+					dockingClamp.setGearState(false);
+					}
 			} else {				
 				theShip.GetComponent.<ship>().dock();
 			}

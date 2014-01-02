@@ -203,6 +203,7 @@ class WarzoneScene2 extends GenericScene {
 				break;
 			case "missileRate":
 				var d: int = message.Data[0];
+				Debug.Log("d:" + d);
 				missileDiff = 12 - d;
 				nextMissileLaunchTime = Random.Range(missileDiff + 3, missileDiff + 5);
 				break;

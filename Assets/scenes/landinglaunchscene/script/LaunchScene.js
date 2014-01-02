@@ -2,7 +2,7 @@
 
 class LaunchScene extends GenericScene {
 
-	
+	var test2 : float;
 	var missileSpawning: boolean = false;
 	var missileObj: GameObject;
 	private var lastMissileTime : float;
@@ -158,7 +158,15 @@ class LaunchScene extends GenericScene {
 			var pos : Vector3 = theShip.transform.localPosition;
 			var rot : Quaternion = theShip.transform.localRotation;
 			var msg : OSCMessage = OSCMessage("/scene/launchland/dockingPosition");
-			msg.Append.<float>(pos.x);
+			//this needs inverting when ship is facing forward in bay
+			var bayForward : Vector3 = dockChamber.transform.TransformDirection(Vector3.left);
+			var shipForward : Vector3 = theShip.transform.TransformDirection(Vector3.forward);
+			test2 = Vector3.Dot(bayForward, shipForward);
+			if(Vector3.Dot(bayForward, shipForward) < 0.0f){
+				msg.Append.<float>(pos.x);
+			} else {
+				msg.Append.<float>(-pos.x);
+			}
 			msg.Append.<float>(pos.y);
 			msg.Append.<float>(pos.z);
 			

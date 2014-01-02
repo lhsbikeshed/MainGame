@@ -10,9 +10,18 @@ var inBay : boolean;
 
 var bayLights : GravityLight[];
 var gravitySound : AudioClip;
+var gravitySource : AudioSource;
+
+var oxLevel : float = 1.0f;
 
 function Start () {
 	theShip = GameObject.Find("TheShip").transform;
+	gravitySource = gameObject.AddComponent(AudioSource);
+	gravitySource.clip = gravitySound;
+	gravitySource.Stop();
+	gravitySource.loop = true;
+	gravitySource.rolloffMode = AudioRolloffMode.Linear;
+	gravitySource.maxDistance = 300;
 	
 }
 
@@ -26,11 +35,12 @@ function setGravity(st : boolean){
 		for(var l : GravityLight in bayLights){
 			l.setState(false);
 		}
+		gravitySource.Stop();
 	} else {
 		for(var l : GravityLight in bayLights){
 			l.setState(true);
 		}
-		AudioSource.PlayClipAtPoint(gravitySound, theShip.position);
+		gravitySource.Play();
 	}
 }
 
@@ -38,6 +48,23 @@ function FixedUpdate(){
 	if(gravityOn && theShip.parent == transform){
 		theShip.rigidbody.AddForce( transform.rotation * Vector3.up * -300, ForceMode.Force);
 	}
+	if(dockingDoor.state != dockingDoor.CLOSED){	//leak some atmosphere if the door isnt closed
+		oxLevel -= 0.005f;
+		if(oxLevel < 0){
+			oxLevel = 0.0f;
+		}
+	} else {
+		oxLevel += 0.01f;
+		if(oxLevel > 1.0f){
+			oxLevel = 1.0f;
+		}
+	}
+	if(inBay){
+		gravitySource.volume = oxLevel;
+	} else {
+		gravitySource.volume = 0.0f;
+	}
+	
 }
 
 function OnTriggerStay(other : Collider){

@@ -82,6 +82,9 @@ function setLocation(t : Transform){
 }
 
 function resetToShip(){
+	if(transform.parent != null){
+		transform.parent = null;
+	}
 	//transform.parent = GameObject.Find("DefaultDynamicCamera").transform;
 	followingShip = true;
 	transform.position = GameObject.Find("DefaultDynamicCamera").transform.position;

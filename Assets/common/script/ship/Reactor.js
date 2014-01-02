@@ -293,6 +293,7 @@ class Reactor extends MonoBehaviour{
 				OSCHandler.Instance.SendMessageToAll(msg);
 				if(t < 10){
 					if(t == 5){
+						soundSource.Stop();
 						soundSource.clip = overloadSound;
 						soundSource.pitch = 1.0;
 						soundSource.Play();

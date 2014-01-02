@@ -353,7 +353,7 @@ function releaseDock(){
 		dockingChange = true;
 		externalSFX.clip = clampSFX;
 		externalSFX.Play();
-		yield WaitForSeconds(2.5);
+		//yield WaitForSeconds(2.5);
 		docked = false;
 		//controlsLocked = false;
 		//transform.parent = null;

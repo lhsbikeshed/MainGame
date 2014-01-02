@@ -21,6 +21,9 @@ class IncomingMissile extends TargettableObject {
 	
 	private var randVel : float;
 	
+	var testCamera : boolean = false;
+	var camAttached : boolean = false;
+	
 	
 	var sounds : AudioClip[];
 	private var parts : ParticleSystem;
@@ -42,9 +45,17 @@ class IncomingMissile extends TargettableObject {
 		statNames[1] = "fuel";
 		objectName = "Missile";
 		
+		if(Random.Range(0.0f, 100.0f) < 15.0f){
+			attachCam();
+		}
+		
 	}
 	
 	function Update () {
+		if(testCamera){
+			testCamera = false;
+			attachCam();
+		}
 		//transform.position -= targetTransform.transform.position;
 		
 		if(trackingPlayer){
@@ -73,6 +84,26 @@ class IncomingMissile extends TargettableObject {
 		
 	
 	}
+	
+	/* find dyncam and attach it to ourselves */
+	function attachCam(){
+		var cam : GameObject = GameObject.Find("DynamicCamera");
+		if(!cam){
+			return;
+		}
+		camAttached = true;
+		var g = new GameObject();
+		g.transform.parent = transform;
+		g.transform.localPosition = Vector3(0.0f, 4.5f, -15.0f);
+		g.transform.localRotation = Quaternion.identity;
+		var cp : CameraPoint = g.AddComponent("CameraPoint");
+		cp.followShip = true;
+		cam.GetComponent.<DynamicCamera>().lookAtShip = true;
+		cam.GetComponent.<DynamicCamera>().setLocation(g.transform);
+		
+		
+	}
+	
 	
 	//strength is whatever the 
 	function GetShot(damage : float){
@@ -110,6 +141,10 @@ class IncomingMissile extends TargettableObject {
 			parts.Play();
 			AudioSource.PlayClipAtPoint(sounds[randomSound], transform.position);
 			yield WaitForSeconds(6);
+			if(camAttached){
+				camAttached = false;
+				GameObject.Find("DynamicCamera").GetComponent.<DynamicCamera>().resetToShip();
+			}
 			Destroy(gameObject);
 		}
 	}
