@@ -8,4 +8,7 @@
 	<client name="Tablet">192.168.0.12:12005</client>
 	<client name="CommsStation">127.0.0.1:12003</client>
 	<client name="OldModStation">127.0.0.1:12005</client>
+	<useChaseCam>true</useChaseCam>
+	<resolutionWidth>800</resolutionWidth>
+	<resolutionHeight>600</resolutionHeight>
 </config>

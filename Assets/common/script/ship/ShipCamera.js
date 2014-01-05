@@ -23,11 +23,17 @@ private var originalPos  :Vector3;
 function Start () {
 	var ratio : float = Screen.width / Screen.height;
 	
-	if(ratio > 1){
+	//if(ratio > 1){
+	var curWidth : int = Convert.ToInt32(OSCHandler.Instance.configItems["resolutionWidth"]);
+	var curHeight : int = Convert.ToInt32(OSCHandler.Instance.configItems["resolutionHeight"]);
+	if(OSCHandler.Instance.configItems["useChaseCam"] == "true"){
 		Debug.Log("using preview camera");
 		useExternalCamera = true;
+		
+		Screen.SetResolution(curWidth * 2, curHeight, false);
 	} else {
 		useExternalCamera = false;
+		Screen.SetResolution(curWidth, curHeight, false);
 	}
 		
 	originalPos = transform.localPosition;

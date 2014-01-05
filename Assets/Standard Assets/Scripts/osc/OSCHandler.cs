@@ -91,6 +91,7 @@ public class OSCHandler : MonoBehaviour
 	
 	public Dictionary<string, string> clientScreens = new Dictionary<string, string>();
 	public Dictionary<string, string> previousClientScreens = new Dictionary<string, string>();
+	public Dictionary<string, string> configItems = new Dictionary<string, string>();
 	
 	/// <summary>
 	/// Initializes the OSC Handler.
@@ -120,7 +121,11 @@ public class OSCHandler : MonoBehaviour
 				}
 				CreateClient(stationName, IPAddress.Parse(ipport[0]), int.Parse(ipport[1]));
 				Debug.Log ("Created client: " + stationName + " - " +ipport[0] + ":" + ipport[1]);
+			} else {
+				Debug.Log ("loaded item: " + n.Name);
+				configItems.Add (n.Name, n.InnerXml);
 			}
+					
 				
 		}
 		
