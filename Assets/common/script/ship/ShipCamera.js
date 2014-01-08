@@ -18,7 +18,9 @@ private var skyboxCamera : Camera;
 
 private var originalPos  :Vector3;
 
-
+private var shakeTime : float;
+private var shakeStart : float;
+private var timedShaking : boolean = false;
 
 function Start () {
 	var ratio : float = Screen.width / Screen.height;
@@ -70,7 +72,7 @@ function OnLevelWasLoaded (level : int) {
 
 
 function Update () {
-	if(shaking){
+	if(shaking || timedShaking){
 		transform.localPosition = originalPos + Vector3(Random.Range(-shakeAmount, shakeAmount), Random.Range(-shakeAmount,shakeAmount),0);
 		previewCamera.transform.localPosition = transform.localPosition;
 	} else {
@@ -80,6 +82,12 @@ function Update () {
 	
 
 	
+	
+}
+
+function shakeFor(seconds : float){
+	shakeTime = seconds;
+	shakeStart = Time.fixedTime;
 	
 }
 
@@ -93,7 +101,11 @@ function setFovs(fov : float){
 }
 
 function FixedUpdate(){
-	
+	if(shakeTime + shakeStart > Time.fixedTime){
+		timedShaking = true;
+	} else {
+		timedShaking = false;
+	}
 }
 
 function setSkyboxState(state : boolean){

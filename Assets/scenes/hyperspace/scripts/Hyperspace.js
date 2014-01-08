@@ -15,6 +15,7 @@ class Hyperspace extends GenericScene {
 	var failSfx : AudioClip[] ; 	//list of sound effects for failures
 	var gravityFailSfx : AudioClip;	//sound to play during failed exit
 	
+	var rotatorObject : Transform; //parent to the particles and ship for rotation goodness
 	
 	@HideInInspector
 	
@@ -28,6 +29,8 @@ class Hyperspace extends GenericScene {
 	private var exiting : boolean = false;
 	private var failing : boolean = false;
 	
+	private var fallingTowardPlanet : boolean = false;
+	
 	//refs 
 	private var theShip : GameObject; //the ship
 	private var ps: PersistentScene;	//global crap
@@ -37,6 +40,8 @@ class Hyperspace extends GenericScene {
 		if(theShip == null){
 			theShip = GameObject.Find("TheShip");
 		}
+		theShip.transform.parent = rotatorObject;
+		
 		theShip.rigidbody.velocity = Vector3(0,0,0);
 		sceneEntryTime = Time.fixedTime;
 		theShip.rigidbody.freezeRotation = true;
@@ -75,6 +80,7 @@ class Hyperspace extends GenericScene {
 			
 		}
 		
+		
 		if(exiting && failing){
 			warpParticles.transform.rotation *= Quaternion.Euler(0,0,Random.Range(-3,3));
 		}
@@ -83,6 +89,11 @@ class Hyperspace extends GenericScene {
 			warpParticles.startColor = Color(255,0,0);
 		} else {
 			warpParticles.startColor = Color(0,89,107);
+		}
+		if(ps.forcedHyperspaceFail && getTimeRemaining() < 5.0f){
+			fallingTowardPlanet = true;
+		
+			rotatorObject.rotation = Quaternion.Euler(0.1, 0.0, 0.0) * rotatorObject.rotation;
 		}
 	}
 	
@@ -118,10 +129,13 @@ class Hyperspace extends GenericScene {
 				OSCHandler.Instance.SendMessageToAll(msg);
 				//see if there is a planet in the scene and fire it off
 				AudioSource.PlayClipAtPoint(gravityFailSfx, transform.position);
+				
+				//slowly rotate the ship downward toward the approaching planet
+				
 				//SPIN THE MOTHERFUCKING SHIP YO
-				theShip.rigidbody.constraints = RigidbodyConstraints.FreezePosition;
-				theShip.rigidbody.angularDrag = 0.0f;
-				theShip.rigidbody.AddRelativeTorque(Vector3(0.0f, 0.0f, 450.0f), ForceMode.Impulse); 
+				//theShip.rigidbody.constraints = RigidbodyConstraints.FreezePosition;
+				//theShip.rigidbody.angularDrag = 0.0f;
+				//theShip.rigidbody.AddRelativeTorque(Vector3(0.0f, 0.0f, 120.0f), ForceMode.Impulse); 
 				
 				
 			} else{
@@ -138,6 +152,7 @@ class Hyperspace extends GenericScene {
 			theShip.rigidbody.angularDrag = 0.5f;
 		 	theShip.GetComponent.<PropulsionSystem>().throttleDisabled = false;
 
+			theShip.transform.parent = null;
 			Application.LoadLevel(ps.hyperspaceDestination);
 		}
 		
@@ -161,6 +176,7 @@ class Hyperspace extends GenericScene {
 		var msg : OSCMessage = OSCMessage("/scene/warp/updatestats");
 		msg.Append.<float>(maxMissedKeepalives - missedKA);		
 		msg.Append.<float>(getTimeRemaining());		
+		msg.Append.<int>(ps.forcedHyperspaceFail == true ? 1 : 0);
 		OSCHandler.Instance.SendMessageToAll( msg);	
 	}
 	
