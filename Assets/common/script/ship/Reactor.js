@@ -80,13 +80,18 @@ class Reactor extends MonoBehaviour{
 	}
 	
 	function reactorState(st :int){
-	//Debug.Log(st);
-		if(st - 1 >= 0 && st - 1 < startupSounds.Length){
+	
+		st = st - 1;//for odd reasons the vals off the switch panel are off by one
+		if(st <= 4){
 			speechSource.Stop();
-			speechSource.clip = startupSounds[st - 1];
+			speechSource.clip = startupSounds[0];
 			//speechSource.Play();
-			CabinEffects.Instance().QueueVoiceOver(startupSounds[st - 1]);
-			//AudioSource.PlayClipAtPoint(startupSounds[st - 1],transform.position);
+			CabinEffects.Instance().QueueVoiceOver(startupSounds[0]);
+		
+		} else if (st < 9){
+			CabinEffects.Instance().QueueVoiceOver(startupSounds[1]);
+		} else {
+			CabinEffects.Instance().QueueVoiceOver(startupSounds[3]);
 		}
 	}
 	
