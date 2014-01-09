@@ -37,7 +37,7 @@ function Start () {
 		
 		textObjects[i].GetComponent.<GUIText>().text = text;
 		if(textList[i].StartsWith("-")){
-			textObjects[i].GetComponent.<GUIText>().fontSize = 22;
+			textObjects[i].GetComponent.<GUIText>().fontSize += 10;
 			textObjects[i].GetComponent.<GUIText>().fontStyle = FontStyle.Bold;
 			pos.y -= 0.10f;
 		} else {
