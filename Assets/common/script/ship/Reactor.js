@@ -82,6 +82,7 @@ class Reactor extends MonoBehaviour{
 	function reactorState(st :int){
 	
 		st = st - 1;//for odd reasons the vals off the switch panel are off by one
+					//st == 0 is the reactor being shut down by panel switches being wrong
 		if(st <= 4){
 			speechSource.Stop();
 			speechSource.clip = startupSounds[0];

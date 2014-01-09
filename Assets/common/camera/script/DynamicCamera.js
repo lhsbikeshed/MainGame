@@ -5,6 +5,8 @@ var theShip : Transform;
 var currentLocation : Transform;
 var lookAtShip : boolean;
 var followingShip : boolean;
+var useWebcam : boolean = false;
+var webCamPlane : Transform;
 
 private var skyboxCamera : Camera;
 private var useSkyboxCamera : boolean=  false;
@@ -73,6 +75,17 @@ function Start () {
 		camera.depth = -1;
 	}
 
+
+
+	//setup the webcam plane	
+	if(OSCHandler.Instance.configItems["useWebcam"] == "true"){
+		useWebcam = true;
+	
+		webCamPlane.GetComponent.<Webcam>().setup();
+		
+	} else {
+		Destroy(webCamPlane.gameObject);
+	}
 }
 
 function setLocation(t : Transform){

@@ -6,7 +6,7 @@ var shaking : boolean = false;
 var shakeAmount : float = 0.05;
 
 
-var singleCameraMode = false;
+//var singleCameraMode = false;
 
 var cameras : Camera[];
 var canopyCamera : Camera;
@@ -37,6 +37,7 @@ function Start () {
 		useExternalCamera = false;
 		Screen.SetResolution(curWidth, curHeight, false);
 	}
+	
 		
 	originalPos = transform.localPosition;
 	if(useExternalCamera){
