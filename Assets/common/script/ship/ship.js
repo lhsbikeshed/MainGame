@@ -471,11 +471,9 @@ function FixedUpdate(){
 				//signal testing scene the jump started
 				GameObject.Find("SceneScripts").GetComponent.<TestingScene>().tunnelStart();
 			} else {
-				if(PersistentScene.networkReady == true){
-					GameObject.Find("Networks").GetComponent.<NetworkView>().RPC("NetworkLoadLevel", RPCMode.All, jumpDest, jumpDest);
-				} else {
-					Application.LoadLevel(jumpDest);
-				}
+				
+				Application.LoadLevel(jumpDest);
+				
 			}
 			Debug.Log("JUMP!");
 			

@@ -48,8 +48,9 @@ class MiscSystem extends BaseSubsystem
 			shipsLight.intensity = 0.6f;
 			energyConsumptionRate += 1f;
 		} else {
-		
-			shipsLight.intensity = 0.0f;
+			if(shipsLight != null){
+				shipsLight.intensity = 0.0f;
+			}
 			energyConsumptionRate -= 1f;
 		}
 	}

@@ -11,6 +11,6 @@
 	<useChaseCam>true</useChaseCam>
 	<resolutionWidth>800</resolutionWidth>
 	<resolutionHeight>600</resolutionHeight>
-	<useWebcam>false</useWebcam>
-	<cameraDeviceName>BisonCam, NB Pro</cameraDeviceName>
+	<useWebcam>true</useWebcam>
+	
 </config>
