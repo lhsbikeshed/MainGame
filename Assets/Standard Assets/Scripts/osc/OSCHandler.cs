@@ -86,7 +86,7 @@ public class OSCHandler : MonoBehaviour
 	private Dictionary<string, ClientLog> _clients = new Dictionary<string, ClientLog>();
 	private Dictionary<string, ServerLog> _servers = new Dictionary<string, ServerLog>();
 	
-	private const int _loglength = 55;
+	private const int _loglength = 100;
 	#endregion
 	
 	public Dictionary<string, string> clientScreens = new Dictionary<string, string>();
@@ -147,6 +147,11 @@ public class OSCHandler : MonoBehaviour
 		clientScreens["PilotStation"] = "docking";
 		clientScreens["TacticalStation"] = "weapons";
 		clientScreens["CommsStation"] = "idleDisplay";
+		
+		previousClientScreens["EngineerStation"] = "power";
+		previousClientScreens["PilotStation"] = "docking";
+		previousClientScreens["TacticalStation"] = "weapons";
+		previousClientScreens["CommsStation"] = "idleDisplay";
 	}
 	
 	

@@ -14,7 +14,10 @@ private var startZoom : boolean = false;
 
 function Start () {
 	//gameObject.tag = "CameraPoint";
-	cam = GameObject.Find("DynamicCamera").GetComponent.<DynamicCamera>();
+	var d = GameObject.Find("DynamicCamera");
+	if(d != null){
+		cam = d.GetComponent.<DynamicCamera>();
+	}
 	//Debug.Log("Piss: " + GameObject.Find("DynamicCamera"));
 }
 
@@ -33,17 +36,22 @@ function OnTriggerEnter(col : Collider){
 	//Debug.Log(col.transform.name);
 	if(col.gameObject.name == "TheShip"){
 		if(cam == null){
-			cam = GameObject.Find("DynamicCamera").GetComponent.<DynamicCamera>();
+			var d = GameObject.Find("DynamicCamera");
+			if(d!= null){
+				cam = d.GetComponent.<DynamicCamera>();
+			}
 		}
-		Debug.Log("Switching to camera: " + transform.name);
-		cam.setLocation(transform);
-		cam.lookAtShip = followShip;
-		if(!followShip){
-			cam.transform.rotation = transform.rotation;
+		if(cam!= null){
+			Debug.Log("Switching to camera: " + transform.name);
+			cam.setLocation(transform);
+			cam.lookAtShip = followShip;
+			if(!followShip){
+				cam.transform.rotation = transform.rotation;
+			}
+			cam.camera.fov = startFov;
+			fovChangeStart = Time.fixedTime;
+			startZoom = true;
 		}
-		cam.camera.fov = startFov;
-		fovChangeStart = Time.fixedTime;
-		startZoom = true;
 		
 	}
 }

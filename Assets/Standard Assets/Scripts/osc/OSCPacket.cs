@@ -30,6 +30,8 @@ namespace UnityOSC
 	/// </summary>
 	abstract public class OSCPacket
 	{
+		
+		public bool processed = false;
 		#region Member Variables
 		protected List<object> _data;
 		protected byte[] _binaryData;
@@ -289,6 +291,7 @@ namespace UnityOSC
 		/// </returns>
 		public static OSCPacket Unpack(byte[] data, ref int start, int end)
 		{
+			
 			if(data[0] == '#') return OSCBundle.Unpack(data, ref start, end);
 			else return OSCMessage.Unpack(data, ref start);
 		}		

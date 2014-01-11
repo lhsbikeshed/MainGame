@@ -169,7 +169,10 @@ class WarzoneScene2 extends GenericScene {
 			
 				
 			case "createBastard":
-				dynShitField.createABastard();
+			
+				if(dynShitField.enabled == true){
+					dynShitField.createABastard();
+				}
 				break;
 			
 			

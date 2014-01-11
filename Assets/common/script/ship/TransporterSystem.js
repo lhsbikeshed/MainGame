@@ -55,7 +55,7 @@ class TransporterSystem extends BaseSubsystem implements JammingListener {
 	
 	function beamAttemptResult(res : int){
 	
-	
+		Debug.Log("beam attempt result " + res);
 		if(res == 0){
 			//play a beam aboard sound
 			//consoles will display an intruder alert warning
