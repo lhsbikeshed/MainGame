@@ -120,8 +120,8 @@ function FixedUpdate(){
 		velocity = Mathf.Clamp(dist,0,maxVelocity);
 		velocity *= Mathf.Abs(Vector3.Dot((transform.position - nextWaypoint.transform.position).normalized, transform.TransformDirection(Vector3.forward)));
 		rigidbody.AddRelativeForce(Vector3.forward * velocity, ForceMode.Acceleration);
-		var rotation = Quaternion.LookRotation(nextWaypoint.transform.position - transform.position);
-		rotation.eulerAngles.z = 0;
+		var rotation = Quaternion.LookRotation(nextWaypoint.transform.position - transform.position, nextWaypoint.transform.TransformDirection(Vector3.up));
+		//rotation.eulerAngles.z = 0;
 		transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * rotationDamping);
 		
 		

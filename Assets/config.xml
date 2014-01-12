@@ -9,7 +9,7 @@
 	<client name="CommsStation">10.0.0.3:12003</client>
 	<client name="Recorder">127.0.0.1:12010</client>
 
-	<useChaseCam>false</useChaseCam>
+	<useChaseCam>true</useChaseCam>
 	<resolutionWidth>800</resolutionWidth>
 	<resolutionHeight>600</resolutionHeight>
 	<useWebcam>false</useWebcam>

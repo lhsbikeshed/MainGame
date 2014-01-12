@@ -144,15 +144,22 @@ function Update(){
 
 function FixedUpdate () {
 	
-	if(lookAtShip){
-		transform.LookAt(theShip);
-		
-	}
+	
 	if(followingShip){
-		transform.position = GameObject.Find("DefaultDynamicCamera").transform.position;
+		var t = GameObject.Find("DefaultDynamicCamera").transform;
+		transform.position = t.position;
+		transform.LookAt(theShip, t.TransformDirection(Vector3.up));
 	} else {
 		if(followTransform != null){
 			transform.position = followTransform.position;
+			if(lookAtShip){
+				transform.LookAt(theShip, followTransform.TransformDirection(Vector3.up));
+				
+				
+				
+			} else {
+				transform.rotation = followTransform.rotation;
+			}
 		}
 	}
 }
