@@ -7,6 +7,11 @@ var endFov : float = 15.0;
 var fovChangeTime : float = 2.0;
 
 var onLeaveReset : boolean = true;
+var triggerCabinCam : boolean = false;
+var cabinCamDuration : float = 10.0f;
+var disableRandomCabinCamEnter : boolean = false;
+var disableRandomCabinCamLeave : boolean = false;
+
 
 private var fovChangeStart : float;
 private var cam : DynamicCamera;
@@ -45,6 +50,12 @@ function OnTriggerEnter(col : Collider){
 			Debug.Log("Switching to camera: " + transform.name);
 			cam.setLocation(transform);
 			cam.lookAtShip = followShip;
+			cam.canCabinCamBeUsed = !disableRandomCabinCamEnter;
+			if(triggerCabinCam){
+				cam.showCabinCamera(0, cabinCamDuration);
+			} else {
+				cam.hideCabinCamera();
+			}
 			if(!followShip){
 				cam.transform.rotation = transform.rotation;
 			}
@@ -58,6 +69,7 @@ function OnTriggerEnter(col : Collider){
 function OnTriggerExit(col : Collider){
 	if(col.gameObject.name == "TheShip" && onLeaveReset){
 		cam.resetToShip();
+		cam.canCabinCamBeUsed = !disableRandomCabinCamLeave;
 		startZoom = false;
 	}
 }

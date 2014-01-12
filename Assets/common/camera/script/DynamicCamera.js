@@ -16,6 +16,14 @@ private var depthSkyboxObject : Transform;
 private var mapController : MapController;
  var followTransform : Transform;
 
+ 
+  /* cabin camera controls*/
+var canCabinCamBeUsed : boolean = false; 
+private var lastCabinShow : float = 0.0f;
+private var camDuration : float = 10.0f;
+private var camStart : float = 0.0f;
+private var camVisible : boolean = false;
+
 function Awake () {
 	DontDestroyOnLoad(this);
 	if (OSCHandler.Instance.configItems["useChaseCam"] != "true"){
@@ -31,6 +39,7 @@ function OnLevelWasLoaded(scene :int){
 	if (OSCHandler.Instance.configItems["useChaseCam"] == "true"){
 		init();	
 	}
+	canCabinCamBeUsed = true;
 
 }
 
@@ -38,7 +47,7 @@ function OnLevelWasLoaded(scene :int){
 */
 function init(){
 	theShip = GameObject.Find("TheShip").transform;
-
+	hideCabinCamera();
 	
 	//find out if this scene uses a skybox camera. If it does then attach a camera to it 
 	//with same parameters as ours but depth -1
@@ -111,6 +120,7 @@ function setLocation(t : Transform){
 //	transform.localPosition = Vector3.zero;
 	followTransform = t;
 	followingShip = false;
+	hideCabinCamera();
 }
 
 function resetToShip(){
@@ -128,6 +138,7 @@ function resetToShip(){
 	transform.LookAt(theShip);
 	camera.fov = 60.0;
 	lookAtShip = true;
+	canCabinCamBeUsed = true;
 }
 
 function Update(){
@@ -142,7 +153,41 @@ function Update(){
 	
 }
 
+/* tell cam system to show the camera stream */
+function showCabinCamera(camNum : int, duration : float){
+	if(canCabinCamBeUsed){
+		var msg : OSCMessage = OSCMessage("/system/webcam/show");
+		OSCHandler.Instance.SendMessageToAll(msg);
+		camVisible = true;
+		camStart = Time.fixedTime;
+		camDuration = duration;
+	}
+}
+
+function hideCabinCamera(){
+	var msg : OSCMessage = OSCMessage("/system/webcam/hide");
+	OSCHandler.Instance.SendMessageToAll(msg);
+	camVisible = false;
+}
+
 function FixedUpdate () {
+	
+	if(canCabinCamBeUsed){
+		if(lastCabinShow + 10.0f < Time.fixedTime){
+			if(camVisible){
+				hideCabinCamera();
+			} else {
+				showCabinCamera(0, 10.0f);
+			}
+			lastCabinShow = Time.fixedTime;
+		}
+	}
+	
+	if(camVisible){
+		if(camStart + camDuration < Time.fixedTime){
+			hideCabinCamera();
+		}
+	}
 	
 	
 	if(followingShip){

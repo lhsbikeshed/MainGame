@@ -7,7 +7,7 @@
 	<client name="ModStation">127.0.0.1:12005</client>
 	<client name="Tablet">10.0.0.12:12005</client>
 	<client name="CommsStation">10.0.0.3:12003</client>
-	<client name="Recorder">127.0.0.1:12010</client>
+	<client name="camController">127.0.0.1:12010</client>
 
 	<useChaseCam>true</useChaseCam>
 	<resolutionWidth>800</resolutionWidth>

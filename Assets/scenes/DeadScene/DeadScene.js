@@ -56,6 +56,12 @@ class DeadScene extends GenericScene{
 		} else {
 			deadSound = sounds[0];
 		}
+		
+		var g : GameObject = GameObject.Find("DynamicCamera");
+		if(g != null){
+			g.GetComponent.<DynamicCamera>().hideCabinCamera();
+			g.GetComponent.<DynamicCamera>().canCabinCamBeUsed = false;
+		}
 	}
 	
 	function FixedUpdate () {

@@ -90,8 +90,15 @@ class Hyperspace extends GenericScene {
 		} else {
 			warpParticles.startColor = Color(0,89,107);
 		}
-		if(ps.forcedHyperspaceFail && getTimeRemaining() < 5.0f){
+		if(ps.forcedHyperspaceFail && getTimeRemaining() < 5.0f && !fallingTowardPlanet){
 			fallingTowardPlanet = true;
+			var g : GameObject = GameObject.Find("DynamicCamera");
+			if(g != null){
+				g.GetComponent.<DynamicCamera>().hideCabinCamera();
+				g.GetComponent.<DynamicCamera>().canCabinCamBeUsed = false;
+			}
+		}
+		if(fallingTowardPlanet){
 		
 			rotatorObject.rotation = Quaternion.Euler(0.1, 0.0, 0.0) * rotatorObject.rotation;
 		}

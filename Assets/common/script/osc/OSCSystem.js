@@ -145,7 +145,7 @@ function FixedUpdate(){
 				if(pkt.Address.IndexOf("/scene/") == 0){					
 					currentScene.ProcessOSCMessage(pkt);					
 				} else if(pkt.Address.IndexOf("/system/") == 0){				//subsystem control
-				Debug.Log(String.Format(" ADDRESS: {0} ", pkt.Address )); 
+//				Debug.Log(String.Format(" ADDRESS: {0} ", pkt.Address )); 
 					systemMessage(pkt);
 					
 				} else if (pkt.Address.IndexOf("/control/") == 0){		//ship control

@@ -8,6 +8,8 @@ class LaunchScene extends GenericScene {
 	private var lastMissileTime : float;
 	var missileSpawnTime : float = 1.0;
 	
+	var camPoint : CameraPoint;
+	
 	private var dockChamber : DockChamberScript;
 	private var theShip : Transform;
 	
@@ -81,6 +83,10 @@ class LaunchScene extends GenericScene {
 		
 		GameObject.Find("InternalDoor").GetComponent.<DoorScript>().openDoor();
 		GameObject.Find("ShipMover").GetComponent.<LaunchSequencer>().begin();
+		
+		if(camPoint){
+			camPoint.OnTriggerEnter(theShip.collider);
+		}
 	}
 	
 	function FixedUpdate(){
