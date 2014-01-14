@@ -46,7 +46,10 @@ function OnLevelWasLoaded(scene :int){
 /* reconfigure cameras for current scene
 */
 function init(){
-	theShip = GameObject.Find("TheShip").transform;
+	var ts = GameObject.Find("TheShip");
+	if(ts != null){
+		theShip = ts.transform;
+	}
 	hideCabinCamera();
 	
 	//find out if this scene uses a skybox camera. If it does then attach a camera to it 
@@ -94,8 +97,9 @@ function init(){
 		camera.rect.x = 0.5f;
 		camera.rect.width = 0.5f;
 		camera.rect.height = 1.0f;
-		theShip = GameObject.Find("TheShip").transform;
-		resetToShip();
+		if(theShip != null){
+			resetToShip();
+		}
 	} else {
 		camera.depth = -1;
 	}

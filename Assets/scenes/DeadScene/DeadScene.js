@@ -21,7 +21,8 @@ class DeadScene extends GenericScene{
 	
 		var ratio : float = Screen.width / Screen.height;
 		
-		if(ratio > 1){
+		if(OSCHandler.Instance.configItems["useChaseCam"] == "true"){
+			Destroy(GameObject.Find("DynamicCamera"));
 			useExternalCamera = true;
 			Debug.Log("using preview camera");
 			leftCamera.rect.x = 0.0f;
@@ -33,6 +34,7 @@ class DeadScene extends GenericScene{
 			
 			
 		} else {
+			Destroy(GameObject.Find("DynamicCamera"));
 			leftCamera.rect.x = 0.0f;
 			leftCamera.rect.width = 1.0f;
 			rightCamera.enabled = false;
