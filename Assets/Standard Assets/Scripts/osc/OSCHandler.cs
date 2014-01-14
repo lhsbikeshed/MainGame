@@ -436,22 +436,26 @@ public class OSCHandler : MonoBehaviour
 					                                         DataToString(_servers[pair.Key].server.LastReceivedPacket.Data)));
 					break;
 				}
-						
+				/*		
 				if(_servers[pair.Key].server.LastReceivedPacket.TimeStamp
 				   != _servers[pair.Key].packets[_servers[pair.Key].packets.Count - 1].TimeStamp)
+				*/
+				OSCPacket p = _servers[pair.Key].server.getPacket();
+				if(p!=null)
 				{	
+					//_servers[pair.Key].server.LastReceivedPacket.readFromServer = true;
 					if(_servers[pair.Key].log.Count > _loglength - 1)
 					{
 						_servers[pair.Key].log.RemoveAt(0);
 						_servers[pair.Key].packets.RemoveAt(0);
 					}
 		
-					_servers[pair.Key].packets.Add(_servers[pair.Key].server.LastReceivedPacket);
+					_servers[pair.Key].packets.Add(p);
 						
 					_servers[pair.Key].log.Add(String.Concat(DateTime.UtcNow.ToString(), ".",
 					                                         FormatMilliseconds(DateTime.Now.Millisecond)," : ",
-					                                         _servers[pair.Key].server.LastReceivedPacket.Address," ",
-					                                         DataToString(_servers[pair.Key].server.LastReceivedPacket.Data)));
+					                                         p.Address," ",
+					                                         DataToString(p.Data)));
 				}
 			}
 		}

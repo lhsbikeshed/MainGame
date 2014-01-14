@@ -23,6 +23,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Collections.Generic;
+using UnityEngine;
 namespace UnityOSC
 {
 	/// <summary>
@@ -44,6 +45,8 @@ namespace UnityOSC
 		private Thread _receiverThread;
 		private OSCPacket _lastReceivedPacket;
 		private bool isRunning = false;
+		private System.Object lockObject = new System.Object();
+		private Queue<OSCPacket> packetQueue = new Queue<OSCPacket>();
 		#endregion
 		
 		#region Properties
@@ -143,7 +146,9 @@ namespace UnityOSC
 
 				if(bytes != null && bytes.Length > 0)
 				{
-					return OSCPacket.Unpack(bytes);
+					OSCPacket p = OSCPacket.Unpack(bytes);
+					//Debug.Log("addr: " + p.Address);
+					return p;
 				}
 			}
 			catch
@@ -160,12 +165,26 @@ namespace UnityOSC
 		private void ReceivePool()
 		{
 			while(isRunning)
-			{
+			{	
 				_lastReceivedPacket = Receive();
 				_lastReceivedPacket.TimeStamp = long.Parse(String.Concat(DateTime.Now.Ticks));
+				lock(lockObject){
+					
+					packetQueue.Enqueue(_lastReceivedPacket);
+				}
 			}
 		}
 		#endregion
+		
+		public OSCPacket getPacket(){
+			lock(lockObject){
+				if(packetQueue.Count > 0){
+					return packetQueue.Dequeue();
+				} else {
+					return null;
+				}
+			}
+		}
 	}
 }
 

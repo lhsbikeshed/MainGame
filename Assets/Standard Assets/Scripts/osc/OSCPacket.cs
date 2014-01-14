@@ -30,8 +30,10 @@ namespace UnityOSC
 	/// </summary>
 	abstract public class OSCPacket
 	{
-		
+		/* has this been processed by oscsystem? */
 		public bool processed = false;
+		/* has this packet been read out of the server and into the queue? */
+		public bool readFromServer = false;
 		#region Member Variables
 		protected List<object> _data;
 		protected byte[] _binaryData;
