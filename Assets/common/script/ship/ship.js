@@ -14,6 +14,7 @@ var sensorPower : int = 2;
 var internalPower : int = 2;
 var propulsionPower : int = 2;
 var hullState : float = 100.0f;
+private var previousHullState = 100.0f;
 
 
 var crashSounds : AudioClip[];
@@ -229,7 +230,8 @@ function damageShip(amount : float, deathText : String){
 		
 	
 	OSCHandler.Instance.SendMessageToAll(msg);
-	hullState -= amount;
+	//hullState -= amount;
+	changeHullLevel(-amount);
 	if(hullState <= 0){
 	
 		//trigger explosion etc etc
@@ -238,14 +240,26 @@ function damageShip(amount : float, deathText : String){
 		GetComponent.<ExplosionOverlayBehaviour>().die();
 		yield WaitForSeconds(2) ;
 		GameObject.Find("PersistentScripts").GetComponent.<PersistentScene>().shipDead(deathText);
-	} else if (hullState <= 15.0f){
-//		if(hullBreachSFX.isPlaying == false){
-//			hullBreachSFX.Play();
-//		}
+//	} else if (hullState <= 15.0f){
+//
+//		CabinEffects.Instance().setRedAlert(true);
+//	} else {
+//		CabinEffects.Instance().setRedAlert(false);
+	}
+}
+
+function changeHullLevel(amount : float){
+	//slowly repair the hull
+	previousHullState = hullState;
+	hullState += amount;
+	hullState = Mathf.Clamp(hullState, 0, 100);
+	if(hullState <= 15.0f && previousHullState > 15.0f){
+		//we crossed into red alert territory
 		CabinEffects.Instance().setRedAlert(true);
-	} else {
+	} else if (hullState > 15.0f && previousHullState <= 15.0f){
 		CabinEffects.Instance().setRedAlert(false);
 	}
+	
 }
 
 function forceJump(){
@@ -399,9 +413,8 @@ function OnSerializeNetworkView(stream : BitStream, info : NetworkMessageInfo) {
    
 function FixedUpdate(){
 	if(internalPower == 3){
-		//slowly repair the hull
-		hullState += 0.01f;
-		hullState = Mathf.Clamp(hullState, 0, 100);
+		changeHullLevel(0.01f);
+		
 	}
 	if(exploding){
 		if(lastExplosionSfxTime + nextExplosionSfxTime < Time.fixedTime){
