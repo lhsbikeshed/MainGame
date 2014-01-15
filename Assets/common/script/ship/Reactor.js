@@ -216,13 +216,13 @@ class Reactor extends MonoBehaviour{
 	
 	function playWarning(warningId : int){
 		if(warningId == 0){
-			AudioSource.PlayClipAtPoint(warningClips[0], transform.position);
+			//AudioSource.PlayClipAtPoint(warningClips[0], transform.position);
 		} else if(warningId == 1){
-			AudioSource.PlayClipAtPoint(warningClips[1], transform.position);
+			//AudioSource.PlayClipAtPoint(warningClips[1], transform.position);
 			yield WaitForSeconds(warningClips[1].length + 0.5);
 			reactorFailure();
 		} else if(warningId == 2){
-			AudioSource.PlayClipAtPoint(warningClips[2], transform.position);
+			//AudioSource.PlayClipAtPoint(warningClips[2], transform.position);
 			yield WaitForSeconds(warningClips[2].length + 0.8);
 			reactorOverload();
 		}
