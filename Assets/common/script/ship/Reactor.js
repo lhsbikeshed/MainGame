@@ -81,19 +81,20 @@ class Reactor extends MonoBehaviour{
 	
 	function reactorState(st :int){
 	
-		st = st - 1;//for odd reasons the vals off the switch panel are off by one
-					//st == 0 is the reactor being shut down by panel switches being wrong
-		if(st <= 4){
-			speechSource.Stop();
-			speechSource.clip = startupSounds[0];
-			//speechSource.Play();
-			CabinEffects.Instance().QueueVoiceOver(startupSounds[0]);
-		
-		} else if (st < 9){
-			CabinEffects.Instance().QueueVoiceOver(startupSounds[1]);
-		} else {
-			CabinEffects.Instance().QueueVoiceOver(startupSounds[3]);
-		}
+	//these sounds are now played at the actual console
+//		st = st - 1;//for odd reasons the vals off the switch panel are off by one
+//					//st == 0 is the reactor being shut down by panel switches being wrong
+//		if(st <= 4){
+//			speechSource.Stop();
+//			speechSource.clip = startupSounds[0];
+//			//speechSource.Play();
+//			CabinEffects.Instance().QueueVoiceOver(startupSounds[0]);
+//		
+//		} else if (st < 9){
+//			CabinEffects.Instance().QueueVoiceOver(startupSounds[1]);
+//		} else {
+//			CabinEffects.Instance().QueueVoiceOver(startupSounds[3]);
+//		}
 	}
 	
 	/* quickly boot the reactor after a lightning strike*/
@@ -254,7 +255,7 @@ class Reactor extends MonoBehaviour{
 			soundSource.Play();
 			if(firstStart == true){
 				firstStart = false;
-				AudioSource.PlayClipAtPoint(firstTimeSound, transform.position);
+				//AudioSource.PlayClipAtPoint(firstTimeSound, transform.position);
 			}
 		
 			var msg : OSCMessage = OSCMessage("/system/reactor/stateUpdate");		
