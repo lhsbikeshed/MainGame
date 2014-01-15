@@ -49,7 +49,7 @@ class DeadScene extends GenericScene{
 		ps = GameObject.Find("PersistentScripts").GetComponent.<PersistentScene>();
 		//AudioSource.PlayClipAtPoint(deadSound, Vector3(0,1,-10));
 		if(ps.survivedTheGame){
-			mainText.text = "You Arent Dead";
+			mainText.text = "You Aren't Dead";
 			subText.text = "you shortly to lead you to safety";
 			deadSound = sounds[1];
 			
