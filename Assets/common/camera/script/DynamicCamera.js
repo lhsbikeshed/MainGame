@@ -101,6 +101,7 @@ function init(){
 			resetToShip();
 		}
 	} else {
+		camera.clearFlags = CameraClearFlags.Skybox;
 		camera.depth = -1;
 	}
 
