@@ -21,6 +21,10 @@ var crashSounds : AudioClip[];
 var explosionSfx : AudioClip[];
 var exploding : boolean = false;
 
+var explosionPrefab : Transform; //spawn these around ship during explode();
+private var lastExplosion: float;
+private var nextExplosion : float;
+
 private var lastExplosionSfxTime : float ;
 private var nextExplosionSfxTime : float;
 
@@ -421,6 +425,8 @@ function FixedUpdate(){
 			lastExplosionSfxTime = Time.fixedTime;
 			nextExplosionSfxTime = Random.Range(1,5) / 10.0f;
 			AudioSource.PlayClipAtPoint(explosionSfx[Mathf.FloorToInt(Random.Range(0, explosionSfx.length) )], transform.position);
+			var t : Transform = Instantiate(explosionPrefab, transform.position + Random.onUnitSphere * 2.0f, Quaternion.identity);
+			t.particleSystem.Play();
 		}
 	
 	}
