@@ -3,8 +3,7 @@
 
 class TransporterSystem extends BaseSubsystem implements JammingListener {
 	
-	var beamInSfx : AudioClip;
-	var beamFailSfx : AudioClip;
+	
 	
 	var ejectedDudePrefab : Transform;
 	var airlockDumpSfx : AudioClip;
@@ -31,7 +30,7 @@ class TransporterSystem extends BaseSubsystem implements JammingListener {
 	function jammingResult(state : int){
 		Debug.Log("cb");
 		if(state == 0){	//failed to jam
-			AudioSource.PlayClipAtPoint(beamInSfx, theShip.transform.position);
+//			AudioSource.PlayClipAtPoint(beamInSfx, theShip.transform.position);
 			OSCHandler.Instance.DisplayBannerAtClient("EngineerStation", "!!WARNING!!", "INTRUDER DETECTED IN TRANSPORTER ROOM, PREPARE TO DUMP AIRLOCK CONTENTS", 1500);
 			OSCHandler.Instance.ChangeClientScreen("EngineerStation", "airlockdump");
 		} else if (state == 1){

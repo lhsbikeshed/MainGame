@@ -34,8 +34,6 @@ class WarzoneScene2 extends GenericScene {
 
 /* beaming sutff */
 	
-	var beamInSfx : AudioClip;
-	var beamFailSfx : AudioClip;
 	
 	var ejectedDudePrefab : Transform;
 	var airlockDumpSfx : AudioClip;
@@ -64,7 +62,7 @@ class WarzoneScene2 extends GenericScene {
 		theShip = GameObject.Find("TheShip").transform;
 		theShip.rigidbody.useGravity = false;
 				theShip.GetComponentInChildren.<ShipCamera>().setSkyboxState (true);
-
+ 
 		theShip.rigidbody.drag = 0.7f;
 		shipSystem = theShip.GetComponent.<ship>();
 	}
