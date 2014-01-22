@@ -96,24 +96,6 @@ function OnDestroy(){
 
 function FixedUpdate(){
 	
-	/* test things
-	*/
-	if(Input.GetKey("3")){
-		playerShip.GetComponent.<ship>().releaseDock();
-	}
-	if(Input.GetKey("4")){
-		playerShip.GetComponent.<ship>().setShutterState(true);
-	}
-	if(Input.GetKey("5")){
-			GameObject.Find("door").GetComponent.<DoorScript>().openDoor();
-	}
-	if(Input.GetKey("6")){
-			playerShip.GetComponent.<Reactor>().enableSystem();
-	}
-	if(Input.GetKey("7")){
-			shipSystem.startJump();
-	}
-
 	OSCHandler.Instance.UpdateLogs();
 	
 	if (lastShipUpdate + updateTime < Time.time && Application.loadedLevel != 5){

@@ -244,6 +244,13 @@ function damageShip(amount : float, deathText : String){
 		GetComponent.<ExplosionOverlayBehaviour>().die();
 		yield WaitForSeconds(2) ;
 		GameObject.Find("PersistentScripts").GetComponent.<PersistentScene>().shipDead(deathText);
+		
+		//silence all of the subsystems
+		
+		for (var s : AudioSource in GetComponentsInChildren.<AudioSource>()){
+			s.Stop();
+		}
+		
 //	} else if (hullState <= 15.0f){
 //
 //		CabinEffects.Instance().setRedAlert(true);

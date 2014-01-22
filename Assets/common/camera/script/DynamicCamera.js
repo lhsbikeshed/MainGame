@@ -118,6 +118,10 @@ function init(){
 	} else {
 		
 	}
+	//move to ship if were not currently stuck to a camereapoint
+	if(followTransform  == null){
+		resetToShip();
+	}
 }
 
 function setLocation(t : Transform){
