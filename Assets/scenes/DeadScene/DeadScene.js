@@ -34,13 +34,13 @@ class DeadScene extends GenericScene{
 			
 			
 		} else {
-			Destroy(GameObject.Find("DynamicCamera"));
+			
 			leftCamera.rect.x = 0.0f;
 			leftCamera.rect.width = 1.0f;
 			rightCamera.enabled = false;
 		
 		}
-		
+		Destroy(GameObject.Find("DynamicCamera"));
 		Destroy(GameObject.Find("TheShip"));
 		Destroy(GameObject.Find("ExplosionOverlay"));
 		//cut the cabin lights
