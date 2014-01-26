@@ -17,10 +17,13 @@ class JammingSystem extends BaseSubsystem implements JammingListener{
 	
 	}
 	
-	function startJammer(cb : JammingListener){
+	function startJammer(cb : JammingListener, diff : int){
 		completeCallback = cb;
 		
 		OSCHandler.Instance.ChangeClientScreen("EngineerStation", "jamming");
+		var o : OSCMessage = OSCMessage("/system/jammer/setDifficulty");
+		o.Append.<int>(diff);
+		OSCHandler.Instance.SendMessageToAll(o);
 		running = true;
 	}
 	

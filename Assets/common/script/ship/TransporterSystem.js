@@ -42,11 +42,12 @@ class TransporterSystem extends BaseSubsystem implements JammingListener {
 		}
 	}
 	
-	function startBeamAttempt(){
+	function startBeamAttempt(diff : int){
+		Debug.Log("Beam attempt at diff: " + diff);
 		beamInProgress = true;
 		OSCHandler.Instance.DisplayBannerAtClient("EngineerStation", "!!WARNING!!", "SOMEONE IS TRYING TO BEAM ABOARD, PREPARE TO JAM THE SIGNAL", 2000);
 		yield WaitForSeconds(1);
-		theShip.GetComponent.<JammingSystem>().startJammer( this);
+		theShip.GetComponent.<JammingSystem>().startJammer( this, diff);
 		
 
 		
@@ -107,7 +108,13 @@ class TransporterSystem extends BaseSubsystem implements JammingListener {
 		var target = msgAddress[3];
 		switch (target){
 			case "startBeamAttempt":
-				startBeamAttempt();			
+				var diff: int;
+				if(message.Data.Count >=1){
+					diff = message.Data[0];
+				} else {
+					diff = 1;
+				}
+				startBeamAttempt(diff);			
 				break;
 			case "beamAttemptResult":
 				
