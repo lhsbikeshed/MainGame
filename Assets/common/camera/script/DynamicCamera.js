@@ -7,6 +7,8 @@ var lookAtShip : boolean;
 var followingShip : boolean;
 var useWebcam : boolean = false;
 
+var lerpSpeed : float = 0.1f;
+
 
 private var skyboxCamera : Camera;
 private var useSkyboxCamera : boolean=  false;
@@ -142,6 +144,7 @@ function resetToShip(){
 	
 	followingShip = true;
 	transform.position = GameObject.Find("DefaultDynamicCamera").transform.position;
+	followTransform = GameObject.Find("DefaultDynamicCamera").transform;
 	transform.localPosition = Vector3.zero;
 	transform.localRotation = Quaternion.identity;
 	transform.LookAt(theShip);
@@ -159,9 +162,7 @@ function Update(){
 	
 	}
 	if(followingShip){
-		var t = GameObject.Find("DefaultDynamicCamera").transform;
-		transform.position = t.position;
-		transform.LookAt(theShip, t.TransformDirection(Vector3.up));
+		
 	} else {
 		if(followTransform != null){
 			transform.position = followTransform.position;
@@ -211,6 +212,13 @@ function FixedUpdate () {
 	if(camVisible){
 		if(camStart + camDuration < Time.fixedTime){
 			hideCabinCamera();
+		}
+	}
+	if(followingShip){
+		if(followTransform != null){
+			transform.position = Vector3.Lerp(transform.position, followTransform.position, lerpSpeed * Time.deltaTime);
+			//transform.position = followTransform.position;
+			transform.LookAt(theShip, followTransform.TransformDirection(Vector3.up));
 		}
 	}
 	

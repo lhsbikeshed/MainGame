@@ -24,6 +24,8 @@ class IncomingMissile extends TargettableObject {
 	var testCamera : boolean = false;
 	var camAttached : boolean = false;
 	
+	var trailPrefab : Transform;
+	
 	
 	var sounds : AudioClip[];
 	private var parts : ParticleSystem;
@@ -48,6 +50,8 @@ class IncomingMissile extends TargettableObject {
 		if(Random.Range(0.0f, 100.0f) < 15.0f){
 			attachCam();
 		}
+		var t : Transform = Instantiate(trailPrefab, transform.position, transform.rotation);
+		t.parent = transform;
 		
 	}
 	
@@ -94,7 +98,7 @@ class IncomingMissile extends TargettableObject {
 		camAttached = true;
 		var g = new GameObject();
 		g.transform.parent = transform;
-		g.transform.localPosition = Vector3(0.0f, 4.5f, -15.0f);
+		g.transform.localPosition = Vector3(0.0f, 4.5f, -35.0f);
 		g.transform.localRotation = Quaternion.identity;
 		var cp : CameraPoint = g.AddComponent("CameraPoint");
 		cp.followShip = true;

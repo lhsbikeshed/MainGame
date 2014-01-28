@@ -161,22 +161,29 @@ function Update () {
 		for (var g : Transform in gameObjs){
 			
 				if(g.parent == null && g.gameObject.layer != 9 && g.GetComponent.<GUITexture>() == null){
+					var trailObj : Transform  = g.Find("trail(Clone)");
+					var trailPrefab : Transform;
+					var newTrail : boolean = false;
+					if(trailObj != null){
+						trailObj.parent = null;
+						
+						var inc = g.GetComponent.<IncomingMissile>();
+						if(inc != null){
+							trailPrefab = inc.trailPrefab;
+							newTrail = true;
+						}
+					}
+						
 					g.position += correctionTransform;
 					
-					/*var ps : ParticleSystem[]  = g.GetComponentsInChildren.<ParticleSystem>();
-					for(var p in ps){
-					p.
-						if(p.particleEmitter.useWorldSpace == true){
-							var particles : ParticleSystem.Particle[];
-							var l : int = p.GetParticles(particles);
-							for (var b = 0; b < l; b++) {
-	            	
-	            	
-	            				particles[b].position += correctionTransform;
-	            			}
-	            			p.SetParticles(particles, l);
-						}
-					}	*/				
+					
+					if(newTrail){
+						trailObj = Instantiate(trailPrefab, g.position, g.rotation);
+						trailObj.transform.parent = g.transform;
+					}
+					
+						
+								
 				}
 		}
 		
