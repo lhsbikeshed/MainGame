@@ -211,7 +211,7 @@ function gameMessage(message : OSCPacket){
 				Destroy(GameObject.Find("OSCHandler"));
 				Destroy(GameObject.Find("PersistentScripts"));
 				Destroy(GameObject.Find("TheShip"));
-			
+				Destroy(GameObject.Find("DynamicCamera"));
 				Application.LoadLevel(0);
 				//FIXME destroy the persistent things
 				
