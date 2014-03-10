@@ -32,10 +32,10 @@ function Update () {
 }
 
 function FixedUpdate(){
-if(test){
-test = false;
-openDoor();
-}
+	if(test){
+		test = false;
+		openDoor();
+	}
 
 	var amount : float = (Time.fixedTime - changeTime) / duration;
 	if(state == OPENING){
