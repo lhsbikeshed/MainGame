@@ -40,12 +40,16 @@ function gateDone(obj : GameObject){
 			g.GetComponent.<TargettableObject>().highlighted = false;
 			break;
 		}
+		
 		ct++;
 	}
 	
 	if(ct < 13){
 		mapObjects[ct+1].GetComponent.<DynamicMapObject>().Activate();
 		mapObjects[ct+1].GetComponent.<TargettableObject>().highlighted = true;
+		var msg : OSCMessage = new OSCMessage("/game/speedrun/beaconDone");
+		msg.Append.<int>(ct+1);
+		OSCHandler.Instance.SendMessageToAll(msg);
 		currentWaypoint = ct+1;
 	}
 }
