@@ -35,6 +35,7 @@ class DropScene extends GenericScene {
 	
 	var warningLoop : AudioClip;
 	var altitudeWarning : AudioClip;
+	var jumpFail : AudioClip;
 	private var warningAudio : AudioSource; //general warning, this gets more frequent the lower down the ship gets
 	private var lastWarningTime : float;
 	private var warningTimer : float;
@@ -48,6 +49,11 @@ class DropScene extends GenericScene {
 	
 	//urgh
 	var airForce : float = 0.5f;
+	
+	//turbulence
+	private var lastTurbulence : float;
+	private var nextTurbulence : float;
+	
 	
 	
 	function Start () {
@@ -90,7 +96,7 @@ class DropScene extends GenericScene {
 		//theShip.rigidbody.drag = 0.5f;
 	
 		//add a little forward speed to the drop and add a roll rotation to show we came out of warp badly
-		theShip.rigidbody.velocity = theShip.transform.rotation * Vector3.forward * 10;
+		theShip.rigidbody.velocity = theShip.transform.rotation * Vector3.forward * 100;
 		
 		
 		theShip.GetComponent.<MiscSystem>().setExternalLight(false);	//ext light kills the planet shader
@@ -111,6 +117,13 @@ class DropScene extends GenericScene {
 		
 		altitude =  Vector3.Distance(planet.position, skyCam.position) * 10;
 		prevFrameAltitude = altitude;
+		
+		AudioSource.PlayClipAtPoint(jumpFail, theShip.transform.position);
+		
+		//set up turbulence stuff
+		lastTurbulence = Time.fixedTime + 3.0;
+		nextTurbulence = Random.RandomRange(5.0, 15.0);
+		
 	}
 	
 	function updateFireballDirection(){
@@ -128,6 +141,17 @@ class DropScene extends GenericScene {
 			theShip.rigidbody.AddRelativeTorque(Vector3(0,0,50), ForceMode.Impulse);
 			initialKick = false;
 		}
+		
+		if(lastTurbulence + nextTurbulence < Time.fixedTime){
+			lastTurbulence = Time.fixedTime;
+			nextTurbulence = Random.Range(8.0, 20.0);
+			OSCHandler.Instance.SendMessageToAll(OSCMessage("/scene/drop/turbulenceWarning"));
+			var ranVec : Vector3 = Random.onUnitSphere;
+			ranVec.z = 0;
+			ranVec *= Random.Range(300.0, 650.0);
+			theShip.rigidbody.AddRelativeTorque(ranVec, ForceMode.Impulse);
+		}
+		
 		
 		//slowly rotate the ship toward the fireball
 		theShip.rigidbody.AddTorque(Vector3.Cross(theShip.transform.forward, theShip.rigidbody.velocity.normalized) * airForce, ForceMode.Force);
