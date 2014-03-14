@@ -31,6 +31,7 @@ function generateTrack(){
 		
 	
 		objectList[i] = Instantiate(targetObject,thisPoint, Quaternion.identity);
+		objectList[i].name = objectList[i].name + i;
 		
 		for(var t : BlinkenFlareBehaviour in objectList[i].GetComponentsInChildren.<BlinkenFlareBehaviour>()){
 			t.startDelay = 60;

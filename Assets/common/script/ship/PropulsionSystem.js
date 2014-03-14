@@ -73,7 +73,7 @@ class PropulsionSystem extends BaseSubsystem
 		} 
 		propulsionModifier = propulsionPowerModifier[theShip.GetComponent.<ship>().propulsionPower - 1]; //(1 + theShip.GetComponent.<ship>().propulsionPower) / 4.0f;
 		if(inBay){
-			propulsionModifier *= 0.2f;
+			propulsionModifier *= 0.5f;
 		}
 		//on damage to left and right engines we should return some sort of direction for the ship to move in
 		//to simulate engines being borked

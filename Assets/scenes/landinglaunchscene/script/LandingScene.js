@@ -5,6 +5,8 @@ class LandingScene extends GenericScene {
 	private var theShip : Transform;
 	private var dockChamber : DockChamberScript;
 
+	var autoTest : boolean = false;
+	
 	function Start () {
 		GameObject.Find("STATIOn").GetComponent.<Station>().rotating = true;
 		dockChamber = GameObject.Find("DockChamber").GetComponent.<DockChamberScript>();
@@ -20,7 +22,63 @@ class LandingScene extends GenericScene {
 	}
 	
 	function Update () {
+		if(autoTest){
+			autoTest = false;
+			startAutoPilot();
+		}
 	
+	}
+	
+	
+	
+	function AutopilotFail(){
+		//switch to docking comp
+		//OSCHandler.Instance.ChangeClientScreen("PilotStation", "docking");
+		OSCHandler.Instance.DisplayBannerAtClient("PilotStation", "ERROR", "Autodocking failed. AE-35 unit offline. Please dock manually", 8000 );
+	}
+	
+	function startAutoPilot(){
+	
+		var autopilot : Autopilot;
+		//find the waypoints from targettrack
+		var targetTrack = GameObject.Find("TargetTrack");
+		if(targetTrack != null){
+		
+			autopilot = targetTrack.GetComponent.<Autopilot>();
+			if(autopilot.running == false){
+				OSCHandler.Instance.DisplayBannerAtClient("PilotStation", "Autodocking", "System engaged, please wait..", 480000);
+				var objList : Transform[] = targetTrack.GetComponent.<TargetTrackController>().objectList;
+				
+				for(var i = 1; i < objList.length; i++){
+				//set a callback on the second to last beacon to "fail" the autopilot
+					if(i == objList.length - 1){
+						objList[i].GetComponent.<SequenceWaypoint>().OnArrive = function(g : GameObject) {AutopilotFail();};
+					}
+					autopilot.AddWaypoint( objList[i].GetComponent.<SequenceWaypoint>());
+					
+				}
+				autopilot.StartFlight();
+			}
+				
+		
+		} else {
+			Debug.Log("no waypoints found");
+			return;
+		}
+		//set them (minus the 0 element) to the autopilot
+		//start it
+	}
+	
+	function stopAutopilot(){
+		var autopilot : Autopilot;
+		var targetTrack = GameObject.Find("TargetTrack");
+		if(targetTrack != null){
+			autopilot = targetTrack.GetComponent.<Autopilot>();
+			if(autopilot.running == true){
+				autopilot.PauseFlight();
+			}
+		}
+		theShip.GetComponent.<ship>().setControlLock(false);
 	}
 	
 	//OSC HANDLER
@@ -53,6 +111,10 @@ class LandingScene extends GenericScene {
 				if (dockingBayScript == null){ return; }
 				dockingBayScript.setGravity( message.Data[0] == 1 ? true : false );
 				break;
+			case "autodock":
+				startAutoPilot();
+				break;
+				
 		}
 	
 	

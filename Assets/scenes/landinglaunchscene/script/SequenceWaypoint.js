@@ -17,6 +17,8 @@ var inSound : AudioClip;
 var outSound : AudioClip;
 var duringSound : AudioClip;
 
+var OnArrive : Function;
+
 function Start () {
 
 }
@@ -28,8 +30,8 @@ function Update () {
 
 }
 
-function OnArrive(gObj : GameObject){
-}
+//function OnArrive(gObj : GameObject){
+//}
 
 function OnDrawGizmos(){
 	Gizmos.color = Color.red;

@@ -313,6 +313,11 @@ function jumpAbort(){
 	setJumpEffectState(false);
 }
 
+/* lock out pilot controls */
+function setControlLock(state : boolean){
+	controlsLocked = !state;
+}
+
 
 /* tidy up all of the jump effects
 */
