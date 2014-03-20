@@ -7,6 +7,8 @@ class LandingScene extends GenericScene {
 
 	var autoTest : boolean = false;
 	
+	
+	
 	function Start () {
 		GameObject.Find("STATIOn").GetComponent.<Station>().rotating = true;
 		dockChamber = GameObject.Find("DockChamber").GetComponent.<DockChamberScript>();
@@ -34,7 +36,7 @@ class LandingScene extends GenericScene {
 	function AutopilotFail(){
 		//switch to docking comp
 		//OSCHandler.Instance.ChangeClientScreen("PilotStation", "docking");
-		OSCHandler.Instance.DisplayBannerAtClient("PilotStation", "ERROR", "Autodocking failed. AE-35 unit offline. Please dock manually", 8000 );
+		//OSCHandler.Instance.DisplayBannerAtClient("PilotStation", "ERROR", "Autodocking failed. AE-35 unit offline. Please dock manually", 8000 );
 	}
 	
 	function startAutoPilot(){
@@ -114,7 +116,17 @@ class LandingScene extends GenericScene {
 			case "autodock":
 				startAutoPilot();
 				break;
-				
+			case "dockingCompState":
+				var g : GameObject = GameObject.Find("DockingComp");
+				if(g != null){
+					var s : int = message.Data[0];
+					if(s == 0){
+						g.GetComponent.<DockingComputer>().TurnOff();
+					} else {
+						g.GetComponent.<DockingComputer>().TurnOn();
+					}
+				}
+				break;
 		}
 	
 	

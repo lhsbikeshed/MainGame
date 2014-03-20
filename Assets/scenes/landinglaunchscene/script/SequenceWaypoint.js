@@ -20,7 +20,7 @@ var duringSound : AudioClip;
 var OnArrive : Function;
 
 function Start () {
-
+	OnArrive = function(g : GameObject) {DummyFunction(g);};
 }
 
 function Update () {
@@ -28,6 +28,9 @@ function Update () {
 		transform.rotation = matchRotation.rotation;
 	}
 
+}
+
+function DummyFunction(g : GameObject){
 }
 
 //function OnArrive(gObj : GameObject){

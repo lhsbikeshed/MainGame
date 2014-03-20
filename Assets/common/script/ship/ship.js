@@ -488,14 +488,14 @@ function FixedUpdate(){
 	if(jumping){
 		rigidbody.AddForce (transform.TransformDirection(Vector3.forward * 15000));
 		
-		if(Time.fixedTime - jumpStartTime > 4){	//turn on effects at 4 seconds
+		if(Time.fixedTime - jumpStartTime > 2){	//turn on effects at 2 seconds
 			
 			setJumpEffectState(true);
 			shipCamera.setFovs(85 + ((Time.fixedTime - jumpStartTime - 4) / 3.0f ) * 30);
 		}
 			
 		//JUMP!
-		if (Time.fixedTime - jumpStartTime  > 7){	//jump at 7 seconds
+		if (Time.fixedTime - jumpStartTime  > 5){	//jump at 7 seconds
 			
 			jumpEnd();
 			if(inTunnelGate){

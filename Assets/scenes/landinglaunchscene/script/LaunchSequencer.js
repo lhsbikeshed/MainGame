@@ -1,7 +1,6 @@
 #pragma strict
 
 var waypoints : SequenceWaypoint[];
-
 var targetWaypoint : int = 0;
 var objectToMove : Transform;
 var clamp : Transform;

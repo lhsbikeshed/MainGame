@@ -128,8 +128,10 @@ function FixedUpdate(){
 		if( dist < nextWaypoint.sensorDistance && nextWaypoint.visited == false ){
 			Debug.Log("Reached waypoint: " + waypointIndex);
 			nextWaypoint.visited = true;
-			
-			nextWaypoint.OnArrive(gameObject);
+			if(nextWaypoint.OnArrive != null){
+						
+				nextWaypoint.OnArrive(gameObject);
+			}
 			if(waypointIndex + 1 >= waypointList.Count){
 				running = false;
 				velocity = 0;
