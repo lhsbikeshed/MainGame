@@ -35,6 +35,7 @@ function Start () {
 	if(useNetwork == false){
 		networkReady = false;
 	}
+	Screen.showCursor = false;
 
 }
 

@@ -428,8 +428,8 @@ function OnSerializeNetworkView(stream : BitStream, info : NetworkMessageInfo) {
 /*----------------- Updates --------*/
    
 function FixedUpdate(){
-	if(internalPower == 3){
-		changeHullLevel(0.005f);
+	if(internalPower == 3 && reactor.systemEnabled){
+		changeHullLevel(0.002f);
 		
 	}
 	if(exploding){

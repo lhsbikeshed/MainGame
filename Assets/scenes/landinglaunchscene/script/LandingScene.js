@@ -48,7 +48,7 @@ class LandingScene extends GenericScene {
 		
 			autopilot = targetTrack.GetComponent.<Autopilot>();
 			if(autopilot.running == false){
-				OSCHandler.Instance.DisplayBannerAtClient("PilotStation", "Autodocking", "System engaged, please wait..", 480000);
+				OSCHandler.Instance.DisplayBannerAtClient("PilotStation", "Autodocking", "System engaged, please wait..", 16000);
 				var objList : Transform[] = targetTrack.GetComponent.<TargetTrackController>().objectList;
 				
 				for(var i = 1; i < objList.length; i++){

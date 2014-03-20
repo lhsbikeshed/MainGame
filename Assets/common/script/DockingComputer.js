@@ -6,6 +6,7 @@ var systemEnabled : boolean = false;
 
 
 var lockingState : int = NO_SIGNAL;
+var hasEntered : boolean = false;
 
 private var NO_SIGNAL : int = 0;
 private var LOCKING_SIGNAL : int = 1;
@@ -64,12 +65,17 @@ function TurnOff(){
 	}
 }
 
+function Entered(){
+	lockingState = LOCKING_SIGNAL;
+	hasEntered = true;
+}
+
 function OnTriggerEnter (c : Collider){
 	if(systemEnabled){
 		if(c.name == "TheShip"){
 			//send out docking screen
+			Entered();
 			
-			lockingState = LOCKING_SIGNAL;
 		}
 	}
 }
@@ -78,7 +84,7 @@ function OnTriggerExit(c : Collider){
 	if(systemEnabled){
 		if(c.name == "TheShip"){
 			//revert the pilot screen to radar
-			
+			hasEntered = false;
 			lockingState = NO_SIGNAL;
 			var m : OSCMessage = OSCMessage("/system/dockingComputer/dockingPosition");
 			m.Append(-4.0f);
@@ -94,6 +100,10 @@ function OnTriggerExit(c : Collider){
 
 function OnTriggerStay(c : Collider){
 	if(systemEnabled){
+		/* catches the ship being insie the trigger when the comp is activated */
+		if(hasEntered == false){
+			Entered();
+		}
 		
 		if(c.name == "TheShip" ){
 			
