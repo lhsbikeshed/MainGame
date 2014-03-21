@@ -48,7 +48,7 @@ function FixedUpdate(){
 	if(gravityOn && theShip.parent == transform){
 		theShip.rigidbody.AddForce( transform.rotation * Vector3.up * -300, ForceMode.Force);
 	}
-	if(dockingDoor.state != dockingDoor.CLOSED){	//leak some atmosphere if the door isnt closed
+	if(dockingDoor.state != DoorScript.DoorState.CLOSED){	//leak some atmosphere if the door isnt closed
 		oxLevel -= 0.005f;
 		if(oxLevel < 0){
 			oxLevel = 0.0f;

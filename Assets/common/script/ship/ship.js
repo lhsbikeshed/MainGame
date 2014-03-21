@@ -167,7 +167,7 @@ function OnCollisionEnter(c : Collision){
 
     	if (relativePosition.z > 0) {
 		
-			if(c.impactForceSum.magnitude > 50 && shutterScript.state != shutterScript.CLOSED){
+			if(c.impactForceSum.magnitude > 50 && shutterScript.state != DoorScript.DoorState.CLOSED){
 				//damage the window
 				windowScript.hitSomething(c.impactForceSum.magnitude);
 			}

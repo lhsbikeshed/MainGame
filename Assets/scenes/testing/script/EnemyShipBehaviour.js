@@ -1,7 +1,7 @@
 #pragma strict
 
 
-class EnemyShipBehaviour extends GeneralTrackableTarget {
+class EnemyShipBehaviour extends TargettableObject {
 	
 	var theShip : Transform;
 	var rotateSpeed : float  = 0.1f;
@@ -9,10 +9,12 @@ class EnemyShipBehaviour extends GeneralTrackableTarget {
 	var testing : boolean = false;
 	var targetTest : boolean = false;
 	var ang : float = 10.0f;
+	var nextShotTime : float = 8.0f;
 	
 	private var turrets : LaserTurretBehaviour[];
 	
-	enum AIState { 	WAITING, 	//waiting
+	enum AIState {  IDLE,		//do nothing at all, just wait for a jump signal
+					WAITING, 	//waiting
 					HUNTING, 	//seeking out the ship
 					ORBITING,	//orbit around 
 					AIMING		//aiming at the target to shoot it					
@@ -118,6 +120,7 @@ class EnemyShipBehaviour extends GeneralTrackableTarget {
 				for(var t : LaserTurretBehaviour in turrets){
 					t.startFiring();
 				}
+				nextShotTime =  Random.RandomRange(6.0f, 15.0f);
 				currentAIState = AIState.ORBITING;
 				orbitTime = 0.0f;
 				
@@ -141,6 +144,14 @@ class EnemyShipBehaviour extends GeneralTrackableTarget {
 	
 	function setWeaponState (s : boolean){
 	}
+	
+	
+	function Jumpin(){
+		//work out a target jump pos in front of ship
+		
+	
+	}
+
 	
 	function Update () {
 		
