@@ -15,7 +15,7 @@ function Start () {
 	clips = Resources.LoadAll("atc", typeof(AudioClip));
 	Debug.Log("loaded " + clips.Length + " atc clips");
 	source = gameObject.AddComponent("AudioSource");
-	source.volume = 0.9f;
+	source.volume = 0.26f;
 	
 	shipReactor = GameObject.Find("TheShip").GetComponent.<Reactor>();
 }
