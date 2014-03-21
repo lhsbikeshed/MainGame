@@ -39,35 +39,37 @@ function fireAtTarget(targettedObject : Transform){
 		OSCHandler.Instance.DisplayBannerAtClient("TacticalStation", "No Target", "No Target Selected", 1000);
 		return;
 	}
-
-	var tscript : TargettableObject = targettedObject.GetComponent.<TargettableObject>();
-	if(tscript.exploding == false && state == 0){
-		
-		var targetRange : float = (theShip.transform.position - targettedObject.position).magnitude;
-		weaponsPower =  theShip.GetComponent.<ship>().weaponsPower;
-		var maxBeamRange : float = 1000 + weaponsPower * 300;
-		if(targetRange > maxBeamRange){
-			msg = new OSCMessage("/tactical/weapons/targetRange");
-			msg.Append.<int>(tscript.targetId);
-			OSCHandler.Instance.SendMessageToClient("TacticalStation", msg);
-			OSCHandler.Instance.DisplayBannerAtClient("TacticalStation", "ERROR", "Target Out Of Range, current range: " + targetRange, 1000);
-		} else {
-			msg = new OSCMessage("/tactical/weapons/firingAtTarget");
-			msg.Append.<int>(tscript.targetId);
-			OSCHandler.Instance.SendMessageToClient("TacticalStation", msg);
-			var damage : float = (1.0 - Mathf.Clamp(targetRange / maxBeamRange, 0,1)) * (  weaponsPower  / 3.0f) * tscript.baseDamage;
+	try{
+		var tscript : TargettableObject = targettedObject.GetComponent.<TargettableObject>();
+		if(tscript.exploding == false && state == 0){
+			
+			var targetRange : float = (theShip.transform.position - targettedObject.position).magnitude;
+			weaponsPower =  theShip.GetComponent.<ship>().weaponsPower;
+			var maxBeamRange : float = 1000 + weaponsPower * 300;
+			if(targetRange > maxBeamRange){
+				msg = new OSCMessage("/tactical/weapons/targetRange");
+				msg.Append.<int>(tscript.targetId);
+				OSCHandler.Instance.SendMessageToClient("TacticalStation", msg);
+				OSCHandler.Instance.DisplayBannerAtClient("TacticalStation", "ERROR", "Target Out Of Range, current range: " + targetRange, 1000);
+			} else {
+				msg = new OSCMessage("/tactical/weapons/firingAtTarget");
+				msg.Append.<int>(tscript.targetId);
+				OSCHandler.Instance.SendMessageToClient("TacticalStation", msg);
+				var damage : float = (1.0 - Mathf.Clamp(targetRange / maxBeamRange, 0,1)) * (  weaponsPower  / 3.0f) * tscript.baseDamage;
+				
+				
+				tscript.GetShot(damage);
 			
 			
-			tscript.GetShot(damage);
-		
-		
-			state = 1;
-			fireTime = Time.fixedTime;	
-			target = targettedObject;
+				state = 1;
+				fireTime = Time.fixedTime;	
+				target = targettedObject;
+			}
+			
 		}
-		
+	} catch (e: NullReferenceException){
+		Debug.Log("fucked target");
 	}
-
 }
 
 /* for the npc ship to fire with, distance etc isnt important */
