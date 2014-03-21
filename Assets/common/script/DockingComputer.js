@@ -55,6 +55,8 @@ function TurnOn(){
 		systemEnabled  = true;
 		
 		OSCHandler.Instance.ChangeClientScreen("PilotStation", "dockingtest");
+		lockingState = NO_SIGNAL;
+		
 	}
 }
 
@@ -68,6 +70,7 @@ function TurnOff(){
 function Entered(){
 	lockingState = LOCKING_SIGNAL;
 	hasEntered = true;
+	
 }
 
 function OnTriggerEnter (c : Collider){
@@ -99,13 +102,15 @@ function OnTriggerExit(c : Collider){
 }
 
 function OnTriggerStay(c : Collider){
-	if(systemEnabled){
-		/* catches the ship being insie the trigger when the comp is activated */
-		if(hasEntered == false){
-			Entered();
-		}
+	if(c.name == "TheShip" ){
+		if(systemEnabled){
 		
-		if(c.name == "TheShip" ){
+			/* catches the ship being insie the trigger when the comp is activated */
+			if(hasEntered == false){
+				Entered();
+			}
+			
+		
 			
 			//send out y,x coords, z is distance to bay
 			var shipPos : Vector3 = transform.InverseTransformPoint(theShip.position);
