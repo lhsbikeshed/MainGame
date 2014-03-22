@@ -34,9 +34,9 @@ class LandingScene extends GenericScene {
 	
 	
 	function AutopilotFail(){
-		//switch to docking comp
-		//OSCHandler.Instance.ChangeClientScreen("PilotStation", "docking");
-		//OSCHandler.Instance.DisplayBannerAtClient("PilotStation", "ERROR", "Autodocking failed. AE-35 unit offline. Please dock manually", 8000 );
+		var m : OSCMessage = OSCMessage("/system/control/controlState");
+		m.Append(0);
+		OSCHandler.Instance.SendMessageToClient("PilotStation", m);
 	}
 	
 	function startAutoPilot(){
@@ -48,7 +48,11 @@ class LandingScene extends GenericScene {
 		
 			autopilot = targetTrack.GetComponent.<Autopilot>();
 			if(autopilot.running == false){
-				OSCHandler.Instance.DisplayBannerAtClient("PilotStation", "Autodocking", "System engaged, please wait..", 4000);
+				
+				var m : OSCMessage = OSCMessage("/system/control/controlState");
+				m.Append(1);
+				OSCHandler.Instance.SendMessageToClient("PilotStation", m);
+				
 				var objList : Transform[] = targetTrack.GetComponent.<TargetTrackController>().objectList;
 				
 				for(var i = 1; i < objList.length; i++){

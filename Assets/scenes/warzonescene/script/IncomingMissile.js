@@ -126,7 +126,7 @@ class IncomingMissile extends TargettableObject {
 			if(!isDummy){
 				c.gameObject.GetComponent.<ship>().damageShip(Random.Range(8,12), "Exploded by missile");
 			}
-			c.rigidbody.rigidbody.AddExplosionForce(500, transform.position, 100,0,ForceMode.Impulse);
+			c.rigidbody.rigidbody.AddExplosionForce(200, transform.position, 100,0,ForceMode.Impulse);
 			explode();
 		}
 		
