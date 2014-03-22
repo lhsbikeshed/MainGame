@@ -57,7 +57,7 @@ function TurnOn(){
 		
 		OSCHandler.Instance.ChangeClientScreen("PilotStation", "dockingtest");
 		lockingState = NO_SIGNAL;
-		
+		hasEntered = false;
 	}
 }
 
@@ -65,6 +65,7 @@ function TurnOff(){
 	if(systemEnabled){
 		systemEnabled = false;
 		OSCHandler.Instance.RevertClientScreen("PilotStation");
+		hasEntered = false;
 	}
 }
 

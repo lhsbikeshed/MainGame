@@ -191,6 +191,19 @@ function sendShipStats(){
 }
 
 
+function jumpToScene(id : int){
+	Debug.Log("Forcing ship to scene: " + id);
+	var theShip = GameObject.Find("TheShip");
+	theShip.rigidbody.freezeRotation = false;
+	theShip.rigidbody.constraints = RigidbodyConstraints.None;
+	theShip.GetComponent.<ship>().didWeWarpIn = true;
+	theShip.GetComponent.<MiscSystem>().consuming = true; //reenable air consumption
+	theShip.rigidbody.angularDrag = 0.5f;
+ 	theShip.GetComponent.<PropulsionSystem>().throttleDisabled = false;
+
+	theShip.transform.parent = null;
+	Application.LoadLevel(id);
+}
 
 
 
@@ -204,7 +217,11 @@ function gameMessage(message : OSCPacket){
 	//var sc : warzonescene = GameObject.Find("SceneScripts").GetComponent.<warzonescene>();
 	switch(target){
 		
-			
+		case "takeMeTo":
+			//force the ship to hyperspace to given scene id
+			var sceneId : int = message.Data[0];
+			jumpToScene(sceneId);
+			break;
 		case "reset":
 			//if(Application.loadedLevel == 5){
 				OSCHandler.Instance.dieFuckerDie();

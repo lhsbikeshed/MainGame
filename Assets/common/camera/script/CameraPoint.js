@@ -68,8 +68,10 @@ function OnTriggerEnter(col : Collider){
 }
 function OnTriggerExit(col : Collider){
 	if(col.gameObject.name == "TheShip" && onLeaveReset){
-		cam.resetToShip();
-		cam.canCabinCamBeUsed = !disableRandomCabinCamLeave;
-		startZoom = false;
+		if(cam != null){
+			cam.resetToShip();
+			cam.canCabinCamBeUsed = !disableRandomCabinCamLeave;
+			startZoom = false;
+		}
 	}
 }
