@@ -6,6 +6,7 @@ var duration : float = 1;
 var sweepAngles : Vector3;	//how much we sweep the laser round when shooting
 var sweepTime : float;		//how fast we sweep
 var penetrating : boolean;	//should the beam stop at the target or continue past
+var deliberatelyMiss : boolean = false; //should we deliberately miss our target?
 
 var silent : boolean;
 var chargeEffect : AudioClip;
@@ -55,10 +56,13 @@ function Update () {
 		
 			laserRenderer.SetPosition(0, transform.position);
 			var tgtPos : Vector3 = target.position;
-			
-			tgtPos = Vector3.Lerp( 	Quaternion.Euler(-sweepAngles.x, -sweepAngles.y, -sweepAngles.z) * tgtPos, 
-									Quaternion.Euler(sweepAngles.x, sweepAngles.y, sweepAngles.z) * tgtPos,
-									(Time.fixedTime - startFireTime) / duration);
+			if(deliberatelyMiss){
+				tgtPos = Quaternion.Euler(-2.0f, -2.0f, 0) * tgtPos;
+			} else {
+				tgtPos = Vector3.Lerp( 	Quaternion.Euler(-sweepAngles.x, -sweepAngles.y, -sweepAngles.z) * tgtPos, 
+										Quaternion.Euler(sweepAngles.x, sweepAngles.y, sweepAngles.z) * tgtPos,
+										(Time.fixedTime - startFireTime) / duration);
+			}
 			if(penetrating){
 				tgtPos = (tgtPos - transform.position) *  5000.0f;			
 			}
@@ -90,7 +94,7 @@ function startFiring(){
 	if(state == 0){
 		state = 1;
 		startChargeTime = Time.fixedTime;
-		if(!silent){
+		if(!silent && chargeEffect != null){
 			soundSource.PlayClipAtPoint(chargeEffect, transform.position);
 		}
 	}

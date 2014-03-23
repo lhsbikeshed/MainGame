@@ -14,6 +14,8 @@ var sensorPower : int = 2;
 var internalPower : int = 2;
 var propulsionPower : int = 2;
 var hullState : float = 100.0f;
+var acceleration : Vector3;
+private var lastVelocity : Vector3;
 private var previousHullState = 100.0f;
 
 
@@ -228,13 +230,9 @@ function Update()
  */
 function damageShip(amount : float, deathText : String){
 	var msg : OSCMessage = OSCMessage("/ship/damage");	
-			
 	msg.Append.<float>(amount);		
-	
-		
-	
 	OSCHandler.Instance.SendMessageToAll(msg);
-	//hullState -= amount;
+	GetComponentInChildren.<ShipCamera>().shakeFor(1.0);
 	changeHullLevel(-amount);
 	if(hullState <= 0){
 	
@@ -250,12 +248,7 @@ function damageShip(amount : float, deathText : String){
 		for (var s : AudioSource in GetComponentsInChildren.<AudioSource>()){
 			s.Stop();
 		}
-		
-//	} else if (hullState <= 15.0f){
-//
-//		CabinEffects.Instance().setRedAlert(true);
-//	} else {
-//		CabinEffects.Instance().setRedAlert(false);
+
 	}
 }
 
@@ -428,10 +421,17 @@ function OnSerializeNetworkView(stream : BitStream, info : NetworkMessageInfo) {
 /*----------------- Updates --------*/
    
 function FixedUpdate(){
+
+	acceleration = (rigidbody.velocity - lastVelocity) / Time.fixedDeltaTime;
+	lastVelocity = rigidbody.velocity;
+
+	//repair ship hull if power is == 3
 	if(internalPower == 3 && reactor.systemEnabled){
 		changeHullLevel(0.002f);
 		
 	}
+	
+	//explode the ship
 	if(exploding){
 		if(lastExplosionSfxTime + nextExplosionSfxTime < Time.fixedTime){
 			lastExplosionSfxTime = Time.fixedTime;

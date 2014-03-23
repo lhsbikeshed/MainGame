@@ -14,6 +14,11 @@ private var mapController : MapController;
 private var clone : GameObject;
 private var skyboxCamera : SkyboxCamera;
 
+public var ActivateFunction : Function;
+public var DeactivateFunction : Function;
+
+
+
 function getSectorAsVec() : Vector3 {
 	return Vector3(sectorCoord[0], sectorCoord[1], sectorCoord[2]);
 
@@ -36,6 +41,9 @@ function setWorldPosition(pos : Vector3){
 	
 
 function Awake () {
+	ActivateFunction = function() {DefaultActivation();};
+	DeactivateFunction = function() {DefaultDeactivation();};
+	
 	//gameObject.active = false;
 	tag = "dynamic";
 	cols = gameObject.GetComponentsInChildren.<Collider>();
@@ -96,43 +104,46 @@ function Awake () {
 	
 	
 }
+/* default behaviours for active/deactive*/
+function DefaultActivation(){
+	gameObject.SetActiveRecursively( true);
+	var rItem :TargettableObject = GetComponent.<TargettableObject>();
+	if(rItem != null){
+		rItem.enabled = true;
+	}
+	for (var c : Collider in cols){
+		c.enabled = true;
+	}
+	if(clone != null){
+		clone.SetActiveRecursively(false);
+	}
+}
 
+function DefaultDeactivation(){
+	transform.position = Vector3(-10000, -10000, -10000);
+	for (var c : Collider in cols){
+		c.enabled = false;
+	}
+	
+	var rItem :TargettableObject = GetComponent.<TargettableObject>();
+	if(rItem != null){
+		rItem.enabled = false;
+	}
+	gameObject.SetActiveRecursively(false);
+	
+	
+	if(clone != null){
+		clone.SetActiveRecursively(true);
+	}
+}
+
+/* called by the map controller script */
 function Activate() {
-	//if(!gameObject.name.Contains("(Clone")){
-		
-		gameObject.SetActiveRecursively( true);
-		var rItem :TargettableObject = GetComponent.<TargettableObject>();
-		if(rItem != null){
-			rItem.enabled = true;
-		}
-		for (var c : Collider in cols){
-			c.enabled = true;
-		}
-		if(clone != null){
-			clone.SetActiveRecursively(false);
-		}
-		
-	//}
+		ActivateFunction(); 
 }
 
 function Deactivate(){
-	
-	transform.position = Vector3(-10000, -10000, -10000);
-		for (var c : Collider in cols){
-			c.enabled = false;
-		}
-		
-		var rItem :TargettableObject = GetComponent.<TargettableObject>();
-		if(rItem != null){
-			rItem.enabled = false;
-		}
-		gameObject.SetActiveRecursively(false);
-		
-		
-		if(clone != null){
-			clone.SetActiveRecursively(true);
-		}
-	
+		DeactivateFunction();
 }
 
 function FixedUpdate () {

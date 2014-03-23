@@ -9,6 +9,8 @@ var jumpGate : GameObject;
 private var currentScene : GenericScene;
 private var ps : PersistentScene;
 
+public static var _instance : MapController;
+
 function Awake () {
 	mapObjects = new List.<GameObject>();
 	ps = GameObject.Find("PersistentScripts").GetComponent.<PersistentScene>();
@@ -18,6 +20,7 @@ function Awake () {
 	currentScene = GameObject.Find("SceneScripts").GetComponent.<GenericScene>();
 	
 	updateObjectList();
+	_instance = this;
 	
 }
 
