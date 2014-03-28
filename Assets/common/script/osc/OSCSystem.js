@@ -25,6 +25,8 @@ private var miscSystem : MiscSystem;
 private var jumpSystem : JumpSystem;
 private var targettingSystem : TargettingSystem;
 
+private var commsOnline : boolean = false;
+
 //last packet timestamp. Used because the OSC lib doesnt remove packets from its queue once processed
 private var lastTimeStampProcessed : long;
 
@@ -139,11 +141,16 @@ function FixedUpdate(){
 					gameMessage(pkt);
 					
 				} else if (pkt.Address.IndexOf("/clientscreen/CommsStation/incomingCall") == 0){
-					AudioSource.PlayClipAtPoint(hailingSound, playerShip.transform.position);
-					OSCHandler.Instance.ChangeClientScreen("CommsStation", "videoDisplay");
+					if(!commsOnline){
+						AudioSource.PlayClipAtPoint(hailingSound, playerShip.transform.position);
+						OSCHandler.Instance.ChangeClientScreen("CommsStation", "videoDisplay");
+						commsOnline = true;
+					}
 				} else if (pkt.Address.IndexOf("/clientscreen/CommsStation/hangUp") == 0){
-					
-					OSCHandler.Instance.RevertClientScreen("CommsStation");
+					if(commsOnline){
+						OSCHandler.Instance.RevertClientScreen("CommsStation");
+						commsOnline = false;
+					}
 				} 
 				
 				lastTimeStampProcessed =  pkt.TimeStamp;    
