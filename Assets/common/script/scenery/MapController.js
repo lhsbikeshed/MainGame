@@ -162,7 +162,7 @@ function Update () {
 		var gameObjs : Transform[] = FindObjectsOfType(Transform) as Transform[];
 		
 		for (var g : Transform in gameObjs){
-			
+				
 				if(g.parent == null && g.gameObject.layer != 9 && g.GetComponent.<GUITexture>() == null){
 					var trailObj : Transform  = g.Find("trail(Clone)");
 					var trailPrefab : Transform;
@@ -176,7 +176,7 @@ function Update () {
 							newTrail = true;
 						}
 					}
-						
+					Debug.Log("moved: " + g.name);
 					g.position += correctionTransform;
 					
 					

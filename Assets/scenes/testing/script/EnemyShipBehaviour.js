@@ -22,6 +22,7 @@ class EnemyShipBehaviour extends TargettableObject {
 	private var scannerBeam : Transform;
 	private var scannerRotation : Quaternion;
 	private var scannerAnimationTime : float = 1.0f;
+	private var scannerMaterials : Renderer[] ;
 	
 	
 	
@@ -53,17 +54,20 @@ class EnemyShipBehaviour extends TargettableObject {
 	private var weaponsTarget : Transform;
 	
 	function Start () {
+		super.Start();
 		theShip = GameObject.Find("TheShip").transform;
 		//targetPoint = theShip.transform.position;
 		turrets = GetComponentsInChildren.<LaserTurretBehaviour>();
 		dynObj = GetComponent.<DynamicMapObject>();
-		dynObj.DeactivateFunction = function() { DynamicObjectDeactivate(); };
-		dynObj.ActivateFunction = function() { DynamicObjectActivate(); };
-		dynObj.Deactivate();
+//		dynObj.DeactivateFunction = function() { DynamicObjectDeactivate(); };
+//		dynObj.ActivateFunction = function() { DynamicObjectActivate(); };
+//		dynObj.Deactivate();
 		
 		warpEffects = transform.Find("warpeffects").GetComponent.<ParticleSystem>();
 		scannerBeam = transform.Find("ScannerBeam");
+		scannerMaterials = scannerBeam.GetComponentsInChildren.<Renderer>();
 		scannerBeam.gameObject.SetActiveRecursively(false);
+		
 	}
 	
 	
@@ -136,6 +140,7 @@ class EnemyShipBehaviour extends TargettableObject {
 			
 			var q4 : Quaternion = Quaternion.LookRotation(direction);
 			transform.rotation = Quaternion.Slerp(transform.rotation, q4, rotateSpeed);
+			rigidbody.AddForce(transform.TransformDirection(Vector3.up) * -15, ForceMode.Acceleration);
 			throttle = 0.0f;
 			
 			if(angDiff > 0.95f && weaponsTarget != null){
@@ -153,6 +158,7 @@ class EnemyShipBehaviour extends TargettableObject {
 				if( !miss ){
 					var diffMod : float = difficulty * 5.0f;
 					theShip.GetComponent.<ship>().damageShip(Random.Range(7.0f, 12.0f + diffMod), "Destroyed by hostile fire");
+					
 				}
 				
 				nextShotTime =  Random.Range(6.0f, 15.0f);
@@ -163,37 +169,43 @@ class EnemyShipBehaviour extends TargettableObject {
 		} else if (currentAIState == AIState.SCANNING){
 			if(scannerBeam.gameObject.active == false){
 				EnableScanner();
-			} else {
-				//scannerBeam.localRotation = Quaternion.Euler(0, 1.0f, 0) * scannerBeam.localRotation;
-				scannerAnimationTime -= Time.fixedDeltaTime;
-				if(scannerAnimationTime < 0.0f){
-					scannerAnimationTime = Random.Range(1.0f, 3.0f);
-					scannerRotation = Quaternion.Euler(Random.onUnitSphere * 360);
-				}
-				scannerBeam.localRotation = Quaternion.Slerp(scannerBeam.localRotation, scannerRotation, 0.04f);
-			
-				//sit still and rotate around toward the players but very slowly. Send out a "scanning timer" value that is displayed on tactical
-				//when that hits zero target the ship
-				scanTime -= Time.fixedDeltaTime;
-				
-				if(scanTime < 0){		//undetected for scanTime, leave the area
-					scanDone(true);
-					
-				}
-				
-				if(theShip.GetComponent.<Reactor>().systemEnabled ){
-					reactorDetectTime -= Time.fixedDeltaTime;
-				}
-				if(reactorDetectTime < 0){	//if the reactor stays on for more than reactorDetectTime then target and shoot
-					scanDone (false);
-				}
-				if(theShip.GetComponent.<ship>().acceleration.magnitude > 5.0f){	//if any point the ship accelerates too much then detect them
-					scanDone (false);
-				}
-				if(theShip.rigidbody.angularVelocity.magnitude > 1.0f){				//if the ship rotates too much then attack
-					scanDone(false);
-				}
 			}
+			
+			scannerAnimationTime -= Time.fixedDeltaTime;
+			if(scannerAnimationTime < 0.0f){
+				scannerAnimationTime = Random.Range(1.0f, 3.0f);
+				scannerBeam.localRotation = Quaternion.Euler(Random.onUnitSphere * 360);
+				SetScannerAlpha(0.0f);
+			} else if(scannerAnimationTime < 0.5f) {
+				SetScannerAlpha(0.0f);
+			} else {
+				SetScannerAlpha(Random.Range(0.4, 1.0));
+			}
+			
+		
+			//sit still and rotate around toward the players but very slowly. Send out a "scanning timer" value that is displayed on tactical
+			//when that hits zero target the ship
+			scanTime -= Time.fixedDeltaTime;
+			
+			if(scanTime < 0){		//undetected for scanTime, leave the area
+				scanDone(true);
+				
+			}
+			
+			if(theShip.GetComponent.<Reactor>().systemEnabled ){
+				reactorDetectTime -= Time.fixedDeltaTime;
+			}
+			if(reactorDetectTime < 0){	//if the reactor stays on for more than reactorDetectTime then target and shoot
+				scanDone (false);
+				
+			}
+			if(theShip.GetComponent.<ship>().acceleration.magnitude > 5.0f){	//if any point the ship accelerates too much then detect them
+				scanDone (false);
+			}
+			if(theShip.rigidbody.angularVelocity.magnitude > 1.0f){				//if the ship rotates too much then attack
+				scanDone(false);
+			}
+			
 		}
 		
 		
@@ -208,20 +220,33 @@ class EnemyShipBehaviour extends TargettableObject {
 		scannerBeam.gameObject.SetActiveRecursively(true);
 	}
 	
+	function SetScannerAlpha(a : float){
+		for(var t in scannerMaterials){
+			t.renderer.material.SetColor("_Color", Color(1.0, 1.0, 1.0, a));
+		}
+	}
+	
+	
+	
 	/*the scan of pl{ayer ship is done, target them if they are still online */
 	function scanDone(success : boolean){
-		if(!success){
 		
+		if(!success){
+			
 			currentAIState = AIState.HUNTING;
 			setLockState(true);
+			SetScannerAlpha(Random.Range(0.0, 1.0));
 			var toShip : Quaternion = Quaternion.LookRotation((theShip.position - transform.position).normalized, transform.up);
 			scannerBeam.rotation = toShip;
 			yield WaitForSeconds(2.0);
+			
 			//tell clients you were detected
 			var m : OSCMessage = OSCMessage("/scene/warzone/youWereDetected");
 			OSCHandler.Instance.SendMessageToAll(m);
 			//turn off scanner beam
 			scannerBeam.gameObject.SetActiveRecursively(false);
+		
+				
 		} else {
 			//jump out, nothing found
 			scannerBeam.gameObject.SetActiveRecursively(false);
@@ -266,48 +291,27 @@ class EnemyShipBehaviour extends TargettableObject {
 	function JumpIn(){
 		//work out a target jump pos in front of ship
 		if(!isActive){
-			dynObj.Activate();	//make the object active
-			//move its sector coord to that of the ship
-			var s : int[] = MapController._instance.sectorPos;
-			dynObj.sectorCoord = s;
+			
+			
+			currentAIState = AIState.IDLE;
+		
+			visibleAtClient = false;
+			isActive = false;
+			scanTime = 35.0f;
 			//calculate a new local pos for the ship, 900 units directly in front of players
 			var newPos : Vector3 = theShip.TransformDirection(Vector3.forward) * 300;
 			transform.position = newPos;
 			currentAIState = AIState.SCANNING;
 			warpEffects.Play();
 			
-			reactorDetectTime = 5.0f;
+			reactorDetectTime = 15.0f;
+			TargettingSystem.instance.addObject(gameObject);
 			
 		}
 	
 	}
 	
-	function DynamicObjectDeactivate(){
-		Debug.Log("dyn");
-		currentAIState = AIState.IDLE;
-		transform.position = Vector3(-10000, -10000, -10000);
-		for (var c : Collider in GetComponentsInChildren(Collider)){
-			c.enabled = false;
-		}
-		
-		var rItem :TargettableObject = GetComponent.<TargettableObject>();
-		
-		visibleAtClient = false;
-		isActive = false;
-		scanTime = 15.0f;
-	}
-	
-	function DynamicObjectActivate(){
-		var rItem :TargettableObject = GetComponent.<TargettableObject>();
-		visibleAtClient = true;
-		for (var c : Collider in GetComponentsInChildren(Collider)){
-			c.enabled = true;
-		}
-		visibleAtClient = true;
-		isActive = true;
-	}
 
-	
 	function Update () {
 		
 	

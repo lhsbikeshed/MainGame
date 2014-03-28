@@ -7,7 +7,7 @@ var hookArmed : boolean = false;
 var flarePrefab : Transform;
 
 private var grapplingHook : GrapplingHook;
-
+public static var instance : TargettingSystem;
 
 
 private var separator : char[] = ["/"[0]];
@@ -16,7 +16,7 @@ private var separator : char[] = ["/"[0]];
 function Start () {
 	theShip = GameObject.Find("TheShip");
 	grapplingHook  = GetComponentInChildren.<GrapplingHook>();
-	
+	instance = this;
 }
 
 function Update () {
