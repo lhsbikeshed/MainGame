@@ -201,9 +201,11 @@ class EnemyShipBehaviour extends TargettableObject {
 			}
 			if(theShip.GetComponent.<ship>().acceleration.magnitude > 5.0f){	//if any point the ship accelerates too much then detect them
 				scanDone (false);
+				
 			}
 			if(theShip.rigidbody.angularVelocity.magnitude > 1.0f){				//if the ship rotates too much then attack
 				scanDone(false);
+				
 			}
 			
 		}
@@ -233,10 +235,11 @@ class EnemyShipBehaviour extends TargettableObject {
 		
 		if(!success){
 			
-			currentAIState = AIState.HUNTING;
+			
 			setLockState(true);
 			SetScannerAlpha(Random.Range(0.0, 1.0));
-			var toShip : Quaternion = Quaternion.LookRotation((theShip.position - transform.position).normalized, transform.up);
+			var lookPos : Vector3 = theShip.position - theShip.TransformDirection(Vector3.up) * 40.0f;
+			var toShip : Quaternion = Quaternion.LookRotation((lookPos - transform.position).normalized, theShip.up);
 			scannerBeam.rotation = toShip;
 			yield WaitForSeconds(2.0);
 			
@@ -245,7 +248,7 @@ class EnemyShipBehaviour extends TargettableObject {
 			OSCHandler.Instance.SendMessageToAll(m);
 			//turn off scanner beam
 			scannerBeam.gameObject.SetActiveRecursively(false);
-		
+			currentAIState = AIState.HUNTING;
 				
 		} else {
 			//jump out, nothing found

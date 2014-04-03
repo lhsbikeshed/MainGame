@@ -14,10 +14,13 @@ class GeneralTrackableTarget extends TargettableObject {
 		parts = GetComponentInChildren.<ParticleSystem>();	
 		scanCode = Mathf.FloorToInt(Random.Range(0, 10000));
 		
-		statNames = new String[2];
-		statValues = new float[2];
+//		if(statNames == null || statValues == null){
+//			statNames = new String[2];
+//			statValues = new float[2];
+//			
+//		}
 		statNames[0] = "health";
-		statNames[1] = "";
+		
 		
 		GameObject.Find("TheShip").GetComponent.<TargettingSystem>().addObject(this);
 		
@@ -26,7 +29,7 @@ class GeneralTrackableTarget extends TargettableObject {
 	function Update () {
 	
 		statValues[0] = health;
-		statValues[1] = 0;
+		
 		
 	}
 	

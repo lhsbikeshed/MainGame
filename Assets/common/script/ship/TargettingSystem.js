@@ -149,11 +149,17 @@ function sendOSCUpdates(){
 				msg.Append.<float>(pos.x);
 				msg.Append.<float>(pos.y);
 				msg.Append.<float>(pos.z);
-				msg.Append.<float>(missScript.statValues[0]);
-				msg.Append.<float>(missScript.statValues[1]);
-				msg.Append.<String>(missScript.statNames[0]);
-				msg.Append.<String>(missScript.statNames[1]);
+				msg.Append.<float>(missScript.statValues[0]);				
+				msg.Append.<String>(missScript.statNames[0]);				
 				msg.Append.<String>(missScript.objectName);
+				
+				var statString : String = "";
+				for(var statId = 0; statId < missScript.statNames.length; statId++){
+					statString += missScript.statNames[statId] + ":" + missScript.statValues[statId] + ",";
+					
+				}
+				msg.Append.<String>(statString);
+				
 				OSCHandler.Instance.SendMessageToClient("TacticalStation", msg);
 					
 
@@ -173,6 +179,7 @@ function sendOSCUpdates(){
 					msg.Append.<String>(col);
 					msg.Append.<String>(missScript.stateText);	
 					msg.Append.<int>(missScript.highlighted == true ? 1 : 0);
+					msg.Append.<String>(statString);
 					//TODO
 					// add a confidence value here and use it to jitter the radar results around. This relates to amount of power going to sensors
 					//OSCHandler.Instance.SendMessageToAll( msg);

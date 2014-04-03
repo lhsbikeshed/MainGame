@@ -31,12 +31,14 @@ class TargettableObject  extends MonoBehaviour{
 	
 	function Start () {
 		targetId = gameObject.GetHashCode();
-		statNames = new String[2];
-		statValues = new float[2];
+		if(statNames == null || statValues == null){
+			statNames = new String[2];
+			statValues = new float[2];
+		}
 		statNames[0] = "health";
-		statNames[1] = " ";
+		
 		statValues[0] = 1;
-		statValues[1] = 0;
+		
 	}
 	
 	function Update () {
