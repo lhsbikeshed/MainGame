@@ -15,6 +15,7 @@ class TargettableObject  extends MonoBehaviour{
 	var statValues : float[];
 	
 	
+	
 	var baseDamage : float = 5.0f;
 	var exploding : boolean  = false;
 	var trackingPlayer : boolean = false;	//is this tracking the players movements?
@@ -40,6 +41,32 @@ class TargettableObject  extends MonoBehaviour{
 		statValues[0] = 1;
 		
 	}
+	
+	/* object statistic handlers, "stats" are things sent to the radar/tactical comp when in range*/	
+	function getStatIdFromName(n : String) : int{
+		for(var i = 0; i < statNames.Length; i++){
+			if(statNames[i] == n){
+				return i;
+			}
+		} 
+		return -1;
+	}
+	
+	function getStatFromName(s : String) : float {
+		var ind = getStatIdFromName(s);
+		if(ind != -1){
+			return statValues[ind];
+		}
+		return -10000.0f;
+	} 
+	
+	function setStatFromName(s : String, val : float){
+		var ind = getStatIdFromName(s);
+		if(ind != -1){
+			statValues[ind] = val;
+		}
+	}
+		
 	
 	function Update () {
 	

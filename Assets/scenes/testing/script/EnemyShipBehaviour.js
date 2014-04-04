@@ -32,7 +32,8 @@ class EnemyShipBehaviour extends TargettableObject {
 					WAITING, 	//waiting
 					HUNTING, 	//seeking out the ship
 					ORBITING,	//orbit around 
-					AIMING		//aiming at the target to shoot it					
+					AIMING,		//aiming at the target to shoot it	
+					RAMMING		//weapons down, intentionally ram the players				
 					};	
 					
 	enum WeaponState { 	DISABLED, 	//wont target or shoot
@@ -56,18 +57,24 @@ class EnemyShipBehaviour extends TargettableObject {
 	function Start () {
 		super.Start();
 		theShip = GameObject.Find("TheShip").transform;
-		//targetPoint = theShip.transform.position;
+
 		turrets = GetComponentsInChildren.<LaserTurretBehaviour>();
 		dynObj = GetComponent.<DynamicMapObject>();
-//		dynObj.DeactivateFunction = function() { DynamicObjectDeactivate(); };
-//		dynObj.ActivateFunction = function() { DynamicObjectActivate(); };
-//		dynObj.Deactivate();
+
 		
 		warpEffects = transform.Find("warpeffects").GetComponent.<ParticleSystem>();
 		scannerBeam = transform.Find("ScannerBeam");
 		scannerMaterials = scannerBeam.GetComponentsInChildren.<Renderer>();
 		scannerBeam.gameObject.SetActiveRecursively(false);
 		
+		//configure subsystem stats
+		setStatFromName("weaponHealth", 1.0f);
+		setStatFromName("hullHealth", 1.0f);
+		setStatFromName("engineHealth", 1.0f);
+		
+		//turn off other radar flags
+		setStatFromName("scanning", 0.0f);
+		setStatFromName("firing", 0.0f);
 	}
 	
 	
@@ -298,7 +305,7 @@ class EnemyShipBehaviour extends TargettableObject {
 			
 			currentAIState = AIState.IDLE;
 		
-			visibleAtClient = false;
+			visibleAtClient = true;
 			isActive = false;
 			scanTime = 35.0f;
 			//calculate a new local pos for the ship, 900 units directly in front of players
