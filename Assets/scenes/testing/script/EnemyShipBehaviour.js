@@ -75,6 +75,9 @@ class EnemyShipBehaviour extends TargettableObject {
 		//turn off other radar flags
 		setStatFromName("scanning", 0.0f);
 		setStatFromName("firing", 0.0f);
+		
+		//hide from radar
+		visibleAtClient = false;
 	}
 	
 	
@@ -289,6 +292,7 @@ class EnemyShipBehaviour extends TargettableObject {
 	
 	function JumpOut(){
 		if(isActive){
+			visibleAtClient = false;
 			currentAIState = AIState.IDLE;
 			warpEffects.Play();
 			transform.Find("body").GetComponent.<MeshRenderer>().enabled = false;
@@ -316,6 +320,7 @@ class EnemyShipBehaviour extends TargettableObject {
 			
 			reactorDetectTime = 15.0f;
 			TargettingSystem.instance.addObject(gameObject);
+			visibleAtClient = true;
 			
 		}
 	

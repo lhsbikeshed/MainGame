@@ -230,7 +230,9 @@ function Update()
  */
 function damageShip(amount : float, deathText : String){
 	var msg : OSCMessage = OSCMessage("/ship/damage");	
+	
 	msg.Append.<float>(amount);		
+	
 	OSCHandler.Instance.SendMessageToAll(msg);
 	GetComponentInChildren.<ShipCamera>().shakeFor(1.0);
 	changeHullLevel(-amount);
@@ -249,6 +251,16 @@ function damageShip(amount : float, deathText : String){
 			s.Stop();
 		}
 
+	}
+	
+	//strobe light effect is separate
+	msg = OSCMessage("/ship/effect/flapStrobe");			
+	OSCHandler.Instance.SendMessageToAll(msg);
+	
+	//randomly pop the flap open
+	if(amount > 8.0f && Random.Range(0,100) < 20.0f){
+		msg = OSCMessage("/ship/effect/openFlap");			
+		OSCHandler.Instance.SendMessageToAll(msg);
 	}
 }
 
