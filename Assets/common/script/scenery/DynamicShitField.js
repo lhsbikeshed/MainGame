@@ -25,8 +25,8 @@ function Start () {
 	objectList = new List.<Transform>(maxNumber);
 	for (var a = 0; a < maxNumber; a++){
 		var rpos : Vector3;
-		//rpos = Random.insideUnitSphere * maxDistFront; //ship.camera.farClipPlane;
-		rpos = Quaternion.Euler(Random.Range(0,360), Random.Range(0,360), 0) * Vector3(0, 0,Random.Range(maxDistFront -1000, maxDistFront));
+		rpos = Random.insideUnitSphere * maxDistFront; //ship.camera.farClipPlane;
+		//rpos = Quaternion.Euler(Random.Range(0,360), Random.Range(0,360), 0) * Vector3(0, 0,Random.Range(maxDistFront -1000, maxDistFront));
 		//a = Instantiate(objects[Mathf.Floor(Random.Range(0,objects.Length))], ship.transform.position + rpos, Random.rotation);
 		objectList.Add( Instantiate(objects[randomObjectId()], ship.transform.position + rpos, Random.rotation));
 			
@@ -39,6 +39,22 @@ function Start () {
 	}
 
 }
+
+function setAllVelocities(v : Vector3){
+	for(var o : Transform in objectList){
+		o.rigidbody.velocity = v;
+	}
+}
+
+function setAllStartVelocities(v : Vector3){
+	for(var o : Transform in objectList){
+		var d : debrisbehaviour = o.GetComponent.<debrisbehaviour>();
+		if(d != null){
+			d.startVelocity = v;
+		}
+	}
+}
+
 
 private function randomObjectId() : int{
 	var maxW : int = 0;

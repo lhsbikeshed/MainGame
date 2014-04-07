@@ -89,7 +89,8 @@ class WarzoneScene2 extends GenericScene {
 		theShip.GetComponent.<ExplosionOverlayBehaviour>().explode();
 		
 		//spawn some explodey things
-		GameObject.Find("SceneScripts").GetComponent.<DynamicShitField>().enabled = true;
+		GameObject.Find("SceneScripts").GetComponent.<DynamicShitField>().setAllVelocities(Vector3( 0, 0, -90));
+		
 		theShip.GetComponent.<PropulsionSystem>().enableSystem();
 		
 		

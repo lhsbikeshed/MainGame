@@ -7,6 +7,7 @@ public class debrisbehaviour extends DynamicFieldObjectBehaviour{
 	
 	private var randomRotationSpeed: Quaternion;
 	var startVelocity : Vector3;
+	var bastardVelocity : float = 90.0f;
 	var hitShip : boolean = false;
 
 	
@@ -54,9 +55,9 @@ public class debrisbehaviour extends DynamicFieldObjectBehaviour{
 				 var theShip : Transform = GameObject.Find("TheShip").transform;
 				 var tgtPos : Vector3 = GameObject.Find("TheShip").transform.position;
 				 var tgtDistance : float = (tgtPos - transform.position).magnitude;
-				 var leadTarget : Vector3 = tgtPos + tgtDistance * theShip.rigidbody.velocity.normalized * theShip.rigidbody.velocity.magnitude / (startVelocity.magnitude * 10.0f);
+				 var leadTarget : Vector3 = tgtPos + tgtDistance * theShip.rigidbody.velocity.normalized * theShip.rigidbody.velocity.magnitude / (bastardVelocity * 10.0f);
 				 // transform.rotation = Quaternion.LookRotation(leadTarget, transform.up);
-				 transform.rigidbody.velocity = ( leadTarget - transform.position).normalized * (startVelocity.magnitude * 10.0f);
+				 transform.rigidbody.velocity = ( leadTarget - transform.position).normalized * (bastardVelocity * 10.0f);
 				 Debug.DrawLine(tgtPos, leadTarget, Color(255,0,0));
 		} else {
 			
