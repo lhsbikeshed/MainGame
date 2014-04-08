@@ -14,12 +14,13 @@ class WarzoneScene2 extends GenericScene {
 	@HideInInspector
 	
 	var sceneStartTime : float;	//when did scene start
-	var introShip : LargeShipBehaviour;
+	var introShip : LargeShipBehaviour2;
 	
 	
 
 	/* camera points */
 	var cameraPointPrefab : Transform;
+	
 	
 
 /* missile stuff */
@@ -57,7 +58,7 @@ class WarzoneScene2 extends GenericScene {
 	var missileDiff : int = 11;
 	
 	function Start () {
-		introShip = GameObject.Find("introShip").GetComponent.<LargeShipBehaviour>();
+		introShip = GameObject.Find("introShip").GetComponent.<LargeShipBehaviour2>();
 		//startScene();
 		theShip = GameObject.Find("TheShip").transform;
 		theShip.rigidbody.useGravity = false;
@@ -65,11 +66,14 @@ class WarzoneScene2 extends GenericScene {
  
 		theShip.rigidbody.drag = 0.7f;
 		shipSystem = theShip.GetComponent.<ship>();
+		
+		
 	}
 	
 	/* kick off this mess */
 	function startScene(){
-		introShip.go();
+		//introShip.go();
+		
 		//introShip.velocity = Vector3(1.8,0,0);	//start the killing ship move into pos
 		
 		
@@ -92,13 +96,15 @@ class WarzoneScene2 extends GenericScene {
 		GameObject.Find("SceneScripts").GetComponent.<DynamicShitField>().setAllVelocities(Vector3( 0, 0, -90));
 		
 		theShip.GetComponent.<PropulsionSystem>().enableSystem();
-		
-		
-		yield(WaitForSeconds(12));
+		for(var p : ParticleSystem in gameObject.Find("GunEffects").GetComponentsInChildren.<ParticleSystem>()){
+			p.enableEmission = false;
+		}
+		GetComponent.<AudioSource>().Stop();
+		//yield(WaitForSeconds(12));
 		
 		
 		//introShip.velocity = Vector3(0,0,0);	//stop the killer and start firing missiles at the player
-		introShip.exit();
+		//introShip.exit();
 		beamFailed = false;
 	}
 	
