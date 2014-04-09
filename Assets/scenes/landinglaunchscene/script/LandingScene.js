@@ -76,9 +76,11 @@ class LandingScene extends GenericScene {
 	}
 	
 	function stopAutopilot(){
+	
 		var autopilot : Autopilot;
 		var targetTrack = GameObject.Find("TargetTrack");
 		if(targetTrack != null){
+			Debug.Log("Stopping autopilot..");
 			autopilot = targetTrack.GetComponent.<Autopilot>();
 			if(autopilot.running == true){
 				autopilot.PauseFlight();
@@ -119,6 +121,10 @@ class LandingScene extends GenericScene {
 				break;
 			case "autodock":
 				startAutoPilot();
+				break;
+			case "stopautodock":
+				
+				stopAutopilot();
 				break;
 			case "dockingCompState":
 				var g : GameObject = GameObject.Find("DockingComp");

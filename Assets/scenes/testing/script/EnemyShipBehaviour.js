@@ -292,12 +292,14 @@ class EnemyShipBehaviour extends TargettableObject {
 	
 	function JumpOut(){
 		if(isActive){
+		Debug.Log("jumpout");
 			visibleAtClient = false;
 			currentAIState = AIState.IDLE;
 			warpEffects.Play();
 			transform.Find("body").GetComponent.<MeshRenderer>().enabled = false;
 			yield WaitForSeconds(1.2);
-			dynObj.Deactivate();
+			//dynObj.Deactivate();
+			transform.position = new Vector3(-10000,-15000,-15000);
 			transform.Find("body").GetComponent.<MeshRenderer>().enabled = true;
 		}
 	}
@@ -310,7 +312,7 @@ class EnemyShipBehaviour extends TargettableObject {
 			currentAIState = AIState.IDLE;
 		
 			visibleAtClient = true;
-			isActive = false;
+			isActive = true;
 			scanTime = 35.0f;
 			//calculate a new local pos for the ship, 900 units directly in front of players
 			var newPos : Vector3 = theShip.TransformDirection(Vector3.forward) * 300;
