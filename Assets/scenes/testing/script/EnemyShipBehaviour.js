@@ -24,6 +24,7 @@ class EnemyShipBehaviour extends TargettableObject {
 	private var scannerAnimationTime : float = 1.0f;
 	private var scannerMaterials : Renderer[] ;
 	
+	var subsystemHealth : float[] = new float[3];
 	
 	
 	enum AIState {  IDLE,		//do nothing at all, just wait for a jump signal
@@ -50,9 +51,13 @@ class EnemyShipBehaviour extends TargettableObject {
 	var orbitRange : float = 200.0f;
 	var throttle : float = 0.0f;
 	
+	var targettedSystem : int = 1;		//hull gets targetted by default
+	
+	
 	private var targetPoint : Vector3;
 	private var orbitTime : float;		//how long have we been orbiting our target?
 	private var weaponsTarget : Transform;
+	
 	
 	function Start () {
 		super.Start();
@@ -68,10 +73,10 @@ class EnemyShipBehaviour extends TargettableObject {
 		scannerBeam.gameObject.SetActiveRecursively(false);
 		
 		//configure subsystem stats
-		setStatFromName("weaponHealth", 1.0f);
-		setStatFromName("hullHealth", 1.0f);
-		setStatFromName("engineHealth", 1.0f);
-		
+		subsystemHealth[0] = 1.0f; setStatFromName("weaponHealth", 	subsystemHealth[0]);
+		subsystemHealth[1] = 1.0f; setStatFromName("hullHealth", 	subsystemHealth[1]);
+		subsystemHealth[2] = 1.0f; setStatFromName("engineHealth", 	subsystemHealth[2]);
+		 
 		//turn off other radar flags
 		setStatFromName("scanning", 0.0f);
 		setStatFromName("firing", 0.0f);
@@ -148,9 +153,12 @@ class EnemyShipBehaviour extends TargettableObject {
 			
 			targetPoint = theShip.transform.position;
 			
+			
+			
 			var q4 : Quaternion = Quaternion.LookRotation(direction);
 			transform.rotation = Quaternion.Slerp(transform.rotation, q4, rotateSpeed);
-			rigidbody.AddForce(transform.TransformDirection(Vector3.up) * -15, ForceMode.Acceleration);
+			//rigidbody.AddForce(transform.TransformDirection(Vector3.up) * -15, ForceMode.Acceleration);
+			
 			throttle = 0.0f;
 			
 			if(angDiff > 0.95f && weaponsTarget != null){
@@ -326,6 +334,21 @@ class EnemyShipBehaviour extends TargettableObject {
 			
 		}
 	
+	}
+	
+	
+	
+	function GetShot(damage : float){
+		
+	}
+	
+	
+	function explode() : IEnumerator{}
+	
+	function onTarget(){	
+	}
+	
+	function onUnTarget(){
 	}
 	
 

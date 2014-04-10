@@ -12,8 +12,9 @@ public class debrisbehaviour extends DynamicFieldObjectBehaviour{
 
 	
 	function Start () {
+		startVelocity = Random.onUnitSphere * 0.1f;
 		randomRotationSpeed = Quaternion.Euler(Random.value * 0.05, Random.value * 0.05, Random.value * 0.05);
-		
+		transform.rigidbody.velocity = startVelocity;
 	}
 	
 	function OnCollisionEnter(c : Collision){

@@ -4,8 +4,13 @@ var mainCamera : Transform;
 var theShip : Transform;
 var translateScale : float;
 
+var distanceFogMultiplier : float = 5.0f;
+
+
 private var mapController : MapController;
 
+
+private var preRenderFogLevel : float = 0.0f;
 
 function Awake () {
 	mapController = GameObject.Find("SceneScripts").GetComponent.<MapController>();
@@ -25,4 +30,15 @@ function Update () {
 	
 	transform.position = (basePos + theShip.position) * translateScale;
 	
+}
+
+function OnPreRender(){
+	preRenderFogLevel = RenderSettings.fogDensity;
+	RenderSettings.fogDensity = RenderSettings.fogDensity * distanceFogMultiplier;
+	
+	
+}
+
+function OnPostRender(){
+	RenderSettings.fogDensity = preRenderFogLevel;
 }

@@ -148,16 +148,21 @@ class WarzoneScene2 extends GenericScene {
 		}
 	}
 	
-	/* dont forget to make a noise here
-	*/
-	function weaponsPower(state : boolean){
-			var wepMsg : OSCMessage = OSCMessage("/scene/warzone/tacticalState");
-			if(state == true){
-				wepMsg.Append.<int>(1);
-			} else {
-				wepMsg.Append.<int>(0);
-			}
-			OSCHandler.Instance.SendMessageToAll(wepMsg);
+	
+	
+	function SpawnDistressSignal(){
+		var g = GameObject.Find("van-dead");		
+		if(g == null){
+			Debug.Log("Dead van not found..");
+			return;
+		}
+		
+		var d : DeadShip = g.GetComponent.<DeadShip>();
+		if(d.hidden == false){
+			d.show();
+		}
+		
+	
 	}
 	
 	
@@ -184,15 +189,7 @@ class WarzoneScene2 extends GenericScene {
 			case "warzonestart":
 				startScene();
 				break;
-			case "rodState":
-				
-				if (message.Data[0]  == 1){	
-					weaponsPower(true);
-				} else {
-					weaponsPower(false);
-				}
-				
-				break;
+			
 			case "missileLauncherStatus":
 				
 				if (message.Data[0]  == 1){	
@@ -215,7 +212,10 @@ class WarzoneScene2 extends GenericScene {
 				missileDiff = 12 - d;
 				nextMissileLaunchTime = Random.Range(missileDiff + 1, missileDiff + 3);
 				break;
-			
+			case "spawnDistressSignal":
+				SpawnDistressSignal();
+				break;
+				
 		}
 	
 	

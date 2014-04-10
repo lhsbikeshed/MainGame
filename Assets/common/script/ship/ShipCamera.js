@@ -17,6 +17,7 @@ private var skyboxCamera : Camera;
 
 
 private var originalPos  :Vector3;
+private var guiCameraPos : Vector3;
 
 private var shakeTime : float;
 private var shakeStart : float;
@@ -40,6 +41,8 @@ function Start () {
 	
 		
 	originalPos = transform.localPosition;
+	guiCameraPos = canopyCamera.transform.localPosition;
+	
 	if(useExternalCamera){
 		//move all cameras to the left and shrink width by half
 		for(var c : Camera in cameras){
@@ -76,9 +79,11 @@ function Update () {
 	if(shaking || timedShaking){
 		transform.localPosition = originalPos + Vector3(Random.Range(-shakeAmount, shakeAmount), Random.Range(-shakeAmount,shakeAmount),0);
 		previewCamera.transform.localPosition = transform.localPosition;
+		//canopyCamera.transform.position = guiCameraPos + Vector3(Random.Range(-shakeAmount, shakeAmount), Random.Range(-shakeAmount,shakeAmount),0);
 	} else {
 		transform.localPosition = originalPos;
 		previewCamera.transform.localPosition = transform.localPosition;
+		//canopyCamera.transform.position = guiCameraPos;
 	}
 	
 
