@@ -12,11 +12,17 @@ private var renderers : Renderer[];
 var test : boolean = false;
 function Start () {
 	renderers = GetComponentsInChildren.<Renderer>();
+	for (var r : Renderer in renderers){
+		r.enabled = false;
+	}
 }
 
 function Explode(){
 	startTime = Time.fixedTime;
 	exploding = true;
+	for (var r : Renderer in renderers){
+		r.enabled = true;
+	}
 }
 
 function FixedUpdate () {

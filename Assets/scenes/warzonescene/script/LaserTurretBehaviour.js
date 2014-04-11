@@ -23,7 +23,9 @@ private var laserTexture : Material;
 private var startChargeTime : float;
 private var startFireTime : float;
 
-private var state : int = 0;	//0 off, 1 charging, 2 firing, 3 discharging
+var state : GunState = 0;	//0 off, 1 charging, 2 firing, 3 discharging
+
+public  enum GunState { OFF = 0, CHARGING = 1, FIRING = 2, DISHCHARGING = 3 };
 
 function Start () {
 	haloLight = GetComponent.<Light>();

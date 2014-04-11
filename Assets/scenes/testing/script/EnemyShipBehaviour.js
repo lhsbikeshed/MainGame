@@ -26,7 +26,6 @@ class EnemyShipBehaviour extends TargettableObject {
 	
 	var subsystemHealth : float[] = new float[3];
 	
-	
 	enum AIState {  IDLE,		//do nothing at all, just wait for a jump signal
 					JUMPING,	//jumping in
 					SCANNING,	//scanning for player
@@ -98,6 +97,20 @@ class EnemyShipBehaviour extends TargettableObject {
 			targetTest = false;
 			JumpOut();
 		}
+		
+		//stats
+		var firing : boolean = false;
+		for(var t : LaserTurretBehaviour in turrets){
+			if(t.state == 2){
+				firing = true;
+				break;
+			
+			}
+			
+		}
+		setStatFromName("firing", firing == true ? 1.0 : 0.0);
+		
+		//AI
 	
 		var direction : Vector3 = theShip.position - transform.position;
 		var range : float = direction.magnitude;
@@ -184,11 +197,14 @@ class EnemyShipBehaviour extends TargettableObject {
 				currentAIState = AIState.ORBITING;
 				orbitTime = 0.0f;
 				
-			}
+				
+			} 
+			
 		} else if (currentAIState == AIState.SCANNING){
 			if(scannerBeam.gameObject.active == false){
 				EnableScanner();
 			}
+			setStatFromName("scanning", 1.0f);
 			
 			scannerAnimationTime -= Time.fixedDeltaTime;
 			if(scannerAnimationTime < 0.0f){
@@ -254,7 +270,7 @@ class EnemyShipBehaviour extends TargettableObject {
 	
 	/*the scan of pl{ayer ship is done, target them if they are still online */
 	function scanDone(success : boolean){
-		
+		setStatFromName("scanning", 0.0f);
 		if(!success){
 			
 			
@@ -379,6 +395,7 @@ class EnemyShipBehaviour extends TargettableObject {
 	function explode() : IEnumerator{
 		transform.Find("explosions").GetComponent.<ParticleSystem>().enableEmission = true;
 		yield WaitForSeconds(4);
+		
 		Destroy(gameObject);
 	
 	}
