@@ -25,7 +25,7 @@ class WarzoneScene2 extends GenericScene {
 
 /* missile stuff */
 	var missilePrefab : Transform;
-	
+
 	
 	private var lastMissileLaunchTime : float;	//last time a missile launch was started
 	private var nextMissileLaunchTime : float; //when does the next missile launch? randomize this
@@ -91,6 +91,7 @@ class WarzoneScene2 extends GenericScene {
 		GameObject.Find("DeadShip").GetComponent.<ExplodingShip>().startExplosion();
 		
 		theShip.GetComponent.<ExplosionOverlayBehaviour>().explode();
+		
 		
 		//spawn some explodey things
 		GameObject.Find("SceneScripts").GetComponent.<DynamicShitField>().setAllVelocities(Vector3( 0, 0, -90));

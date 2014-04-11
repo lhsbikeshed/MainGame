@@ -8,6 +8,8 @@ var particles : ParticleSystem[];
 var exploding : boolean;
 var explodeTime : float;
 
+var largeExplosionPrefab : Transform;
+
 function Start () {
 	frontPart = GameObject.Find("DeadShip/front");
 	backPart = GameObject.Find("DeadShip/back");
@@ -36,4 +38,13 @@ function startExplosion(){
 		p.enableEmission = true;
 	}
 	explodeTime = Time.fixedTime;
+	for (var i = 0; i < 5 + Random.Range(1, 3); i++){
+		var t = Instantiate(largeExplosionPrefab, frontPart.transform.position + Random.onUnitSphere * 5, Random.rotation);
+		t.gameObject.layer = LayerMask.NameToLayer("skybox");
+		t.GetComponent.<BigExplosionBehaviour>().duration = Random.Range(1.0, 3.0);
+		t.GetComponent.<BigExplosionBehaviour>().maxSize = Random.Range(50,100);
+		t.GetComponent.<BigExplosionBehaviour>().Explode();
+	}
+		
+	
 }

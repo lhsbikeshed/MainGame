@@ -34,7 +34,8 @@ class EnemyShipBehaviour extends TargettableObject {
 					HUNTING, 	//seeking out the ship
 					ORBITING,	//orbit around 
 					AIMING,		//aiming at the target to shoot it	
-					RAMMING		//weapons down, intentionally ram the players				
+					RAMMING,		//weapons down, intentionally ram the players	
+					HULL_DEATH	
 					};	
 					
 	enum WeaponState { 	DISABLED, 	//wont target or shoot
@@ -226,6 +227,9 @@ class EnemyShipBehaviour extends TargettableObject {
 				
 			}
 			
+		} else if (currentAIState == AIState.HULL_DEATH){
+			throttle = 0.0f;
+			rigidbody.AddTorque(Random.onUnitSphere * 10.0f, ForceMode.Impulse);
 		}
 		
 		
@@ -339,16 +343,52 @@ class EnemyShipBehaviour extends TargettableObject {
 	
 	
 	function GetShot(damage : float){
+		//find out which subsystem is targetted and whomp it
+		//weapons disabled at < 0.0 health
+		//hull < 0 = EXPLODSIONS
+		// engine < 0.5 = scale the throttle with damage, possible to slow and crippled the ship
 		
+		Debug.Log("damage: " + damage);
+		switch(targettedSystem){
+			case 0 : //weapons
+				subsystemHealth[0] -= damage * 0.1f; 
+				if(subsystemHealth[0] < 0.0){
+					subsystemHealth[0] = 0;
+				}				
+				setStatFromName("weaponHealth", 	subsystemHealth[0]);
+				break;
+			case 1 : // hull
+				subsystemHealth[1] -= damage * 0.1f; // scale this properly tom
+				setStatFromName("hullHealth", 	subsystemHealth[1]);
+				if(subsystemHealth[1] < 0.0f){
+					explode();
+				}
+				break;
+			case 2 : //engine
+				subsystemHealth[2] -= damage * 0.1f;
+				if(subsystemHealth[2] < 0.0){
+					subsystemHealth[2] = 0;
+				}	
+				setStatFromName("engineHealth", 	subsystemHealth[2]);
+				break;
+		}
 	}
 	
 	
-	function explode() : IEnumerator{}
+	
+	function explode() : IEnumerator{
+		transform.Find("explosions").GetComponent.<ParticleSystem>().enableEmission = true;
+		yield WaitForSeconds(4);
+		Destroy(gameObject);
+	
+	}
 	
 	function onTarget(){	
+		targettedSystem = 1;
 	}
 	
 	function onUnTarget(){
+		targettedSystem = 1;
 	}
 	
 
