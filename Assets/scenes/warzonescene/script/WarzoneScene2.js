@@ -39,6 +39,7 @@ class WarzoneScene2 extends GenericScene {
 	var ejectedDudePrefab : Transform;
 	var airlockDumpSfx : AudioClip;
 	
+	
 	var startBeamTime : float;	
 	var maxBeamTime : float; 
 	

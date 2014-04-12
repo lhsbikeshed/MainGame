@@ -14,6 +14,7 @@ var updateTime : float = 0.125;
 
 
 var hailingSound : AudioClip;
+var bingbongNoise : AudioClip;
 
 var currentScene : GenericScene; //current scene to route /scene messages to
 
@@ -151,7 +152,9 @@ function FixedUpdate(){
 						OSCHandler.Instance.RevertClientScreen("CommsStation");
 						commsOnline = false;
 					}
-				} 
+				
+			 	}
+				
 				
 				lastTimeStampProcessed =  pkt.TimeStamp;    
 				pkt.processed = true;                      
@@ -374,7 +377,17 @@ function systemMessage(message : OSCPacket){
 			}
 			break;
 			
-		
+		case "effect":
+			if(operation == "prayLight" || operation == "seatbeltLight"){
+				var d : int = message.Data[0];
+				if(d == 1){
+					var a : AudioSource = CabinEffects.Instance().PlayClipAt(bingbongNoise, playerShip.transform.position);
+					a.volume = 0.3f;
+				}
+				
+			}
+			break;
+			
 	}
 		
 	
