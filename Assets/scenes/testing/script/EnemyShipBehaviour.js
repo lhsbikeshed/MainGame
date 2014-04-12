@@ -54,6 +54,11 @@ class EnemyShipBehaviour extends TargettableObject {
 	var targettedSystem : int = 1;		//hull gets targetted by default
 	
 	
+	//sound effects
+	var scanPlayerEffect : AudioClip ;
+	private var scanSoundPlaying : boolean = false;
+	var explosionSound : AudioClip;
+	
 	private var targetPoint : Vector3;
 	private var orbitTime : float;		//how long have we been orbiting our target?
 	private var weaponsTarget : Transform;
@@ -80,6 +85,7 @@ class EnemyShipBehaviour extends TargettableObject {
 		//turn off other radar flags
 		setStatFromName("scanning", 0.0f);
 		setStatFromName("firing", 0.0f);
+		setStatFromName("chargingWeapons", 0.0f);
 		
 		//hide from radar
 		visibleAtClient = false;
@@ -95,7 +101,7 @@ class EnemyShipBehaviour extends TargettableObject {
 		
 		if(targetTest){
 			targetTest = false;
-			JumpOut();
+			explode();
 		}
 		
 		//stats
@@ -109,7 +115,7 @@ class EnemyShipBehaviour extends TargettableObject {
 			
 		}
 		setStatFromName("firing", firing == true ? 1.0 : 0.0);
-		
+		setStatFromName("health", subsystemHealth[1]);
 		//AI
 	
 		var direction : Vector3 = theShip.position - transform.position;
@@ -160,13 +166,13 @@ class EnemyShipBehaviour extends TargettableObject {
 				currentAIState = AIState.HUNTING;
 				orbitTime = 0;
 			}
-			if(orbitTime > 8.0f){
+			if(orbitTime > 8.0f - difficulty * 4.0f){
 				currentAIState = AIState.AIMING;
 			}
 		} else if (currentAIState == AIState.AIMING){
 			
 			targetPoint = theShip.transform.position;
-			
+			setStatFromName("chargingWeapons", 1.0f);
 			
 			
 			var q4 : Quaternion = Quaternion.LookRotation(direction);
@@ -195,6 +201,7 @@ class EnemyShipBehaviour extends TargettableObject {
 				
 				nextShotTime =  Random.Range(6.0f, 15.0f);
 				currentAIState = AIState.ORBITING;
+				setStatFromName("chargingWeapons", 0.0f);
 				orbitTime = 0.0f;
 				
 				
@@ -279,11 +286,15 @@ class EnemyShipBehaviour extends TargettableObject {
 			var lookPos : Vector3 = theShip.position - theShip.TransformDirection(Vector3.up) * 40.0f;
 			var toShip : Quaternion = Quaternion.LookRotation((lookPos - transform.position).normalized, theShip.up);
 			scannerBeam.rotation = toShip;
-			yield WaitForSeconds(2.0);
+			if(scanSoundPlaying == false){
+				AudioSource.PlayClipAtPoint(scanPlayerEffect, theShip.position);
+				scanSoundPlaying = true;
+			}
+			yield WaitForSeconds(4.0);
 			
 			//tell clients you were detected
-			var m : OSCMessage = OSCMessage("/scene/warzone/youWereDetected");
-			OSCHandler.Instance.SendMessageToAll(m);
+			OSCHandler.Instance.DisplayBannerAtClient("TacticalStation", "!!WARNING!!", "YOU HAVE BEEN DETECTED", 4000);
+		
 			//turn off scanner beam
 			scannerBeam.gameObject.SetActiveRecursively(false);
 			currentAIState = AIState.HUNTING;
@@ -394,7 +405,15 @@ class EnemyShipBehaviour extends TargettableObject {
 	
 	function explode() : IEnumerator{
 		transform.Find("explosions").GetComponent.<ParticleSystem>().enableEmission = true;
+		GetComponent.<AudioSource>().Stop();
+	
 		yield WaitForSeconds(4);
+		var a : AudioSource = CabinEffects.Instance().PlayClipAt(explosionSound, transform.position);
+		a.rolloffMode = AudioRolloffMode.Linear;
+		var b : Transform = transform.Find("BigExplosion");
+		b.parent = null;
+		
+		b.GetComponent.<BigExplosionBehaviour>().Explode();
 		
 		Destroy(gameObject);
 	
