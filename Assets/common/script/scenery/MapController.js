@@ -176,7 +176,7 @@ function Update () {
 							newTrail = true;
 						}
 					}
-					Debug.Log("moved: " + g.name);
+//					Debug.Log("moved: " + g.name);
 					g.position += correctionTransform;
 					
 					
