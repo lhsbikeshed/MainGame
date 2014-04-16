@@ -91,7 +91,8 @@ function Update () {
 	fov = cameraObject.camera.fov;
 		
 	//look for objects that are far away, move to direction of motion + random wiggle
-	for (var a in objectList){
+	for (var i = 0; i < objectList.Count; i++){
+		var a : Transform = objectList[i];
 		//check object is behind ship
 		var forward = ship.transform.TransformDirection(Vector3.forward);        
 		var toOther = a.position - ship.transform.position;        

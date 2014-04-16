@@ -5,7 +5,7 @@
 //real life SHIT
 public class debrisbehaviour extends DynamicFieldObjectBehaviour{
 	
-	private var randomRotationSpeed: Quaternion;
+	private var randomRotationSpeed: Vector3;
 	var startVelocity : Vector3;
 	var bastardVelocity : float = 90.0f;
 	var hitShip : boolean = false;
@@ -13,7 +13,7 @@ public class debrisbehaviour extends DynamicFieldObjectBehaviour{
 	
 	function Start () {
 		startVelocity = Random.onUnitSphere * 0.1f;
-		randomRotationSpeed = Quaternion.Euler(Random.value * 0.05, Random.value * 0.05, Random.value * 0.05);
+		randomRotationSpeed = Random.onUnitSphere * 4.35; //Quaternion.Euler(Random.value * 0.05, Random.value * 0.05, Random.value * 0.05);
 		transform.rigidbody.velocity = startVelocity;
 	}
 	
@@ -74,7 +74,7 @@ public class debrisbehaviour extends DynamicFieldObjectBehaviour{
 	}
 	
 	function Update () {
-		transform.rotation *= randomRotationSpeed;
+		transform.Rotate(randomRotationSpeed * Time.deltaTime);
 		
 	
 	}

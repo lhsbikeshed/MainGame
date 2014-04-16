@@ -10,6 +10,8 @@ Shader "Custom/HudShader" {
         	ZWrite Off
     		Blend SrcAlpha OneMinusSrcAlpha
            	CGPROGRAM
+// Upgrade NOTE: excluded shader from DX11 and Xbox360; has structs without semantics (struct v2f members passPos)
+#pragma exclude_renderers d3d11 xbox360
 			// Upgrade NOTE: excluded shader from Xbox360; has structs without semantics (struct v2f members passPos)
 			#pragma exclude_renderers xbox360
 

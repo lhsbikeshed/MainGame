@@ -392,19 +392,19 @@ public class OSCHandler : MonoBehaviour
 			
 			if(_clients[clientId].log.Count < _loglength)
 			{
-				_clients[clientId].log.Add(String.Concat(DateTime.UtcNow.ToString(),".",
-				                                         FormatMilliseconds(DateTime.Now.Millisecond),
-				                                         " : ", address, " ", DataToString(message.Data)));
+				//_clients[clientId].log.Add(String.Concat(DateTime.UtcNow.ToString(),".",
+				//                                         FormatMilliseconds(DateTime.Now.Millisecond),
+				 //                                        " : ", address, " ", DataToString(message.Data)));
 				_clients[clientId].messages.Add(message);
 			}
 			else
 			{
-				_clients[clientId].log.RemoveAt(0);
+				//_clients[clientId].log.RemoveAt(0);
 				_clients[clientId].messages.RemoveAt(0);
 				
-				_clients[clientId].log.Add(String.Concat(DateTime.UtcNow.ToString(),".",
-				                                         FormatMilliseconds(DateTime.Now.Millisecond),
-				                                         " : ", address, " ", DataToString(message.Data)));
+				//_clients[clientId].log.Add(String.Concat(DateTime.UtcNow.ToString(),".",
+				 //                                        FormatMilliseconds(DateTime.Now.Millisecond),
+				//                                         " : ", address, " ", DataToString(message.Data)));
 				_clients[clientId].messages.Add(message);
 			}
 			
