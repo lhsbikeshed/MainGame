@@ -78,6 +78,7 @@ class EnemyShipBehaviour extends TargettableObject {
 		scannerBeam.gameObject.SetActiveRecursively(false);
 		
 		//configure subsystem stats
+		subsystemHealth = new float[3];
 		subsystemHealth[0] = 1.0f; setStatFromName("weaponHealth", 	subsystemHealth[0]);
 		subsystemHealth[1] = 1.0f; setStatFromName("hullHealth", 	subsystemHealth[1]);
 		subsystemHealth[2] = 1.0f; setStatFromName("engineHealth", 	subsystemHealth[2]);

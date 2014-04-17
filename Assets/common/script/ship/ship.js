@@ -503,7 +503,7 @@ function FixedUpdate(){
 		if(Time.fixedTime - jumpStartTime > 2){	//turn on effects at 2 seconds
 			
 			setJumpEffectState(true);
-			shipCamera.setFovs(85 + ((Time.fixedTime - jumpStartTime - 4) / 3.0f ) * 30);
+			shipCamera.setFovs(85 + ((Time.fixedTime - jumpStartTime - 2) / 3.0f ) * 30);
 		}
 			
 		//JUMP!
