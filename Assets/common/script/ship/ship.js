@@ -30,6 +30,9 @@ private var nextExplosion : float;
 private var lastExplosionSfxTime : float ;
 private var nextExplosionSfxTime : float;
 
+private var lastSparkTime : float;
+private var nextSparkTime : float;
+
 
 //ships joystick position
 var joyPos : Vector3;		//rotation joystick
@@ -252,10 +255,8 @@ function damageShip(amount : float, deathText : String){
 		}
 
 	}
+	CabinEffects.Instance().CabinSpark();
 	
-	//strobe light effect is separate
-	msg = OSCMessage("/ship/effect/flapStrobe");			
-	OSCHandler.Instance.SendMessageToAll(msg);
 	
 	//randomly pop the flap open
 	if(amount > 8.0f && Random.Range(0,100) < 20.0f){
@@ -535,6 +536,16 @@ function FixedUpdate(){
 	
 	//sfx for movement
 	moveEffects.emissionRate = rigidbody.velocity.magnitude / 10.0f;
+	
+	
+	if(hullState < 20.0f){
+		if(lastSparkTime + nextSparkTime < Time.fixedTime){
+			lastSparkTime = Time.fixedTime;
+			nextSparkTime = Random.Range(2.0, 6.0);
+			CabinEffects.Instance().CabinSpark();
+		}
+	}
+	
 }
 
 

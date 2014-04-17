@@ -32,6 +32,11 @@ public static final var LIGHT_REDALERT : int = 3;
 public static final var LIGHT_BRIEFING : int = 3;
 
 
+private var sparkClips : Object[];
+
+private var theShip : Transform;
+
+
 
 public static function Instance() : CabinEffects {
 	
@@ -46,6 +51,10 @@ function Start () {
 	
 	clipQueue = new List.<AudioEntry>();
 
+	sparkClips = UnityEngine.Resources.LoadAll("sparks", typeof(AudioClip));
+	Debug.Log("loaded " + sparkClips.Length + " spark sounds");
+	
+	theShip = GameObject.Find("TheShip").transform;
 }
 
 function FixedUpdate () {
@@ -113,6 +122,18 @@ function QueueVoiceOver(audioClip : AudioClip, priority : int){
 	
 
 }
+
+/* spark the strobe and play a sound */
+function CabinSpark(){
+
+	var ra : int = UnityEngine.Random.Range(0, sparkClips.Length);
+	
+	var source : AudioSource = PlayClipAt(sparkClips[ra], theShip.position);
+	source.pan = -1.0f;
+ 	var msg : OSCMessage = OSCMessage("/ship/effect/flapStrobe");			
+	OSCHandler.Instance.SendMessageToAll(msg);
+}
+
 
 /* set the red alert state
  * broadcast to clients that red alert has been engaged
