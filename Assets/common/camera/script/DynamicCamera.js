@@ -18,6 +18,16 @@ private var depthSkyboxObject : Transform;
 private var mapController : MapController;
  var followTransform : Transform;
 
+
+var distance = 10.0;
+// the height we want the camera to be above the target
+var height = 5.0;
+// How much we 
+var heightDamping = 2.0;
+var rotationDamping = 3.0;
+
+
+
  
   /* cabin camera controls*/
 var canCabinCamBeUsed : boolean = false; 
@@ -168,7 +178,7 @@ function Update(){
 			transform.position = followTransform.position;
 			if(lookAtShip){
 				transform.LookAt(theShip, followTransform.TransformDirection(Vector3.up));
-				
+				transform.position = followTransform.position;
 				
 				
 			} else {
@@ -216,12 +226,48 @@ function FixedUpdate () {
 	}
 	if(followingShip){
 		if(followTransform != null){
-			transform.position = Vector3.Lerp(transform.position, followTransform.position, lerpSpeed * Time.deltaTime);
+		//	transform.position = Vector3.Lerp(transform.position, followTransform.position, lerpSpeed * Time.deltaTime);
 			//transform.position = followTransform.position;
-			transform.LookAt(theShip, followTransform.TransformDirection(Vector3.up));
+		//	transform.LookAt(theShip, followTransform.TransformDirection(Vector3.up));
+			CamUpdate();
 		}
 	}
 	
 	
 	
+}
+
+
+
+function CamUpdate () {
+	// Early out if we don't have a target
+	if (!followTransform)
+		return;
+	
+	// Calculate the current rotation angles
+	var wantedRotationAngle = followTransform.eulerAngles.y;
+	var wantedHeight = followTransform.position.y + height;
+		
+	var currentRotationAngle = transform.eulerAngles.y;
+	var currentHeight = transform.position.y;
+	
+	// Damp the rotation around the y-axis
+	currentRotationAngle = Mathf.LerpAngle (currentRotationAngle, wantedRotationAngle, rotationDamping * Time.deltaTime);
+
+	// Damp the height
+	currentHeight = Mathf.Lerp (currentHeight, wantedHeight, heightDamping * Time.deltaTime);
+
+	// Convert the angle into a rotation
+	var currentRotation = Quaternion.Euler (0, currentRotationAngle, 0);
+	
+	// Set the position of the camera on the x-z plane to:
+	// distance meters behind the target
+	transform.position = followTransform.position;
+	transform.position -= currentRotation * Vector3.forward * distance;
+
+	// Set the height of the camera
+	transform.position.y = currentHeight;
+	
+	// Always look at the target
+	transform.LookAt (followTransform);
 }

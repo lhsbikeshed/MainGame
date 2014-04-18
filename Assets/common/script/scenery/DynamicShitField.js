@@ -42,7 +42,9 @@ function Start () {
 
 function setAllVelocities(v : Vector3){
 	for(var o : Transform in objectList){
-		o.rigidbody.velocity = v;
+		if(o.rigidbody.isKinematic == false){
+			o.rigidbody.velocity = v;
+		}
 	}
 }
 

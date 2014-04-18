@@ -9,7 +9,7 @@
 	<client name="CommsStation">127.0.0.1:12003</client>
 	<client name="camController">127.0.0.1:12010</client>
 
-	<useChaseCam>false</useChaseCam>
+	<useChaseCam>true</useChaseCam>
 	<resolutionWidth>1024</resolutionWidth>
 	<resolutionHeight>768</resolutionHeight>
 	<useWebcam>false</useWebcam>
