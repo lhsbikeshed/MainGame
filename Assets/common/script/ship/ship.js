@@ -501,14 +501,19 @@ function FixedUpdate(){
 	if(jumping){
 		rigidbody.AddForce (transform.TransformDirection(Vector3.forward * 15000));
 		
-		if(Time.fixedTime - jumpStartTime > 2){	//turn on effects at 2 seconds
+		var timeSinceJumpStart = Time.fixedTime - jumpStartTime;
+		if(Mathf.FloorToInt (timeSinceJumpStart - Time.fixedDeltaTime ) != Mathf.FloorToInt (timeSinceJumpStart)){
+			var ti = 5 - Mathf.FloorToInt(timeSinceJumpStart);
+			GetComponent.<DistanceSpeaker>().SpeakDistance(ti, 1, false);
+		}
+		if(timeSinceJumpStart > 2){	//turn on effects at 2 seconds
 			
 			setJumpEffectState(true);
 			shipCamera.setFovs(85 + ((Time.fixedTime - jumpStartTime - 2) / 3.0f ) * 30);
 		}
 			
 		//JUMP!
-		if (Time.fixedTime - jumpStartTime  > 5){	//jump at 7 seconds
+		if (timeSinceJumpStart  > 5){	//jump at 7 seconds
 			
 			jumpEnd();
 			if(inTunnelGate){
