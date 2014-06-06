@@ -188,9 +188,10 @@ function sendShipStats(){
 		msg.Append.<float>(playerShip.transform.position.y);
 		msg.Append.<float>(playerShip.transform.position.z);
 		
-		msg.Append.<float>(playerShip.transform.rotation.eulerAngles.x);
-		msg.Append.<float>(playerShip.transform.rotation.eulerAngles.y);
-		msg.Append.<float>(playerShip.transform.rotation.eulerAngles.z);
+		msg.Append.<float>(playerShip.transform.rotation.w);
+		msg.Append.<float>(playerShip.transform.rotation.x);
+		msg.Append.<float>(playerShip.transform.rotation.y);
+		msg.Append.<float>(playerShip.transform.rotation.z);
 		
 		msg.Append.<float>(playerShip.rigidbody.velocity.x);
 		msg.Append.<float>(playerShip.rigidbody.velocity.y);
