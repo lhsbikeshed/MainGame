@@ -377,6 +377,9 @@ function systemMessage(message : OSCPacket){
 				playerShip.GetComponent.<UndercarriageBehaviour>().setGearState ( message.Data[0] == 1 ? true : false);
 			}
 			break;
+		case "cablePuzzle":
+			shipSystem.GetComponent.<CablePuzzleSystem>().processOSCMessage(message);
+			break;
 			
 		case "effect":
 			if(operation == "prayLight" || operation == "seatbeltLight"){
