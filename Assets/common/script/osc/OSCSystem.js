@@ -263,7 +263,7 @@ function gameMessage(message : OSCPacket){
 			
 			OSCHandler.Instance.SendMessageToClient(station, m);
 			
-			var currentScreen : String = OSCHandler.Instance.clientScreens[station];
+			var currentScreen : String = OSCHandler.Instance.clientScreens[station].Peek();;
 			
 			m = OSCMessage("/clientscreen/" + station + "/changeTo");
 			m.Append.<String>( currentScreen );

@@ -27,7 +27,7 @@ public class CablePuzzleSystem : MonoBehaviour {
 	}
 
 	public void processOSCMessage(OSCMessage m){
-		string msgAddress = message.Address.Split("/");
+		string[] msgAddress = m.Address.Split('/');
 		// [1] = System, 2 = Subsystem name, 3 = operation
 		string system = msgAddress[2];
 		string operation = msgAddress[3];
