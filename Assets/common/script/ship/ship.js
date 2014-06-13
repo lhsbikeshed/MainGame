@@ -263,6 +263,12 @@ function damageShip(amount : float, deathText : String){
 		msg = OSCMessage("/ship/effect/openFlap");			
 		OSCHandler.Instance.SendMessageToAll(msg);
 	}
+	
+	var cab : CablePuzzleSystem = GetComponent.<CablePuzzleSystem>();
+	if(cab.isWaiting){
+		cab.puzzleStart();
+	} 
+	
 }
 
 function changeHullLevel(amount : float){
