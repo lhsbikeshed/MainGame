@@ -32,6 +32,7 @@ var cam : Camera;
 private var planes : Array;
 private var theShip : Transform;
 
+public var test : boolean = false;
 
 function Start () {
 	smashPos  = new Array();
@@ -75,6 +76,7 @@ function spawnCrack(howHard : float){
 		Debug.Log(howHard + " " + rand);
 		//Mathf.FloorToInt(Random.Range(0, crashTextures.Length));
 		var p : Transform = transform.Instantiate(crackPrefab, Vector3.zero, Quaternion.identity);
+		p.gameObject.SetActive(true);
 		p.renderer.material.mainTexture = crashTextures[rand];
 		p.parent = transform;
 		p.transform.localPosition = Vector3(Random.Range(-.9,.9), Random.Range(-0.6, 0.6), 1.05);
@@ -87,6 +89,7 @@ function spawnCrack(howHard : float){
 		//5% chance of causing an air leak if its a big hit AND we arent leaking already
 		if(rand == 2 && Random.Range(0,100) < airleakChance && leaking == false){
 			var t : Transform = transform.Instantiate(airleakPrefab, Vector3.zero, Quaternion.identity);
+			t.gameObject.SetActive(true);
 			t.parent = p;
 			t.localPosition = Vector3(-2.7,0,0);
 			t.transform.rotation = transform.rotation;// * Quaternion.Euler(-180,0,0);
