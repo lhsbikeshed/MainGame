@@ -12,7 +12,18 @@ public class CablePuzzleSystem : MonoBehaviour {
 	int[] plugs = { 
 		4, 5, 7, 9, 10, 12}; 
 
+
+
 	PlugPair[] waitingList;
+	List<PlugPair[]> combinationlist = new List<PlugPair[]>();
+
+	/*  sockets - > plugs
+	 *  [8, 6, 3] , [5, 12, 10]
+		[2, 3, 11] , [10, 12, 4]
+		[6, 11, 8] , [12, 4, 10]
+		[3, 6, 8] , [10, 9, 5]
+		[13, 3, 8] , [5, 6, 10]
+	*/
 
 
 	public bool isRunning = false;
@@ -22,18 +33,27 @@ public class CablePuzzleSystem : MonoBehaviour {
 
 	float damageTimer = 0.0f;
 
+	int selectedPatch = 0;
 
 	public bool test = false;
 	// Use this for initialization
 	void Start () {
-		//pick 3 random sockets and 3 random plugs to connect, send the ID numbers to clients
-		int[] plugWaitingList = randomFromArray(plugs, 3);
-		int[] socketWaitingList = randomFromArray(sockets, 3);
+		//generate the combination list
+		int[, ,] comb = new int[, ,] {	
+			{{8,6,3}, 	{5,12,10}},
+			{{2, 3, 11}, {10, 12, 4}},
+			{{6, 11, 8}, {12, 4, 10}},
+			{{3, 6, 8}, {10, 9, 5}},
+			{{13, 3, 8}, {5, 6, 10}}		
+		};
+		selectedPatch = Random.Range(0, 5);
+
+
 		waitingList = new PlugPair[3];
 		for(int i = 0; i < waitingList.Length; i++){
 			waitingList[i] = new PlugPair();
-			waitingList[i].plugId = plugWaitingList[i];
-			waitingList[i].socketId = socketWaitingList[i];
+			waitingList[i].plugId = comb[selectedPatch,1,i];
+			waitingList[i].socketId = comb[selectedPatch,0,i];
 			waitingList[i].ok = false;
 		}
 
@@ -75,12 +95,13 @@ public class CablePuzzleSystem : MonoBehaviour {
 		//transmit the cable list
 		string outLine = "";
 		OSCMessage m = new OSCMessage("/system/cablePuzzle/connectionList");
-		for(int i = 0; i < 3; i++){
-			outLine = waitingList[i].plugId + ":" + waitingList[i].socketId;
-			Debug.Log (outLine);
-
-			m.Append(outLine);
-		}
+//		for(int i = 0; i < 3; i++){
+//			outLine = waitingList[i].plugId + ":" + waitingList[i].socketId;
+//			Debug.Log (outLine);
+//
+//			m.Append(outLine);
+//		}
+		m.Append(selectedPatch);
 		OSCHandler.Instance.SendMessageToAll(m);
 
 	}
@@ -91,6 +112,7 @@ public class CablePuzzleSystem : MonoBehaviour {
 		isRunning = false;
 		isWaiting = false;
 		OSCHandler.Instance.RevertClientScreen("PilotStation");
+		OSCHandler.Instance.RevertClientScreen("TacticalStation");
 	}
 
 
