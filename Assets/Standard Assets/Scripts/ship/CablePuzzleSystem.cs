@@ -40,11 +40,12 @@ public class CablePuzzleSystem : MonoBehaviour {
 	void Start () {
 		//generate the combination list
 		int[, ,] comb = new int[, ,] {	
-			{{8,6,3}, 	{5,12,10}},
+			{{14,6,3}, 	{5,12,10}},
 			{{2, 3, 11}, {10, 12, 4}},
-			{{6, 11, 8}, {12, 4, 10}},
-			{{3, 6, 8}, {10, 9, 5}},
-			{{13, 4, 8}, {5, 6, 10}}		
+			{{6, 11, 14}, {12, 4, 10}},
+			{{3, 6, 14}, {10, 9, 5}},
+			{{13, 4, 14}, {5, 6, 10}}		
+
 		};
 		selectedPatch = Random.Range(0, 5);
 
@@ -113,6 +114,7 @@ public class CablePuzzleSystem : MonoBehaviour {
 		isWaiting = false;
 		OSCHandler.Instance.RevertClientScreen("PilotStation");
 		OSCHandler.Instance.RevertClientScreen("TacticalStation");
+		OSCHandler.Instance.RevertClientScreen("EngineerStation");
 	}
 
 
@@ -174,7 +176,11 @@ public class CablePuzzleSystem : MonoBehaviour {
 		string operation = msgAddress[3];
 
 		if(operation == "startPuzzle"){
-			isWaiting = true;
+			if(isRunning){
+				puzzleStop();
+			} else {
+				isWaiting = true;
+			}
 			Debug.Log ("CablePuzzle: waiting for damage");
 		} else if (operation == "cancelPuzzle"){
 			puzzleStop();
