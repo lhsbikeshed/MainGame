@@ -246,13 +246,14 @@ function damageShip(amount : float, deathText : String){
 		Explode();
 		GetComponent.<ExplosionOverlayBehaviour>().die();
 		yield WaitForSeconds(2) ;
-		GameObject.Find("PersistentScripts").GetComponent.<PersistentScene>().shipDead(deathText);
-		
 		//silence all of the subsystems
 		
 		for (var s : AudioSource in GetComponentsInChildren.<AudioSource>()){
 			s.Stop();
 		}
+		GameObject.Find("PersistentScripts").GetComponent.<PersistentScene>().shipDead(deathText);
+		
+		
 
 	}
 	CabinEffects.Instance().CabinSpark();

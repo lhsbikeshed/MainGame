@@ -44,7 +44,7 @@ public class CablePuzzleSystem : MonoBehaviour {
 			{{2, 3, 11}, {10, 12, 4}},
 			{{6, 11, 8}, {12, 4, 10}},
 			{{3, 6, 8}, {10, 9, 5}},
-			{{13, 3, 8}, {5, 6, 10}}		
+			{{13, 4, 8}, {5, 6, 10}}		
 		};
 		selectedPatch = Random.Range(0, 5);
 

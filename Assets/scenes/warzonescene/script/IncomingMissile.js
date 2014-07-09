@@ -1,5 +1,6 @@
 #pragma strict
 
+
 class IncomingMissile extends TargettableObject {
 	
 	/* represents an incoming missile
@@ -52,6 +53,7 @@ class IncomingMissile extends TargettableObject {
 		}
 		var t : Transform = Instantiate(trailPrefab, transform.position, transform.rotation);
 		t.parent = transform;
+		
 		
 	}
 	
@@ -149,6 +151,10 @@ class IncomingMissile extends TargettableObject {
 				camAttached = false;
 				GameObject.Find("DynamicCamera").GetComponent.<DynamicCamera>().resetToShip();
 			}
+			var missMsg : OSCMessage = OSCMessage("/scene/warzone/missileexplode");
+				
+				
+			OSCHandler.Instance.SendMessageToAll(missMsg);
 			Destroy(gameObject);
 		}
 	}
