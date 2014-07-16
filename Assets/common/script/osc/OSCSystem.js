@@ -1,4 +1,4 @@
-#pragma strict
+#pragma implicit
 import System.Net;
 import System.Collections.Generic;
 import UnityOSC;
@@ -348,7 +348,7 @@ function systemMessage(message : OSCPacket){
 	var operation = msgAddress[3];
 	switch(system){
 		case "reactor":		
-		Debug.Log("Reactor fail");							// REACTOR CONTROL --------------------
+			// REACTOR CONTROL --------------------
 			shipSystem.GetComponent.<Reactor>().processOSCMessage(message);
 			break;
 			

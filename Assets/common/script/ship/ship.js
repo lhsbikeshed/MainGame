@@ -270,6 +270,8 @@ function damageShip(amount : float, deathText : String){
 		cab.puzzleStart();
 	} 
 	
+	reactor.damageReactor();
+	
 }
 
 function changeHullLevel(amount : float){
@@ -448,6 +450,7 @@ function FixedUpdate(){
 	//repair ship hull if power is == 3
 	if(internalPower == 3 && reactor.systemEnabled){
 		changeHullLevel(0.002f);
+		reactor.repairReactor();
 		
 	}
 	

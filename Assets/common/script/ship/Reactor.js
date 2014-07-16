@@ -1,5 +1,7 @@
 #pragma strict
 
+import UnityOSC;
+
 /* reactor generates energy
  * also its the control class for all subsystems
  */
@@ -39,6 +41,12 @@ class Reactor extends MonoBehaviour{
 	private var lastSecondCounter : int = 0;
 	
 	private var separator : char[] = ["/"[0]];
+	
+	
+	public var waitingForFuelLeak : boolean = false;
+	public var fuelLeaking : boolean = false;
+	public var fuelLeakHealth :float = 1.0f;
+	
 	
 	
 	
@@ -178,10 +186,10 @@ class Reactor extends MonoBehaviour{
 			
 			overloadTime = seconds;
 			
-			OSCHandler.Instance.ChangeClientScreen("PilotStation", "selfdestruct");			//give the pilot a radar
-			OSCHandler.Instance.ChangeClientScreen("TacticalStation", "selfdestruct");		//give the tactical a weapons screen
-			OSCHandler.Instance.ChangeClientScreen("EngineerStation", "selfdestruct");			//give the engineer power man console
-			OSCHandler.Instance.ChangeClientScreen("CommsStation", "selfdestruct");			//give the engineer power man console
+			OSCHandler.Instance.ChangeClientScreen("PilotStation", "selfdestruct");			
+			OSCHandler.Instance.ChangeClientScreen("TacticalStation", "selfdestruct");		
+			OSCHandler.Instance.ChangeClientScreen("EngineerStation", "selfdestruct");			
+			OSCHandler.Instance.ChangeClientScreen("CommsStation", "selfdestruct");			
 			
 			
 			lastSecondCounter = 0;
@@ -316,9 +324,63 @@ class Reactor extends MonoBehaviour{
 		}
 		
 	}
+	//fuel leak handling
 	
-	function Update () {
+	function setLeakFlagState(state : boolean){
+		if(fuelLeaking == true && state == false){
+			//fuel is leaking and we GM cancelled it
+			
+			waitingForFuelLeak = false;
+			fuelLeaking	= false;
+			//send a banner message to the players to say the leak stopped
+			OSCHandler.Instance.DisplayBannerAtClient("EngineerStation", "Repair complete", "Fuel leak stabilised", 4000);
+			return;
+		}
+		//otherwise set the flag state
+		waitingForFuelLeak = state;
+		
+			
+	}
 	
+	/* ran out of fuel, shut the ship down, wait a few moments and then end the game */
+	function outOfFuel(){
+		OSCHandler.Instance.DisplayBannerAtClient("EngineerStation", "CRITICAL", "FUEL TANKS EMPTY", 4000);
+		yield WaitForSeconds(4);
+		reactorFailure();
+		yield WaitForSeconds(5);
+		
+		GameObject.Find("PersistentScripts").GetComponent.<PersistentScene>().shipDead("Ran out of fuel");
+	}
+	
+	function damageReactor(){
+		if(waitingForFuelLeak){
+			
+			fuelLeaking = true;
+			waitingForFuelLeak = false;
+			
+			//send out banner message
+			OSCHandler.Instance.DisplayBannerAtClient("EngineerStation", "WARNING", "FUEL LEAK DETECTED", 4000);
+			//tell the engineer station to start leaking fuel
+			var msg : OSCMessage = new OSCMessage("/system/fuelLeakState");
+			msg.Append(1);
+			OSCHandler.Instance.SendMessageToClient("EngineerStation", msg);
+			
+			
+		}
+	}
+	
+	function repairReactor(){
+		if(fuelLeaking){
+			fuelLeakHealth -= 0.01f;
+			if(fuelLeakHealth < 0.0f){
+				fuelLeaking = false;
+				OSCHandler.Instance.DisplayBannerAtClient("EngineerStation", "Repair complete", "Fuel leak stabilised", 4000);
+				//tell the engineer station to start leaking fuel
+				var msg : OSCMessage = new OSCMessage("/system/fuelLeakState");
+				msg.Append(0);
+				OSCHandler.Instance.SendMessageToClient("EngineerStation", msg);
+			}
+		}
 	}
 	
 	function processOSCMessage(message : OSCMessage){
@@ -351,7 +413,12 @@ class Reactor extends MonoBehaviour{
 			reactorOverload();
 		} else if (operation == "overloadinterrupt"){
 			interruptOverload();
-			
+		} else if (operation == "setFuelLeakFlag"){
+			var state :boolean = message.Data[0] == 1 ? true : false;
+			setLeakFlagState(state);
+		} else if (operation == "outOfFuel"){
+			outOfFuel();
+				
 			
 		}
 	}
