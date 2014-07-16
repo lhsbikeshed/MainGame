@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <config>
-	<testmode>true</testmode>
+	<testmode>false</testmode>
 	<client name="TacticalStation">10.0.0.10:12004</client>
 	<client name="EngineerStation">10.0.0.1:12001</client>
 	<client name="PilotStation">10.0.0.10:12002</client>
 	<client name="ModStation">127.0.0.1:12005</client>
-	<client name="Tablet">172.31.24.141:12005</client>
+	<client name="Tablet">10.0.0.12:12005</client>
 	<client name="CommsStation">127.0.0.1:12003</client>
 	<client name="camController">127.0.0.1:12010</client>
 
