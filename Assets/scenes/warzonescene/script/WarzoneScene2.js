@@ -134,7 +134,7 @@ class WarzoneScene2 extends GenericScene {
 	}
 	
 	function spawnMissile(){
-		//fire another missile to keep the tactical guy busy
+
 		var missPos = (Random.onUnitSphere * 2000);
 		missPos.y = 0;
 		missPos = theShip.transform.position + missPos;
@@ -150,10 +150,11 @@ class WarzoneScene2 extends GenericScene {
 		OSCHandler.Instance.SendMessageToAll(missMsg);
 		nextMissileLaunchTime = Random.Range(missileDiff + 3, missileDiff + 5);
 		lastMissileLaunchTime = Time.fixedTime;
+
 		
 		Debug.Log("Missile launched at : " + Time.fixedTime);
 	}
-	
+
 	
 	function SpawnDistressSignal(){
 		var g = GameObject.Find("van-dead");		
@@ -216,6 +217,9 @@ class WarzoneScene2 extends GenericScene {
 				Debug.Log("d:" + d);
 				missileDiff = 12 - d;
 				nextMissileLaunchTime = Random.Range(missileDiff + 1, missileDiff + 3);
+				break;
+			case "spawnMissile":
+				spawnMissile();
 				break;
 			case "spawnDistressSignal":
 				SpawnDistressSignal();
