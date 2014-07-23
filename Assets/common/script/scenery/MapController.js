@@ -1,4 +1,7 @@
 #pragma strict
+import System.Collections.Generic;
+
+
 
 var ship : GameObject;
 var sectorPos : int[];
@@ -11,6 +14,10 @@ private var ps : PersistentScene;
 
 public static var _instance : MapController;
 
+private var cellChangeListeners : List.<CellChangeListener>;
+
+
+
 function Awake () {
 	mapObjects = new List.<GameObject>();
 	ps = GameObject.Find("PersistentScripts").GetComponent.<PersistentScene>();
@@ -21,6 +28,8 @@ function Awake () {
 	
 	updateObjectList();
 	_instance = this;
+	
+	cellChangeListeners = new List.<CellChangeListener>();
 	
 }
 
@@ -42,6 +51,12 @@ function updateObject(obj : GameObject){
 function removeObject(obj : GameObject){
 	mapObjects.Remove(obj);
 
+}
+
+function registerCellChangeListener(obj : CellChangeListener){
+	if(cellChangeListeners.Contains(obj) == false){
+		cellChangeListeners.Add(obj);
+	}
 }
 
 function updateObjectList(){
@@ -176,9 +191,13 @@ function Update () {
 							newTrail = true;
 						}
 					}
-//					Debug.Log("moved: " + g.name);
-					g.position += correctionTransform;
+
 					
+
+					g.position += correctionTransform;
+					for(var c : CellChangeListener in cellChangeListeners){
+						c.CellChanged(correctionTransform);
+					}
 					
 					if(newTrail){
 						trailObj = Instantiate(trailPrefab, g.position, g.rotation);
