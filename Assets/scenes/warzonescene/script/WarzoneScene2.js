@@ -128,28 +128,31 @@ class WarzoneScene2 extends GenericScene {
 		
 		if(missilesEnabled){
 			if(lastMissileLaunchTime + nextMissileLaunchTime < Time.fixedTime && theShip.GetComponent.<Reactor>().systemEnabled == true){
-				//fire another missile to keep the tactical guy busy
-				var missPos = (Random.onUnitSphere * 2000);
-				missPos.y = 0;
-				missPos = theShip.transform.position + missPos;
-				var g : Transform = Instantiate(missilePrefab, missPos, Quaternion.identity);
-				g.GetComponent.<IncomingMissile>().targetTransform = theShip.transform;
-				
-				theShip.GetComponentInChildren.<TargettingSystem>().addObject(g.gameObject);
-				
-				//send a message to the console letting it know a missile was spawned
-				var missMsg : OSCMessage = OSCMessage("/scene/warzone/missilelaunch");
-				
-				
-				OSCHandler.Instance.SendMessageToAll(missMsg);
-				nextMissileLaunchTime = Random.Range(missileDiff + 3, missileDiff + 5);
-				lastMissileLaunchTime = Time.fixedTime;
-				
-				Debug.Log("Missile launched at : " + Time.fixedTime);
+				spawnMissile();
 			}
 		}
 	}
 	
+	function spawnMissile(){
+		//fire another missile to keep the tactical guy busy
+		var missPos = (Random.onUnitSphere * 2000);
+		missPos.y = 0;
+		missPos = theShip.transform.position + missPos;
+		var g : Transform = Instantiate(missilePrefab, missPos, Quaternion.identity);
+		g.GetComponent.<IncomingMissile>().targetTransform = theShip.transform;
+		
+		theShip.GetComponentInChildren.<TargettingSystem>().addObject(g.gameObject);
+		
+		//send a message to the console letting it know a missile was spawned
+		var missMsg : OSCMessage = OSCMessage("/scene/warzone/missilelaunch");
+		
+		
+		OSCHandler.Instance.SendMessageToAll(missMsg);
+		nextMissileLaunchTime = Random.Range(missileDiff + 3, missileDiff + 5);
+		lastMissileLaunchTime = Time.fixedTime;
+		
+		Debug.Log("Missile launched at : " + Time.fixedTime);
+	}
 	
 	
 	function SpawnDistressSignal(){
@@ -216,6 +219,9 @@ class WarzoneScene2 extends GenericScene {
 				break;
 			case "spawnDistressSignal":
 				SpawnDistressSignal();
+				break;
+			case "spawnMissile":
+				spawnMissile();
 				break;
 				
 		}

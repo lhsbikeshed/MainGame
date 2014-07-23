@@ -3,8 +3,7 @@
 var destinationScene : int;
 var jumpNodeFrequency : int;
 var forcedFail : boolean; //do we force a failure on this jump?
-var tunnelGate : boolean = false;
-var destinationSector : int[];
+
 
 var gateEnabled : boolean = true;
 
@@ -28,7 +27,7 @@ function OnTriggerEnter (other : Collider) {
 	if(gateEnabled){
 		if (other.gameObject == theShip){
 			theShip.GetComponent.<ship>().inGate = true;
-			theShip.GetComponent.<ship>().inTunnelGate = tunnelGate;
+			
 			theShip.GetComponent.<ship>().updateJumpStatus();
 			
 			theShip.GetComponent.<ship>().jumpDest = 1;
@@ -36,9 +35,7 @@ function OnTriggerEnter (other : Collider) {
 			ps.hyperspaceDestination = destinationScene;
 			ps.forcedHyperspaceFail = forcedFail;
 			
-			if(tunnelGate){
-				GameObject.Find("SceneScripts").GetComponent.<TestingScene>().hyperspaceDestination = destinationSector;
-			}
+			
 		} 
 	}
 }

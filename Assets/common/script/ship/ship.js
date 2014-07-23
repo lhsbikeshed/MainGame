@@ -50,6 +50,8 @@ private var jumping : boolean;			//are we currently accelerating for a jump?
 private var jumpStartTime : float;		//time we started the jump, jump sequence lasts 7 seconds
 private var restoreFov : boolean;			//when a jump is aborted we need to restore fov
 
+private var cablePuzzleFailTimer : float = 0.0f;
+
 // location in sector map
 private var sectorPosition : Vector3;
 
@@ -265,10 +267,10 @@ function damageShip(amount : float, deathText : String){
 		OSCHandler.Instance.SendMessageToAll(msg);
 	}
 	
-	var cab : CablePuzzleSystem = GetComponent.<CablePuzzleSystem>();
-	if(cab.isWaiting){
-		cab.puzzleStart();
-	} 
+//	var cab : CablePuzzleSystem = GetComponent.<CablePuzzleSystem>();
+//	if(cab.isWaiting){
+//		cab.puzzleStart();
+//	} 
 	
 	reactor.damageReactor();
 	
@@ -311,6 +313,17 @@ function startJump(){
 		jumping = true;
 		rigidbody.drag = 0.05f;
 		propulsion.rotationDisabled  = true;
+		
+		//test switching the consoles to hyperspace early
+		OSCHandler.Instance.ChangeClientScreen("PilotStation", "hyperspace");
+		OSCHandler.Instance.ChangeClientScreen("TacticalStation", "hyperspace");
+		
+		var cab : CablePuzzleSystem = GetComponent.<CablePuzzleSystem>();
+		if(cab.isWaiting){
+			cablePuzzleFailTimer = 1.0f;
+		} 
+		
+		
 	}
 }
 
@@ -326,6 +339,8 @@ function jumpAbort(){
 	thrust = 0;
 	scaledThrottle = 0.0f;
 	setJumpEffectState(false);
+	OSCHandler.Instance.RevertClientScreen("PilotStation");
+	OSCHandler.Instance.RevertClientScreen("TacticalStation");
 }
 
 /* lock out pilot controls */
@@ -509,6 +524,16 @@ function FixedUpdate(){
 	//if we are jumping then add a massive forward force to accel the ship
 	//modify the effects in front of ship depending on how fast were going
 	if(jumping){
+		if(cablePuzzleFailTimer > 0.0f){
+			cablePuzzleFailTimer -= Time.fixedDeltaTime;
+			if(cablePuzzleFailTimer <= 0.0f){
+				jumpAbort();
+				var cab : CablePuzzleSystem = GetComponent.<CablePuzzleSystem>();
+				cab.puzzleStart();
+			}
+		}
+	
+	
 		rigidbody.AddForce (transform.TransformDirection(Vector3.forward * 15000));
 		
 		var timeSinceJumpStart = Time.fixedTime - jumpStartTime;
@@ -526,14 +551,8 @@ function FixedUpdate(){
 		if (timeSinceJumpStart  > 5){	//jump at 7 seconds
 			
 			jumpEnd();
-			if(inTunnelGate){
-				//signal testing scene the jump started
-				GameObject.Find("SceneScripts").GetComponent.<TestingScene>().tunnelStart();
-			} else {
-				
-				Application.LoadLevel(jumpDest);
-				
-			}
+			
+			Application.LoadLevel(jumpDest);			
 			Debug.Log("JUMP!");
 			
 		} 
