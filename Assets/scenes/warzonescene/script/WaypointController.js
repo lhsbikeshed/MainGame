@@ -38,6 +38,8 @@ function gateDone(obj : GameObject){
 	for(var g: GameObject in mapObjects){
 		if (g == obj){
 			g.GetComponent.<TargettableObject>().highlighted = false;
+			var msg2 : OSCMessage = new OSCMessage("/radar/wayPointReached");
+			OSCHandler.Instance.SendMessageToAll(msg2);
 			break;
 		}
 		
