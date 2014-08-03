@@ -25,7 +25,7 @@ public class CablePuzzleSystem : MonoBehaviour {
 		[13, 3, 8] , [5, 6, 10]
 	*/
 
-
+	public AudioClip failClip;
 	public bool isRunning = false;
 	public bool isWaiting = false;
 
@@ -84,6 +84,7 @@ public class CablePuzzleSystem : MonoBehaviour {
 		if(!isWaiting || puzzleComplete){
 			return;
 		}
+		AudioSource.PlayClipAtPoint(failClip, transform.position);
 		//power off all screens
 		//pick a random connection chain
 		//send to engineer
