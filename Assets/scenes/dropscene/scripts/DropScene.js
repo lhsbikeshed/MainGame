@@ -332,10 +332,10 @@ class DropScene extends GenericScene {
 						var ps : PersistentScene = GameObject.Find("PersistentScripts").GetComponent.<PersistentScene>();
 						ps.hyperspaceDestination = 3;
 						ps.forcedHyperspaceFail = false;	
-						theShip.GetComponent.<ship>().jumpDest = 1;
+						theShip.GetComponent.<JumpSystem>().jumpDest = 1;
 		
-						theShip.GetComponent.<ship>().canJump = true;
-						theShip.GetComponent.<ship>().inGate = true;
+						theShip.GetComponent.<JumpSystem>().canJump = true;
+						theShip.GetComponent.<JumpSystem>().inGate = true;
 						var s1 : OSCMessage = OSCMessage("/ship/jumpStatus");
 						s1.Append.<int>(1);
 						OSCHandler.Instance.SendMessageToAll(s1);

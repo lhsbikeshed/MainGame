@@ -1,23 +1,18 @@
 #pragma strict
 
 
-var moveSpeed : float = 10;
-private var running : boolean = false;
-
+var theShip : Transform;
+var lightPos : Transform;
 
 
 function Start () {
-
+	theShip = GameObject.Find("TheShip").transform;
+	
 }
 
 function Update () {
+	renderer.material.SetVector("_ViewPos", theShip.position);
+	renderer.material.SetVector("_SunPos", lightPos.position);
 
-
-	if(running){
-		transform.position.z += moveSpeed * Time.deltaTime;
-	}
-}
-
-function startScene(){
-	running = true;
+	
 }

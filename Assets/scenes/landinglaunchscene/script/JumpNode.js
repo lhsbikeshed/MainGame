@@ -26,11 +26,11 @@ function Start () {
 function OnTriggerEnter (other : Collider) {
 	if(gateEnabled){
 		if (other.gameObject == theShip){
-			theShip.GetComponent.<ship>().inGate = true;
+			theShip.GetComponent.<JumpSystem>().inGate = true;
 			
-			theShip.GetComponent.<ship>().updateJumpStatus();
+			theShip.GetComponent.<JumpSystem>().updateJumpStatus();
 			
-			theShip.GetComponent.<ship>().jumpDest = 1;
+			theShip.GetComponent.<JumpSystem>().jumpDest = 1;
 			var ps : PersistentScene = GameObject.Find("PersistentScripts").GetComponent.<PersistentScene>();
 			ps.hyperspaceDestination = destinationScene;
 			ps.forcedHyperspaceFail = forcedFail;
@@ -84,8 +84,8 @@ function explode(){
 function OnTriggerExit (other : Collider) {
 	
 	if (other.gameObject == theShip){
-		theShip.GetComponent.<ship>().inGate = false;
-	    theShip.GetComponent.<ship>().updateJumpStatus();
+		theShip.GetComponent.<JumpSystem>().inGate = false;
+	    theShip.GetComponent.<JumpSystem>().updateJumpStatus();
 		
 	} 
 }

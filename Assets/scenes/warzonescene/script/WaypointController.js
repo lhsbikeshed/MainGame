@@ -80,7 +80,7 @@ function spawnWaypoint(from : int, createObjects : boolean){
 	t[0] = xc;
 	t[1] = yc;
 	t[2] = 15;
-	mapController.spawnGate(t);
+	//mapController.spawnGate(t);
 	
 	//now spawn them
 	var ct : int = 0;

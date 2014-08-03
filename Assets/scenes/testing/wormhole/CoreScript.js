@@ -25,11 +25,11 @@ function OnTriggerEnter(c : Collider){
 		
 		
 	} else if(c.name == "TheShip"){
-		theShip.GetComponent.<ship>().inGate = true;
+		theShip.GetComponent.<JumpSystem>().inGate = true;
 		
-		theShip.GetComponent.<ship>().updateJumpStatus();
+		theShip.GetComponent.<JumpSystem>().updateJumpStatus();
 		
-		theShip.GetComponent.<ship>().jumpDest = 1;
+		theShip.GetComponent.<JumpSystem>().jumpDest = 1;
 		var ps : PersistentScene = GameObject.Find("PersistentScripts").GetComponent.<PersistentScene>();
 		ps.hyperspaceDestination = destinationScene;
 		ps.forcedHyperspaceFail = false;

@@ -8,7 +8,7 @@ var thrustSpeed : float;
 
 var docked : boolean;
 var engineSFX : AudioClip;		//engine sound effect
-var clampSFX : AudioClip;		//clamp release effect
+var clampSFX : AudioClip;		//clamp releatheCse effect
 var weaponsPower  : int = 2;
 var sensorPower : int = 2;
 var internalPower : int = 2;
@@ -38,26 +38,14 @@ private var nextSparkTime : float;
 var joyPos : Vector3;		//rotation joystick
 var translateJoyPos :Vector3;	//translation joystick. Z axis is throttle
 
-//JUMP STUFF
 
-var didWeWarpIn : boolean;	//did we jump into this scene?
-var canJump : boolean;		//are we allowed to jump? Used by Jump Node
-var inGate : boolean;		//are we in a gate
-var inTunnelGate : boolean; //are we in a tunnel gate?
-public var jumpDest : int;	//where we jump to
-private var controlsLocked : boolean;	//locked controls? (for autopilot or jumps)	
-private var jumping : boolean;			//are we currently accelerating for a jump?
-private var jumpStartTime : float;		//time we started the jump, jump sequence lasts 7 seconds
-private var restoreFov : boolean;			//when a jump is aborted we need to restore fov
-
-private var cablePuzzleFailTimer : float = 0.0f;
 
 // location in sector map
 private var sectorPosition : Vector3;
 
 
 //effects!
-private var jumpEffect : ParticleSystem;
+
 private var moveEffects : ParticleSystem;
 private var shutterScript : DoorScript;
 private var windowScript : FrontWindowBehaviour;
@@ -90,7 +78,7 @@ private var externalSFX : AudioSource;
 var hullBreachSFX : AudioSource;
 private var rocketSFXSource : AudioSource;
 
-
+private var controlsLocked : boolean;	//locked controls? (for autopilot or jumps)	
 //states n stuff
 private var dockingChange : boolean = false;
 
@@ -113,10 +101,7 @@ function Start () {
 	theCamera = ship.Find("camera");
 	throttleDisableTime = 0.0f;
 	controlsLocked = false;
-	if(didWeWarpIn){
-		restoreFov = true;
-		shipCamera.setFovs(180);
-	}
+	
 	
 	//get subsystem refs
 	reactor = GetComponent.<Reactor>();
@@ -131,8 +116,7 @@ function Start () {
 	//effects refs
 	moveEffects = transform.Find("Bits").GetComponent.<ParticleSystem>();
 	moveEffects.emissionRate = 0.0f;
-	jumpEffect = transform.Find("JumpEffects").GetComponent.<ParticleSystem>();
-	setJumpEffectState(false);
+
 	windowScript = GetComponentInChildren(FrontWindowBehaviour);
 	shutterScript = gameObject.GetComponentInChildren(DoorScript);
 	
@@ -214,8 +198,8 @@ function OnCollisionEnter(c : Collision){
 	throttleDisableTime = Time.fixedTime;
 	
 	//cancel the jump sequence if we clomp something
-	if(jumping){
-		jumpAbort();
+	if(jumpSystem.jumping){
+		jumpSystem.jumpAbort();
 	}
 	
 	
@@ -290,90 +274,15 @@ function changeHullLevel(amount : float){
 	
 }
 
-function forceJump(){
 
-	jumpSystem.go();
-	jumpStartTime = Time.fixedTime;
-	controlsLocked = true;
-	jumping = true;
-	rigidbody.drag = 0.05f;
-	propulsion.rotationDisabled  = true;
-}
-
-/* Begin a jump sequence
- * only works if we are inside a gate ring, the jump system reports its charged
- * and we arent currently jumping (prevents idiots from spamming the jump button 
-*/
-function startJump(){
-	if(inGate && jumpSystem.canJump && !jumping){
-		
-		jumpSystem.go();
-		jumpStartTime = Time.fixedTime;
-		controlsLocked = true;
-		jumping = true;
-		rigidbody.drag = 0.05f;
-		propulsion.rotationDisabled  = true;
-		
-		//test switching the consoles to hyperspace early
-		OSCHandler.Instance.ChangeClientScreen("PilotStation", "hyperspace");
-		OSCHandler.Instance.ChangeClientScreen("TacticalStation", "hyperspace");
-		
-		var cab : CablePuzzleSystem = GetComponent.<CablePuzzleSystem>();
-		if(cab.isWaiting){
-			cablePuzzleFailTimer = 1.0f;
-		} 
-		
-		
-	}
-}
-
-/* abort the jump, called if we smash into something during jumping
-*/
-function jumpAbort(){
-	jumpSystem.abort();
-	propulsion.rotationDisabled  = false;
-	controlsLocked = false;
-	jumping = false;
-	rigidbody.drag = 1.0f;
-	restoreFov = true;
-	thrust = 0;
-	scaledThrottle = 0.0f;
-	setJumpEffectState(false);
-	OSCHandler.Instance.RevertClientScreen("PilotStation");
-	OSCHandler.Instance.RevertClientScreen("TacticalStation");
-}
 
 /* lock out pilot controls */
 function setControlLock(state : boolean){
 	controlsLocked = !state;
 }
 
+ 
 
-/* tidy up all of the jump effects
-*/
-function jumpEnd(){
-	rigidbody.drag = 1.0f;
-	controlsLocked = false;
-	propulsion.rotationDisabled  = false;
-	jumping = false;
-	restoreFov = true;
-	jumpSystem.doJump();
-}    
-
-
-/* work out if we can actually jump or not and send that status to the clients
-*/
-function updateJumpStatus(){
-
-	
-	var msg : OSCMessage = OSCMessage("/ship/jumpStatus");	
-	if(inGate && jumpSystem.canJump){		
-		msg.Append.<int>(1);		
-	} else {
-		msg.Append.<int>(0);
-	}
-	OSCHandler.Instance.SendMessageToAll(msg);
-}
 
 /* -------------- Persistence ------------ 
  * check to see if there is a "jumpexit" and align the ship with it if there is
@@ -397,12 +306,7 @@ function OnLevelWasLoaded (level : int) {
    			transform.position = Vector3(0,0,0);
    		}
    	}
-   	if(didWeWarpIn){
-		jumpEnd();
-		setJumpEffectState(false);
-		didWeWarpIn = false;
-		shipCamera.setFovs(180);
-	}
+   
 }   
 
 
@@ -521,52 +425,6 @@ function FixedUpdate(){
 	}
 	
 		
-	//if we are jumping then add a massive forward force to accel the ship
-	//modify the effects in front of ship depending on how fast were going
-	if(jumping){
-		if(cablePuzzleFailTimer > 0.0f){
-			cablePuzzleFailTimer -= Time.fixedDeltaTime;
-			if(cablePuzzleFailTimer <= 0.0f){
-				jumpAbort();
-				var cab : CablePuzzleSystem = GetComponent.<CablePuzzleSystem>();
-				cab.puzzleStart();
-			}
-		}
-	
-	
-		rigidbody.AddForce (transform.TransformDirection(Vector3.forward * 15000));
-		
-		var timeSinceJumpStart = Time.fixedTime - jumpStartTime;
-		if(Mathf.FloorToInt (timeSinceJumpStart - Time.fixedDeltaTime ) != Mathf.FloorToInt (timeSinceJumpStart)){
-			var ti = 5 - Mathf.FloorToInt(timeSinceJumpStart);
-			GetComponent.<DistanceSpeaker>().SpeakDistance(ti, 1, false);
-		}
-		if(timeSinceJumpStart > 2){	//turn on effects at 2 seconds
-			
-			setJumpEffectState(true);
-			shipCamera.setFovs(85 + ((Time.fixedTime - jumpStartTime - 2) / 3.0f ) * 30);
-		}
-			
-		//JUMP!
-		if (timeSinceJumpStart  > 5){	//jump at 7 seconds
-			
-			jumpEnd();
-			
-			Application.LoadLevel(jumpDest);			
-			Debug.Log("JUMP!");
-			
-		} 
-	}
-	
-	//restore fov after a jump - not used until i split the guilayer and game into seperate cameras
-	if (restoreFov){
-		shipCamera.setFovs( Mathf.Lerp(theCamera.camera.fov,85,Time.deltaTime * 5.0) );
-		if (theCamera.camera.fov <= 85.0f){
-			shipCamera.setFovs(85.0f);
-			restoreFov = false;
-		}
-		
-	}
 	
 	//sfx for movement
 	moveEffects.emissionRate = rigidbody.velocity.magnitude / 10.0f;
@@ -606,20 +464,7 @@ function OnTriggerStay(other : Collider){
 	}
 }
 
-@RPC
-function setJumpEffectState(state : boolean){
-	if(PersistentScene.networkReady){
-		networkView.RPC("setJumpEffectState", RPCMode.Others, state);
-	}
-	if(jumpEffect == null){
-		jumpEffect = transform.Find("JumpEffects").GetComponent.<ParticleSystem>();
-	}
-	if(state){
-		jumpEffect.enableEmission = true;
-	} else {
-		jumpEffect.enableEmission = false;
-	}
-}
+
 
 /* enable the pilots radar on leaving the bay. Also unparent from bay so that the ship rotates freely
 */

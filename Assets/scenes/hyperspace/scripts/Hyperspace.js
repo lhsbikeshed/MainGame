@@ -50,8 +50,8 @@ class Hyperspace extends GenericScene {
 		theShip.GetComponentInChildren.<ShipCamera>().setSkyboxState (false);
 		
 		
-		theShip.GetComponent.<ship>().setJumpEffectState(false);
-		theShip.GetComponent.<ship>().inGate = false;
+		theShip.GetComponent.<JumpSystem>().setJumpEffectState(false);
+		theShip.GetComponent.<JumpSystem>().inGate = false;
 		theShip.GetComponentInChildren.<Camera>().backgroundColor = Color(0,0,0);
 		lastEngineeringUpdate = Time.fixedTime;
 		ps = GameObject.Find("PersistentScripts").GetComponent.<PersistentScene>();
@@ -125,7 +125,7 @@ class Hyperspace extends GenericScene {
 			warpParticles.startColor = Color(255,0,0);
 			//change animations
 			//send an osc message /warp/failed {time to failure}
-			theShip.GetComponent.<ship>().setJumpEffectState(true);
+			theShip.GetComponent.<JumpSystem>().setJumpEffectState(true);
 			if(failure){
 				//power off propulsion/warp and send a general UREFUCKED effects message
 				//theShip.GetComponent.<PropulsionSystem>().disableSystem();
@@ -154,7 +154,7 @@ class Hyperspace extends GenericScene {
 			
 			theShip.rigidbody.freezeRotation = false;
 			theShip.rigidbody.constraints = RigidbodyConstraints.None;
-			theShip.GetComponent.<ship>().didWeWarpIn = true;
+			theShip.GetComponent.<JumpSystem>().didWeWarpIn = true;
 			theShip.GetComponent.<MiscSystem>().consuming = true; //reenable air consumption
 			theShip.rigidbody.angularDrag = 0.5f;
 		 	theShip.GetComponent.<PropulsionSystem>().throttleDisabled = false;
