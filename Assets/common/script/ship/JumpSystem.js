@@ -26,9 +26,11 @@ class JumpSystem extends BaseSubsystem
 	private var jumpStartTime : float;		//time we started the jump, jump sequence lasts 7 seconds
 	private var restoreFov : boolean;			//when a jump is aborted we need to restore fov
 
-private var cablePuzzleFailTimer : float = 0.0f;
-private var shipCamera : ShipCamera;
-private var theCamera : Transform;
+	private var cablePuzzleFailTimer : float = 0.0f;
+	private var shipCamera : ShipCamera;
+	private var theCamera : Transform;
+	
+	var jumpBlocked : boolean;
 
 
 		
@@ -49,6 +51,8 @@ private var theCamera : Transform;
 			restoreFov = true;
 			shipCamera.setFovs(180);
 		}
+		
+		jumpBlocked = false;
 	}
 	
 	
@@ -166,7 +170,7 @@ private var theCamera : Transform;
 		//JUMP!
 		if (timeSinceJumpStart  > 5){	//jump at 7 seconds
 			
-			jumpEnd();
+			resetAfterJump();
 			
 			Application.LoadLevel(jumpDest);			
 			Debug.Log("JUMP!");
@@ -188,7 +192,7 @@ private var theCamera : Transform;
 	function OnLevelWasLoaded (level : int) {
 		
 	   	if(didWeWarpIn){
-			jumpEnd();
+			resetAfterJump();
 			setJumpEffectState(false);
 			didWeWarpIn = false;
 			shipCamera.setFovs(180);
@@ -196,9 +200,7 @@ private var theCamera : Transform;
 	}   
 	
 	function setJumpEffectState(state : boolean){
-		if(PersistentScene.networkReady){
-			networkView.RPC("setJumpEffectState", RPCMode.Others, state);
-		}
+		
 		if(jumpEffect == null){
 			jumpEffect = transform.Find("JumpEffects").GetComponent.<ParticleSystem>();
 		}
@@ -208,6 +210,7 @@ private var theCamera : Transform;
 			jumpEffect.enableEmission = false;
 		}
 	}
+	
 	/* work out if we can actually jump or not and send that status to the clients
 	*/
 	function updateJumpStatus(){
@@ -222,6 +225,7 @@ private var theCamera : Transform;
 		OSCHandler.Instance.SendMessageToAll(msg);
 	}
 
+	/* forcibly start the jump sequence, ignoring being in a gate or charged */
 	function forceJump(){
 
 		go();
@@ -278,7 +282,7 @@ private var theCamera : Transform;
 
 	/* tidy up all of the jump effects
 	*/
-	function jumpEnd(){
+	function resetAfterJump(){
 		rigidbody.drag = 1.0f;
 		theShip.GetComponent.<ship>().setControlLock(false);
 		theShip.GetComponent.<PropulsionSystem>().rotationDisabled  = false;

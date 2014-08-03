@@ -4,6 +4,11 @@
 */
 class PropulsionSystem extends BaseSubsystem
 {
+
+	/* scaling factors for motion */
+	var RotationSpeed : Vector3;
+	var TranslateSpeed : Vector3;
+	var thrustSpeed : float;		
 	
 	var propulsionModifier : float; //how much we modify the actual throttle on the ship
 	var propulsionOffset : Vector3; //on damage we should vector the thrust
@@ -11,7 +16,6 @@ class PropulsionSystem extends BaseSubsystem
 	
 	var throttleDisabled : boolean = true;
 	var rotationDisabled : boolean = true;
-	var throttle : float = 0.0f;
 	
 	var inBay : boolean = false;
 	
@@ -23,12 +27,36 @@ class PropulsionSystem extends BaseSubsystem
 	var engineLight : Light;
 	
 	
+	//actual control stuff
+	//ships joystick position
+	var joyPos : Vector3;		//rotation joystick
+	var translateJoyPos :Vector3;	//translation joystick. Z axis is throttle
+	//control stuff
+	var scaledThrottle : float; //scaled throttle from 0-1.0 
+	private var thrust : float;	//actual calculated throttle that we use for thrust
+	var maxThrust : float = 1000;	//max thrust we can apply, modified by prop system
+
+	//audio
+	private var rocketSFXSource : AudioSource;
+	var engineSFX : AudioClip;		//engine sound effect
+
+	
 	function Start(){
 		super.Start();
 		propulsionPowerModifier = new float[3];
 		propulsionPowerModifier[0] = 0.2f;
 		propulsionPowerModifier[1] = 0.5f;
 		propulsionPowerModifier[2] = 1.0f;
+		
+		
+		rocketSFXSource = gameObject.AddComponent("AudioSource");
+		rocketSFXSource.clip = engineSFX;
+		rocketSFXSource.loop = true;
+		rocketSFXSource.volume = 0.0f;
+		rocketSFXSource.Play();
+			
+		
+		
 	}
 	
 	function Awake(){
@@ -51,32 +79,57 @@ class PropulsionSystem extends BaseSubsystem
 		throttleDisabled = false;
 		rotationDisabled = false;
 		engineParticles.enableEmission = true;
-		engineParticles.emissionRate = baseEmissionRate * particleRate.Evaluate(throttle);
-		engineParticles.startSpeed = -baseEmissionRate * particleRate.Evaluate(throttle);
+		engineParticles.emissionRate = baseEmissionRate * particleRate.Evaluate(scaledThrottle);
+		engineParticles.startSpeed = -baseEmissionRate * particleRate.Evaluate(scaledThrottle);
 		
 		
 	}
 	
 	function FixedUpdate () {
 		
-		if(systemEnabled){
-			
-			var power : float = reactor.consumePower(energyConsumptionRate * powerState);
-			if(power < energyConsumptionRate * powerState) {	//we didnt get what we wanted for xmas...
-				disableSystem();
-			}
-			propulsionModifier = power / (energyConsumptionRate * maxPowerState);
-			
-			engineParticles.emissionRate = 380.0f * particleRate.Evaluate(throttle);
-			engineParticles.startSpeed = -1.14f * particleRate.Evaluate(throttle);
-			engineLight.intensity = 9.0f * particleRate.Evaluate(throttle);
-		} 
+
 		propulsionModifier = propulsionPowerModifier[theShip.GetComponent.<ship>().propulsionPower - 1]; //(1 + theShip.GetComponent.<ship>().propulsionPower) / 4.0f;
 		if(inBay){
 			propulsionModifier *= 0.5f;
 		}
 		//on damage to left and right engines we should return some sort of direction for the ship to move in
 		//to simulate engines being borked
+		//read the controls just dont apply them unless controlsLocked is false
+		scaledThrottle = translateJoyPos.z;
+		
+		
+		thrust = (maxThrust * propulsionModifier) * scaledThrottle;
+	   
+	    if(thrust < 0){
+	    	thrust = 0;
+	    }
+
+		var rx : float = joyPos.z * RotationSpeed.x * propulsionModifier;
+		var ry : float = joyPos.y * RotationSpeed.y * propulsionModifier;
+		var rz : float = joyPos.x * RotationSpeed.z * propulsionModifier;
+		var tx : float = translateJoyPos.x * TranslateSpeed.x * propulsionModifier;
+		var ty : float = -translateJoyPos.y * TranslateSpeed.y * propulsionModifier;
+		 
+		 
+		
+	 	if (rotationDisabled  == false){				//FIX ME
+			rigidbody.AddRelativeTorque(Vector3(ry,rz,rx));	   	    
+			//rigidbody.velocity = AddPos * (Time.deltaTime * throttle);
+		}
+		if(throttleDisabled == false){
+		
+			rigidbody.AddForce (transform.TransformDirection(Vector3.forward * thrust * 2));
+			rigidbody.AddRelativeForce(Vector3(tx,ty,0));
+			rocketSFXSource.volume = scaledThrottle;
+			
+		}
+	    	
+		
+		if(systemEnabled == false){
+			rocketSFXSource.volume = 0.0f;
+		}
+		
+		
 	}
 	
 	function processOSCMessage(message : OSCMessage){

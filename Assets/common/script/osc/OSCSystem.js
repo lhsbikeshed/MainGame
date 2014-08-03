@@ -306,8 +306,8 @@ function controlMessage(message : OSCPacket){
 	switch(system){
 		case "joystick":							//read joystick state from client
 			// x, y, z, tx, ty, throttle
-			playerShip.GetComponent.<ship>().joyPos = Vector3(message.Data[0], message.Data[1], message.Data[2]);
-			playerShip.GetComponent.<ship>().translateJoyPos = Vector3(message.Data[3], message.Data[4], message.Data[5]);
+			propulsionSystem.joyPos = Vector3(message.Data[0], message.Data[1], message.Data[2]);
+			propulsionSystem.translateJoyPos = Vector3(message.Data[3], message.Data[4], message.Data[5]);
 			break;
 		case "releaseClamp":						// DOCKING CONNECTOR -------------------------------------
 			if (message.Data[0]  == 1){
@@ -324,17 +324,7 @@ function controlMessage(message : OSCPacket){
 			shipSystem.sensorPower = message.Data[2];
 			break;
 			
-		case "grapplingHookState":
-			var ghState : boolean = message.Data[0] == 1 ? true : false;
-			playerShip.GetComponent.<TargettingSystem>().hookArmed = ghState;
-			if(ghState){
-				OSCHandler.Instance.DisplayBannerAtClient("EngineerStation", "Grappling Hook", "Launcher enabled", 2000);
-				OSCHandler.Instance.DisplayBannerAtClient("TacticalStation", "Grappling Hook", "Launcher enabled", 2000);
-			} else {
-				OSCHandler.Instance.DisplayBannerAtClient("EngineerStation", "Grappling Hook", "Launcher disabled", 2000);
-				OSCHandler.Instance.DisplayBannerAtClient("TacticalStation", "Grappling Hook", "Launcher disabled", 2000);
-			}
-			break;
+		
 	}
 			
 		

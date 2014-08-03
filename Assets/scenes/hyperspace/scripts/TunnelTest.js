@@ -11,6 +11,6 @@ function Start () {
 
 function Update () {
 	transform.LookAt(tgt);
-	transform.position = basePos + (ship.joyPos * 60.0f);
+
 	transform.position.z = basePos.z;
 }

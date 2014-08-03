@@ -1,13 +1,9 @@
 #pragma strict
 
 private var ship : Transform;
-/* scaling factors for motion */
-var RotationSpeed : Vector3;
-var TranslateSpeed : Vector3;
-var thrustSpeed : float;		
+
 
 var docked : boolean;
-var engineSFX : AudioClip;		//engine sound effect
 var clampSFX : AudioClip;		//clamp releatheCse effect
 var weaponsPower  : int = 2;
 var sensorPower : int = 2;
@@ -34,9 +30,6 @@ private var lastSparkTime : float;
 private var nextSparkTime : float;
 
 
-//ships joystick position
-var joyPos : Vector3;		//rotation joystick
-var translateJoyPos :Vector3;	//translation joystick. Z axis is throttle
 
 
 
@@ -55,10 +48,7 @@ private var undercarriage : UndercarriageBehaviour;
 var laserTurret : ShipsLaser;
 
 
-//control stuff
-var scaledThrottle : float; //scaled throttle from 0-1.0 
-private var thrust : float;	//actual calculated throttle that we use for thrust
-var maxThrust : float = 1000;	//max thrust we can apply, modified by prop system
+
 
 private var throttleDisableTime : float;
 
@@ -76,7 +66,7 @@ private var miscSystem : MiscSystem;
 //sound
 private var externalSFX : AudioSource;
 var hullBreachSFX : AudioSource;
-private var rocketSFXSource : AudioSource;
+
 
 private var controlsLocked : boolean;	//locked controls? (for autopilot or jumps)	
 //states n stuff
@@ -122,16 +112,7 @@ function Start () {
 	
 	
 	externalSFX = gameObject.AddComponent("AudioSource");
-	rocketSFXSource = gameObject.AddComponent("AudioSource");
-	rocketSFXSource.clip = engineSFX;
-	rocketSFXSource.loop = true;
-	rocketSFXSource.volume = 0.0f;
-	rocketSFXSource.Play();
-}
-
-//sends things to the client for rendering, throttle, gear state etc
-@RPC
-function updateClientState(throttle : float){
+	
 }
 
 
@@ -353,11 +334,6 @@ function dock(){
 	}
 }
 
-function OnSerializeNetworkView(stream : BitStream, info : NetworkMessageInfo) {
-
-	stream.Serialize(scaledThrottle);	
-}
-
 
 /*----------------- Updates --------*/
    
@@ -384,44 +360,13 @@ function FixedUpdate(){
 		}
 	
 	}
-	//read the controls just dont apply them unless controlsLocked is false
-	scaledThrottle = translateJoyPos.z;
-	propulsion.throttle = scaledThrottle;
 	
-	thrust = (maxThrust * propulsion.propulsionModifier) * scaledThrottle;
-   
-    if(thrust < 0){
-    	thrust = 0;
-    }
-
-	var rx : float = joyPos.z * RotationSpeed.x * propulsion.propulsionModifier;
-	var ry : float = joyPos.y * RotationSpeed.y * propulsion.propulsionModifier;
-	var rz : float = joyPos.x * RotationSpeed.z * propulsion.propulsionModifier;
-	var tx : float = translateJoyPos.x * TranslateSpeed.x * propulsion.propulsionModifier;
-	var ty : float = -translateJoyPos.y * TranslateSpeed.y * propulsion.propulsionModifier;
-	 
-	 
 	
- 	if (propulsion.rotationDisabled  == false){				//FIX ME
-		rigidbody.AddRelativeTorque(Vector3(ry,rz,rx));	   	    
-		//rigidbody.velocity = AddPos * (Time.deltaTime * throttle);
-	}
-	if(propulsion.throttleDisabled == false){
-	
-		rigidbody.AddForce (transform.TransformDirection(Vector3.forward * thrust * 2));
-		rigidbody.AddRelativeForce(Vector3(tx,ty,0));
-		rocketSFXSource.volume = scaledThrottle;
-		if(docked){
-			shipCamera.shaking = true;
-			shipCamera.shakeAmount = scaledThrottle / 1.0 * 0.05;
-		} else {
-			shipCamera.shaking = false;
-		}
-	}
-    	
-	
-	if(propulsion.systemEnabled == false){
-		rocketSFXSource.volume = 0.0f;
+	if(docked){
+		shipCamera.shaking = true;
+		shipCamera.shakeAmount = propulsion.scaledThrottle / 1.0 * 0.05;
+	} else {
+		shipCamera.shaking = false;
 	}
 	
 		
