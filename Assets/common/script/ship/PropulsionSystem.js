@@ -38,8 +38,10 @@ class PropulsionSystem extends BaseSubsystem
 
 	//audio
 	private var rocketSFXSource : AudioSource;
-	var engineSFX : AudioClip;		//engine sound effect
 
+	var engineSFX : AudioClip;		//engine sound effect
+	
+	
 	
 	function Start(){
 		super.Start();
@@ -55,7 +57,7 @@ class PropulsionSystem extends BaseSubsystem
 		rocketSFXSource.volume = 0.0f;
 		rocketSFXSource.Play();
 			
-		
+	
 		
 	}
 	
@@ -121,12 +123,13 @@ class PropulsionSystem extends BaseSubsystem
 			rigidbody.AddForce (transform.TransformDirection(Vector3.forward * thrust * 2));
 			rigidbody.AddRelativeForce(Vector3(tx,ty,0));
 			rocketSFXSource.volume = scaledThrottle;
-			
+
 		}
 	    	
 		
 		if(systemEnabled == false){
 			rocketSFXSource.volume = 0.0f;
+			
 		}
 		
 		

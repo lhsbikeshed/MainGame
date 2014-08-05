@@ -6,17 +6,16 @@ import UnityOSC;
 var test : float;
 
 var updateTime : float = 0.125;
-//var engineerStationIPAddress : String;
-//var pilotStationIPAddress : String;
-//var captainStationIPAddress : String;
-//var tacticalStationIPAddress : String;
-//var modStationIPAddress : String;
 
 
+//comms sfx and state
 var hailingSound : AudioClip;
 var bingbongNoise : AudioClip;
+private var commsOnline : boolean = false;
+
 
 var currentScene : GenericScene; //current scene to route /scene messages to
+
 
 //references to things we want to monitor
 private var playerShip : GameObject;
@@ -26,22 +25,13 @@ private var miscSystem : MiscSystem;
 private var jumpSystem : JumpSystem;
 private var targettingSystem : TargettingSystem;
 
-private var commsOnline : boolean = false;
 
-//last packet timestamp. Used because the OSC lib doesnt remove packets from its queue once processed
-private var lastTimeStampProcessed : long;
+
 
 //last update packet send
 private var lastShipUpdate : float;
 
-//list of radar visible objects
-//private var radarList: List.<Transform>;
-//private var radarScaleLevel : float; //from the skybox camera translate scale
-//var radarEnabled : boolean = false;
 
-//SCENE THINGS
-private var dropScene : DropScene;
-private var warpScene : Hyperspace;
 
 //fucking unityscript
 private var separator : char[] = ["/"[0]];
@@ -369,6 +359,9 @@ function systemMessage(message : OSCPacket){
 			break;
 		case "cablePuzzle":
 			shipSystem.GetComponent.<CablePuzzleSystem>().processOSCMessage(message);
+			break;
+		case "keyPuzzle":
+			KeySwitchPuzzle.GetInstance().processOSCMessage(message);
 			break;
 			
 		case "effect":
