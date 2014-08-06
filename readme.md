@@ -57,6 +57,8 @@ config.xml contains IPs and ports for the client machines, set "testmode" to tru
 
 Before running modconsole.pde, check that "serialEnabled" is set to false and "useXboxController" is set to reflect your chosen autopilot control scheme.
 
+All consoles (pilotconsole,modconsole,engineerconsole,commsconsole) have a variable called pathBase in the BannerOverlay class that must be set to the data directory of the sketch on your system.  
+
 Most of the cool shit is in testing branch.
 
 
