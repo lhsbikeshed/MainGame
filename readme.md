@@ -21,18 +21,11 @@ Required Software
 These specific versions of software are required to run/develop the
 game - if you use other versions you may experience compatibility issues:
 
-* [Unity](http://unity3d.com/) [3.5.7] (http://unity3d.com/unity/download/archive) (We use the free license)
-* [Blender](http://www.blender.org/) [2.67b] (http://download.blender.org/release/Blender2.67/)
+* [Unity](http://unity3d.com/) [4.3.4] (http://unity3d.com/unity/download/archive) (We use the free license)
+* [Blender](http://www.blender.org/) [2.6.9.0] (http://download.blender.org/release/Blender2.69/)
 
-* [Processing] (http://www.processing.org/) [2.0] (https://processing.org/download/) [1.5] (https://processing.org/download/)
+* [Processing] (http://www.processing.org/) [2.1.1] (https://processing.org/download/)
 
-| Console |  Version |
-| :--: |:--:| 
-| GM | 2.0 |
-| Tactical | 1.5|
-| Pilot | 1.5 |
-| Engineer | 1.5 |
-| Comms | 1.5 |
 
 Main sim code
 -------------
