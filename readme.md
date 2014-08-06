@@ -23,7 +23,6 @@ game - if you use other versions you may experience compatibility issues:
 
 * [Unity](http://unity3d.com/) [4.3.4] (http://unity3d.com/unity/download/archive) (We use the free license)
 * [Blender](http://www.blender.org/) [2.6.9.0] (http://download.blender.org/release/Blender2.69/)
-
 * [Processing] (http://www.processing.org/) [2.1.1] (https://processing.org/download/)
 
 
