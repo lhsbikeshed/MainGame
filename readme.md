@@ -21,18 +21,10 @@ Required Software
 These specific versions of software are required to run/develop the
 game - if you use other versions you may experience compatibility issues:
 
-* [Unity](http://unity3d.com/) [3.5.7] (http://unity3d.com/unity/download/archive) (We use the free license)
-* [Blender](http://www.blender.org/) [2.67b] (http://download.blender.org/release/Blender2.67/)
+* [Unity](http://unity3d.com/) [4.3.4] (http://unity3d.com/unity/download/archive) (We use the free license)
+* [Blender](http://www.blender.org/) [2.6.9.0] (http://download.blender.org/release/Blender2.69/)
+* [Processing] (http://www.processing.org/) [2.1.1] (https://processing.org/download/)
 
-* [Processing] (http://www.processing.org/) [2.0] (https://processing.org/download/) [1.5] (https://processing.org/download/)
-
-| Console |  Version |
-| :--: |:--:| 
-| GM | 2.0 |
-| Tactical | 1.5|
-| Pilot | 1.5 |
-| Engineer | 1.5 |
-| Comms | 1.5 |
 
 Main sim code
 -------------
@@ -64,6 +56,8 @@ persistentscripts and TheShip are set to persist between scenes. Obviously if yo
 config.xml contains IPs and ports for the client machines, set "testmode" to true to use localhost. When building the game for actual use you need to copy this file to assets/ as the build process ignores it
 
 Before running modconsole.pde, check that "serialEnabled" is set to false and "useXboxController" is set to reflect your chosen autopilot control scheme.
+
+All consoles (pilotconsole,modconsole,engineerconsole,commsconsole) have a variable called pathBase in the BannerOverlay class that must be set to the data directory of the sketch on your system.  
 
 Most of the cool shit is in testing branch.
 
