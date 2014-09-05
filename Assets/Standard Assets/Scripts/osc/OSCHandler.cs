@@ -89,7 +89,7 @@ public class OSCHandler : MonoBehaviour
 	private const int _loglength = 100;
 	#endregion
 	
-	public Dictionary<string, Stack<string>> clientScreens = new Dictionary<string, Stack<string>>();
+	public Dictionary<string, List<string>> clientScreens = new Dictionary<string, List<string>>();
 	//public Dictionary<string, string> previousClientScreens = new Dictionary<string, string>();
 	public Dictionary<string, string> configItems = new Dictionary<string, string>();
 	
@@ -143,17 +143,17 @@ public class OSCHandler : MonoBehaviour
 		CreateServer("Clients", 12000);
 		CreateServer("Joystick", 19999);
 		
-		clientScreens["EngineerStation"] = new Stack<string>();
-		clientScreens["EngineerStation"].Push("power");
+		clientScreens["EngineerStation"] = new List<string>();
+		clientScreens["EngineerStation"].Add("power");
 
-		clientScreens["PilotStation"] = new Stack<string>();
-		clientScreens["PilotStation"].Push ("docking");
+		clientScreens["PilotStation"] = new List<string>();
+		clientScreens["PilotStation"].Add ("docking");
 
-		clientScreens["TacticalStation"] = new Stack<string>();
-		clientScreens["TacticalStation"].Push ("weapons");
+		clientScreens["TacticalStation"] = new List<string>();
+		clientScreens["TacticalStation"].Add ("weapons");
 
-		clientScreens["CommsStation"] = new Stack<string>();
-		clientScreens["CommsStation"].Push ("idleDisplay");
+		clientScreens["CommsStation"] = new List<string>();
+		clientScreens["CommsStation"].Add ("idleDisplay");
 		
 
 	}
@@ -272,35 +272,39 @@ public class OSCHandler : MonoBehaviour
 
 	}
 	
-	/* revert to whatever was on client screen before*/
-	public void RevertClientScreen(String station){
-		Stack<string> screenStack = clientScreens[station];
-		if(screenStack.Count >= 1){
-			screenStack.Pop();
-			String screenName = screenStack.Peek();
-			Debug.Log ("Changing to : " + screenName);
-			try {
-				
-				OSCMessage msg = new OSCMessage("/clientscreen/" + station + "/changeTo");
-				msg.Append<String>(screenName);
-				
-				SendMessageToClient (station, msg);
-
-				
-				
-				
-			} catch (KeyNotFoundException e ){
-				Debug.Log ("Tried to revert client screen change and failed");
+	/* revert to whatever was on client screen before
+	 * if the screen on top of the stack is the one asking to revert then pop it
+	 * if not then iterate over screen stack and remove it
+	 */
+	public void RevertClientScreen(String station, String callingName){
+		List<string> screenStack = clientScreens[station];
+		for(int i = screenStack.Count -1; i >= 0; i--){
+			if(screenStack[i] == callingName){
+				screenStack.RemoveAt(i);
+				String screenName = screenStack[0];
+				Debug.Log ("Changing to : " + screenName);
+				try {
+					
+					OSCMessage msg = new OSCMessage("/clientscreen/" + station + "/changeTo");
+					msg.Append<String>(screenName);
+					
+					SendMessageToClient (station, msg);
+					
+					
+					
+					
+				} catch (KeyNotFoundException e ){
+					Debug.Log ("Tried to revert client screen change and failed");
+				}
 			}
-		} else {
-			Debug.LogWarning ("Tried to pop something off screen stack for " + station + "but no items left");
 		}
+
 	}
 	
 	/* send a message to the client to change screens */
 	public void ChangeClientScreen(String station, String screenName){
 		try {
-			clientScreens[station].Push(screenName);
+			clientScreens[station].Insert(0, screenName);
 			OSCMessage msg = new OSCMessage("/clientscreen/" + station + "/changeTo");
 			msg.Append<String>(screenName);
 			

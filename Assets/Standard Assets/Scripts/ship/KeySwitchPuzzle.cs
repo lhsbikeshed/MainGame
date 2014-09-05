@@ -42,9 +42,9 @@ public class KeySwitchPuzzle : MonoBehaviour {
 			Debug.Log ("Keyswitch Puzzle ok!");
 			puzzleState = PuzzleState.OFF;
 			//revert the screens
-			OSCHandler.Instance.RevertClientScreen("EngineerStation");
-			OSCHandler.Instance.RevertClientScreen("PilotStation");
-			OSCHandler.Instance.RevertClientScreen("TacticalStation");
+			OSCHandler.Instance.RevertClientScreen("EngineerStation", "KeyAuth");
+			OSCHandler.Instance.RevertClientScreen("PilotStation", "KeyAuth");
+			OSCHandler.Instance.RevertClientScreen("TacticalStation", "KeyAuth");
 		}
 	}
 	void fail(){

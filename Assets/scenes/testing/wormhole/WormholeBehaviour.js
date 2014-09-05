@@ -168,7 +168,7 @@ class WormholeBehaviour extends TargettableObject{
 		
 	}
 	function onUnTarget(){
-		OSCHandler.Instance.RevertClientScreen("EngineerStation");
+		//OSCHandler.Instance.RevertClientScreen("EngineerStation");
 	
 	}
 }

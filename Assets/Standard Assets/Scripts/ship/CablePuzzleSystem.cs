@@ -113,9 +113,9 @@ public class CablePuzzleSystem : MonoBehaviour {
 
 		isRunning = false;
 		isWaiting = false;
-		OSCHandler.Instance.RevertClientScreen("PilotStation");
-		OSCHandler.Instance.RevertClientScreen("TacticalStation");
-		OSCHandler.Instance.RevertClientScreen("EngineerStation");
+		OSCHandler.Instance.RevertClientScreen("PilotStation",  "cablepuzzle");
+		OSCHandler.Instance.RevertClientScreen("TacticalStation",  "cablepuzzle");
+		OSCHandler.Instance.RevertClientScreen("EngineerStation",  "cablepuzzle");
 	}
 
 

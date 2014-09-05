@@ -64,7 +64,7 @@ function TurnOn(){
 function TurnOff(){
 	if(systemEnabled){
 		systemEnabled = false;
-		OSCHandler.Instance.RevertClientScreen("PilotStation");
+		OSCHandler.Instance.RevertClientScreen("PilotStation", "dockingtest");
 		hasEntered = false;
 	}
 }

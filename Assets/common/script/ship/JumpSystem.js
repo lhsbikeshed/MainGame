@@ -275,8 +275,8 @@ class JumpSystem extends BaseSubsystem
 		rigidbody.drag = 1.0f;
 		restoreFov = true;
 		setJumpEffectState(false);
-		OSCHandler.Instance.RevertClientScreen("PilotStation");
-		OSCHandler.Instance.RevertClientScreen("TacticalStation");
+		OSCHandler.Instance.RevertClientScreen("PilotStation", "hyperspace");
+		OSCHandler.Instance.RevertClientScreen("TacticalStation", "hyperspace");
 	}
 
 

@@ -139,7 +139,7 @@ function FixedUpdate(){
 					}
 				} else if (pkt.Address.IndexOf("/clientscreen/CommsStation/hangUp") == 0){
 					if(commsOnline){
-						OSCHandler.Instance.RevertClientScreen("CommsStation");
+						OSCHandler.Instance.RevertClientScreen("CommsStation", "videoDisplay");
 						commsOnline = false;
 					}
 				
@@ -253,7 +253,7 @@ function gameMessage(message : OSCPacket){
 			
 			OSCHandler.Instance.SendMessageToClient(station, m);
 			
-			var currentScreen : String = OSCHandler.Instance.clientScreens[station].Peek();;
+			var currentScreen : String = OSCHandler.Instance.clientScreens[station][0];
 			
 			m = OSCMessage("/clientscreen/" + station + "/changeTo");
 			m.Append.<String>( currentScreen );
