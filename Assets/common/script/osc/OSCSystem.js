@@ -334,7 +334,7 @@ function systemMessage(message : OSCPacket){
 			
 			
 		case "propulsion":								// PROPULSION CONTROL -----------------
-			shipSystem.GetComponent.<PropulsionSystem>().processOSCMessage(message);
+			propulsionSystem.processOSCMessage(message);
 			break;
 		case "jump":								// PROPULSION CONTROL -----------------
 			shipSystem.GetComponent.<JumpSystem>().processOSCMessage(message);
