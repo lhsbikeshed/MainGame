@@ -17,6 +17,8 @@ public class CablePuzzleSystem : MonoBehaviour {
 	PlugPair[] waitingList;
 	List<PlugPair[]> combinationlist = new List<PlugPair[]>();
 
+	bool hasBeenCompleted = false;
+
 	/*  sockets - > plugs
 	 *  [8, 6, 3] , [5, 12, 10]
 		[2, 3, 11] , [10, 12, 4]
@@ -84,7 +86,9 @@ public class CablePuzzleSystem : MonoBehaviour {
 		if(!isWaiting || puzzleComplete){
 			return;
 		}
-		AudioSource.PlayClipAtPoint(failClip, transform.position);
+		if(hasBeenCompleted ==  false){
+			AudioSource.PlayClipAtPoint(failClip, transform.position);
+		}
 		//power off all screens
 		//pick a random connection chain
 		//send to engineer
@@ -139,7 +143,7 @@ public class CablePuzzleSystem : MonoBehaviour {
 		}
 		if(correctCount == 3){
 			puzzleComplete = true;
-
+			hasBeenCompleted = true;
 			puzzleStop();
 		}
 		Debug.Log (correctCount + "correct connections");

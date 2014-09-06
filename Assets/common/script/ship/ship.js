@@ -212,7 +212,7 @@ function damageShip(amount : float, deathText : String){
 		hullState = 0;
 		Explode();
 		GetComponent.<ExplosionOverlayBehaviour>().die();
-		yield WaitForSeconds(2) ;
+		yield WaitForSeconds(4) ;
 		//silence all of the subsystems
 		
 		for (var s : AudioSource in GetComponentsInChildren.<AudioSource>()){

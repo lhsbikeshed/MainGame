@@ -47,8 +47,8 @@ class PropulsionSystem extends BaseSubsystem
 		super.Start();
 		propulsionPowerModifier = new float[3];
 		propulsionPowerModifier[0] = 0.2f;
-		propulsionPowerModifier[1] = 0.5f;
-		propulsionPowerModifier[2] = 1.0f;
+		propulsionPowerModifier[1] = 0.3f;
+		propulsionPowerModifier[2] = 0.7f;
 		
 		
 		rocketSFXSource = gameObject.AddComponent("AudioSource");
