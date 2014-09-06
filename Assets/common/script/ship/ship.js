@@ -389,6 +389,10 @@ function FixedUpdate(){
 //blow the ship up and surround with explosions
 function Explode(){
 	CabinEffects.Instance().setRedAlert(false);
+	
+	OSCHandler.Instance.ChangeClientScreen("PilotStation", "failureScreen");
+	OSCHandler.Instance.ChangeClientScreen("EngineerStation", "failureScreen");
+	OSCHandler.Instance.ChangeClientScreen("TacticalStation", "failureScreen");
 	exploding = true;
 	for(var i = 0; i < Mathf.FloorToInt(Random.Range(14,24)); i++){
 		windowScript.spawnCrack(Random.Range(100,300));
