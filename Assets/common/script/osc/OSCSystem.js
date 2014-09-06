@@ -197,7 +197,7 @@ function jumpToScene(id : int){
 	var theShip = GameObject.Find("TheShip");
 	theShip.rigidbody.freezeRotation = false;
 	theShip.rigidbody.constraints = RigidbodyConstraints.None;
-	theShip.GetComponent.<ship>().didWeWarpIn = true;
+	theShip.GetComponent.<JumpSystem>().didWeWarpIn = true;
 	theShip.GetComponent.<MiscSystem>().consuming = true; //reenable air consumption
 	theShip.rigidbody.angularDrag = 0.5f;
  	theShip.GetComponent.<PropulsionSystem>().throttleDisabled = false;
