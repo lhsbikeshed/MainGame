@@ -25,7 +25,9 @@ class TargettableObject  extends MonoBehaviour{
 		
 	
 	var colour : Color;
-	var visibleAtClient : boolean = true;
+	var visibleAtClient : boolean = true;	//is the object visible at the client end?
+	var visibleAtTactical : boolean = false;	//visible for tactical?
+	var visibleAtPilot : boolean = true;		//visible for pilot?
 	var highlighted : boolean = false;
 	
 	

@@ -139,52 +139,55 @@ function sendOSCUpdates(){
 			var pos : Vector3 = t.position - theShip.transform.position;
 			var missScript : TargettableObject = t.GetComponent.<TargettableObject>();
 			if(missScript.visibleAtClient == true && missScript.exploding == false){
-				
-		
-				msg = new OSCMessage("/tactical/weapons/targetUpdate");
-				msg.Append.<int>(missScript.targetId);
-				msg.Append.<int>(missScript.scanCode);
-				msg.Append.<int>(missScript.trackingPlayer == true ? 1 : 0);
-				msg.Append.<int>(missScript.targetted == true ? 1 : 0);
-				msg.Append.<float>(pos.x);
-				msg.Append.<float>(pos.y);
-				msg.Append.<float>(pos.z);
-				msg.Append.<float>(missScript.statValues[0]);				
-				msg.Append.<String>(missScript.statNames[0]);				
-				msg.Append.<String>(missScript.objectName);
-				
 				var statString : String = "";
 				for(var statId = 0; statId < missScript.statNames.length; statId++){
 					statString += missScript.statNames[statId] + ":" + missScript.statValues[statId] + ",";
+						
+				}	
+				if(missScript.visibleAtTactical){
+					msg = new OSCMessage("/tactical/weapons/targetUpdate");
+					msg.Append.<int>(missScript.targetId);
+					msg.Append.<int>(missScript.scanCode);
+					msg.Append.<int>(missScript.trackingPlayer == true ? 1 : 0);
+					msg.Append.<int>(missScript.targetted == true ? 1 : 0);
+					msg.Append.<float>(pos.x);
+					msg.Append.<float>(pos.y);
+					msg.Append.<float>(pos.z);
+					msg.Append.<float>(missScript.statValues[0]);				
+					msg.Append.<String>(missScript.statNames[0]);				
+					msg.Append.<String>(missScript.objectName);
 					
+					
+					msg.Append.<String>(statString);
+					
+					OSCHandler.Instance.SendMessageToClient("TacticalStation", msg);
 				}
-				msg.Append.<String>(statString);
-				
-				OSCHandler.Instance.SendMessageToClient("TacticalStation", msg);
+				if(missScript.visibleAtPilot){
 					
 
 			
-				var diffVector : Vector3 = objectList[i].transform.position - theShip.transform.position;
-				diffVector = Quaternion.Inverse(theShip.transform.rotation) * diffVector;
-				diffVector *= 0.2f;		
-				
-				if(diffVector.magnitude < 50000 && missScript.enabled){
-					msg  = OSCMessage("/radar/update");		
-					msg.Append.<int>( missScript.targetId );
-					msg.Append.<String>(missScript.objectName);		
-					msg.Append.<float>(diffVector.x);
-					msg.Append.<float>(diffVector.y);
-					msg.Append.<float>(diffVector.z);
-					var col : String = "" + missScript.colour.r + ":" + missScript.colour.g + ":" + missScript.colour.b;
-					msg.Append.<String>(col);
-					msg.Append.<String>(missScript.stateText);	
-					msg.Append.<int>(missScript.highlighted == true ? 1 : 0);
-					msg.Append.<String>(statString);
-					//TODO
-					// add a confidence value here and use it to jitter the radar results around. This relates to amount of power going to sensors
-					//OSCHandler.Instance.SendMessageToAll( msg);
-					OSCHandler.Instance.SendMessageToClient("PilotStation", msg);
+					var diffVector : Vector3 = objectList[i].transform.position - theShip.transform.position;
+					diffVector = Quaternion.Inverse(theShip.transform.rotation) * diffVector;
+					diffVector *= 0.2f;		
+					
+					if(diffVector.magnitude < 50000 && missScript.enabled){
+						msg  = OSCMessage("/radar/update");		
+						msg.Append.<int>( missScript.targetId );
+						msg.Append.<String>(missScript.objectName);		
+						msg.Append.<float>(diffVector.x);
+						msg.Append.<float>(diffVector.y);
+						msg.Append.<float>(diffVector.z);
+						var col : String = "" + missScript.colour.r + ":" + missScript.colour.g + ":" + missScript.colour.b;
+						msg.Append.<String>(col);
+						msg.Append.<String>(missScript.stateText);	
+						msg.Append.<int>(missScript.highlighted == true ? 1 : 0);
+						msg.Append.<String>(statString);
+						//TODO
+						// add a confidence value here and use it to jitter the radar results around. This relates to amount of power going to sensors
+						//OSCHandler.Instance.SendMessageToAll( msg);
+						OSCHandler.Instance.SendMessageToClient("PilotStation", msg);
 
+					}
 				}
 				
 			

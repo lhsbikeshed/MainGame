@@ -12,7 +12,7 @@ class PropulsionSystem extends BaseSubsystem
 	
 	var propulsionModifier : float; //how much we modify the actual throttle on the ship
 	var propulsionOffset : Vector3; //on damage we should vector the thrust
-	
+	var hyperspaceModifier : boolean = false; //is the hyeprspace charging and gimping the engines
 	
 	var throttleDisabled : boolean = true;
 	var rotationDisabled : boolean = true;
@@ -25,6 +25,8 @@ class PropulsionSystem extends BaseSubsystem
 	var particleRate : AnimationCurve;
 	var baseEmissionRate : float;
 	var engineLight : Light;
+	
+	
 	
 	
 	//actual control stuff
@@ -94,6 +96,12 @@ class PropulsionSystem extends BaseSubsystem
 		if(inBay){
 			propulsionModifier *= 0.5f;
 		}
+		
+		//gimp engines if hyperspace is on
+		if(hyperspaceModifier == true){
+			propulsionModifier *= 0.3f;
+		}
+		
 		//on damage to left and right engines we should return some sort of direction for the ship to move in
 		//to simulate engines being borked
 		//read the controls just dont apply them unless controlsLocked is false

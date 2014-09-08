@@ -97,6 +97,7 @@ class JumpSystem extends BaseSubsystem
 
 			soundSource.Play();
 			discharging = false;
+			GetComponent.<PropulsionSystem>().hyperspaceModifier = true;
 		}
 	}
 	
@@ -109,6 +110,7 @@ class JumpSystem extends BaseSubsystem
 			discharging = true;
 			canJump = false;
 			updateJumpStatus();
+			GetComponent.<PropulsionSystem>().hyperspaceModifier = false;
 		}
 	}
 	
