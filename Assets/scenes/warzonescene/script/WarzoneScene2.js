@@ -21,6 +21,8 @@ class WarzoneScene2 extends GenericScene {
 	/* camera points */
 	var cameraPointPrefab : Transform;
 	
+	var evacTimer : float = 900f;
+	var evacRunning : boolean = false;
 	
 
 /* missile stuff */
@@ -55,7 +57,7 @@ class WarzoneScene2 extends GenericScene {
 	var mapController : MapController;
 	
 	
-	
+	var test : boolean = false;
 	var missileDiff : int = 11;
 	
 	function Start () {
@@ -71,9 +73,31 @@ class WarzoneScene2 extends GenericScene {
 		
 	}
 	
+	
+	function startEvacSequence(){
+		
+		
+		//trigger the comms video warning of impending explosion
+//		var msg : OSCMessage = OSCMessage("/comms/playVideo");
+//		msg.Append("station.mov");		
+//		OSCHandler.Instance.SendMessageToAll(msg);
+		//start the evac timer on comms
+		var msg : OSCMessage = OSCMessage("/scene/warzone/evacStart");		
+		var t : int = evacTimer * 1000;
+		
+		msg.Append(t);
+		OSCHandler.Instance.SendMessageToAll(msg);
+		//start our evac timer
+		evacRunning = true;
+		//move the first ship to hyperspace
+		introShip.exit();
+		
+		
+	}
+	
 	/* kick off this mess */
 	function startScene(){
-		//introShip.go();
+		
 		
 		//introShip.velocity = Vector3(1.8,0,0);	//start the killing ship move into pos
 		
@@ -85,13 +109,11 @@ class WarzoneScene2 extends GenericScene {
 		introShip.GetComponentInChildren(LaserTurretBehaviour).penetrating = true;
 		introShip.fireAtTarget(GameObject.Find("Deadshiptarget").transform);
 		OSCHandler.Instance.DisplayBannerAtClient("TacticalStation", "!!WARNING!!", "LARGE WEAPON CHARGE DETECTED", 4000);
-		yield(WaitForSeconds(7));	//begin big splosion and pass the beam through the ship
+		yield(WaitForSeconds(2));	//begin big splosion and pass the beam through the ship
 		
-		OSCHandler.Instance.DisplayBannerAtClient("TacticalStation", "!!WARNING!!", "INCOMING DEBRIS, TELL PILOT TO AVOID", 4000);
-		
-		GameObject.Find("DeadShip").GetComponent.<ExplodingShip>().startExplosion();
-		
-		theShip.GetComponent.<ExplosionOverlayBehaviour>().explode();
+		GameObject.Find("DeadShip").GetComponent.<ExplodingShip>().startFireEffects();
+		yield(WaitForSeconds(2));
+		//theShip.GetComponent.<ExplosionOverlayBehaviour>().explode();
 		
 		
 		//spawn some explodey things
@@ -102,12 +124,12 @@ class WarzoneScene2 extends GenericScene {
 			p.enableEmission = false;
 		}
 		GetComponent.<AudioSource>().Stop();
-		//yield(WaitForSeconds(12));
-		
-		
-		//introShip.velocity = Vector3(0,0,0);	//stop the killer and start firing missiles at the player
-		//introShip.exit();
+
 		beamFailed = false;
+		
+		startEvacSequence();
+		
+		
 	}
 	
 	function SetMissileState(state : boolean){
@@ -120,12 +142,41 @@ class WarzoneScene2 extends GenericScene {
 		
 	}
 	
+	function endScene(){
+		GameObject.Find("DeadShip").GetComponent.<ExplodingShip>().startExplosion();
+		theShip.GetComponent.<ExplosionOverlayBehaviour>().explode();
+		//send out a brace warning to consoles
+		OSCHandler.Instance.DisplayBannerAtClient("TacticalStation", "!!WARNING!!", "INCOMING SHOCKWAVE. BRACE FOR IMPACT", 5000);
+		OSCHandler.Instance.DisplayBannerAtClient("EngineerStation", "!!WARNING!!", "INCOMING SHOCKWAVE. BRACE FOR IMPACT", 5000);
+		OSCHandler.Instance.DisplayBannerAtClient("PilotStation", "!!WARNING!!", "INCOMING SHOCKWAVE. BRACE FOR IMPACT", 5000);
+		
+		//play blastwave alert on all clients
+		var msg : OSCMessage = OSCMessage("/ship/effect/playSound");		
+		msg.Append("blastwave");
+		OSCHandler.Instance.SendMessageToAll(msg);
+		
+		yield WaitForSeconds(5);
+		theShip.GetComponent.<ship>().damageShip(1000, "Destroyed by shockwave");
+	}
 	
-	
+	function FixedUpdate(){
+		if(evacRunning){
+			evacTimer -= Time.fixedDeltaTime;
+			
+			if(evacTimer < 0.0f){
+				//kill the ship
+				evacRunning = false;
+				endScene();
+			}
+		}
+	}
 	
 	function Update () {
 		
-		
+		if(test){
+			test = false;
+			startEvacSequence();
+		}
 		if(missilesEnabled){
 			if(lastMissileLaunchTime + nextMissileLaunchTime < Time.fixedTime && theShip.GetComponent.<Reactor>().systemEnabled == true){
 				spawnMissile();

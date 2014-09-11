@@ -29,14 +29,17 @@ function Update () {
 
 }
 
-/* start the explodey particle effect
- * apply a kick to the two sections
- */
-function startExplosion(){
-	exploding = true;
+function startFireEffects(){
 	for(var p : ParticleSystem in particles){
 		p.enableEmission = true;
 	}
+}
+
+/* final death explosion
+ */
+function startExplosion(){
+	exploding = true;
+	
 	explodeTime = Time.fixedTime;
 	var t = transform.Find("BigExplosion").gameObject;
 		

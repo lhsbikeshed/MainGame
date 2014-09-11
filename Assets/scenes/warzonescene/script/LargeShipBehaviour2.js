@@ -10,6 +10,8 @@ var engineParticles : ParticleSystem[];
 var hyperPrefab : Transform;
 
 
+var rotating : boolean = false;
+
 function Start () {
 	//setHidden(true);
 }
@@ -47,6 +49,13 @@ function go(){
 }
 
 function exit(){
+	velocity = Vector3(12,0,0);
+	rotating = true;
+	yield WaitForSeconds(5);
+	rotating = false;
+	velocity = Vector3(52,0,0);
+	yield WaitForSeconds(10);
+	
 	var hyperEntry : Transform = Instantiate (hyperPrefab, transform.position + transform.TransformDirection(Vector3.right) * 283, Quaternion.Euler(0,-90,0) * transform.rotation);
 	
 	hyperEntry.particleSystem.Play();
@@ -54,13 +63,16 @@ function exit(){
 	setHidden(true);
 	
 	hyperEntry.particleSystem.Stop();
-	yield WaitForSeconds(5);
+	yield WaitForSeconds(3);
 	Destroy(hyperEntry.gameObject);
 	Destroy(gameObject);
 }
 
 function FixedUpdate(){
-	transform.position += transform.rotation * velocity;
+	rigidbody.AddForce(transform.TransformDirection(velocity), ForceMode.Acceleration);
+	if(rotating){
+		rigidbody.AddRelativeTorque(Vector3(0,0,-0.05f));
+	}
 	
 }
 
@@ -70,6 +82,6 @@ function fireAtTarget(){
 
 function fireAtTarget(target : Transform){
 	GetComponentInChildren.<LaserTurretBehaviour>().setTarget(target);
-	GetComponentInChildren.<LaserTurretBehaviour>().duration = 10;
+	GetComponentInChildren.<LaserTurretBehaviour>().duration = 2.5f;
 	GetComponentInChildren.<LaserTurretBehaviour>().startFiring();
 }

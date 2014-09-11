@@ -49,6 +49,7 @@ function Update () {
 			laserRenderer.enabled = true;
 			startFireTime = Time.fixedTime;
 			if(!silent){
+				soundSource.Stop();
 				soundSource.clip = loopEffect;
 				soundSource.Play();
 			}
@@ -97,7 +98,9 @@ function startFiring(){
 		state = 1;
 		startChargeTime = Time.fixedTime;
 		if(!silent && chargeEffect != null){
-			soundSource.PlayClipAtPoint(chargeEffect, transform.position);
+			//soundSource.PlayClipAtPoint(chargeEffect, transform.position);
+			soundSource.clip = chargeEffect;
+			soundSource.Play();
 		}
 	}
 	
