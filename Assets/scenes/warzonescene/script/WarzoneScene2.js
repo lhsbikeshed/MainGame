@@ -155,7 +155,8 @@ class WarzoneScene2 extends GenericScene {
 		msg.Append("blastwave");
 		OSCHandler.Instance.SendMessageToAll(msg);
 		
-		yield WaitForSeconds(5);
+		yield WaitForSeconds(3.8f);
+		theShip.rigidbody.AddExplosionForce(100.0f, theShip.transform.position + Random.onUnitSphere * 10.0f, 30.0f, 0.0f);
 		theShip.GetComponent.<ship>().damageShip(1000, "Destroyed by shockwave");
 	}
 	

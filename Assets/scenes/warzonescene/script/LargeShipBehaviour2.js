@@ -5,6 +5,8 @@ var laserTarget : Transform;		//where are we firing.
 var laserSweetAmount : float;	//how much the laser sweeps about when firing
 var laserChargeTime : float;	//number of millis to charge beam for
 
+var laserLines : Transform;
+
 @HideInInspector
 var engineParticles : ParticleSystem[];
 var hyperPrefab : Transform;
@@ -49,6 +51,7 @@ function go(){
 }
 
 function exit(){
+	laserLines.active = false;
 	velocity = Vector3(12,0,0);
 	rotating = true;
 	yield WaitForSeconds(5);
