@@ -3,6 +3,7 @@
 /* base that crumbles and explodes */
 
 public var rumbleSound : AudioClip;
+public var finalExplosionSound : AudioClip;
 
 public var bigExplosion : BigExplosionBehaviour;
 
@@ -49,7 +50,7 @@ function startFallingApart(){
 }
 
 function finalExplosion(){
-	
+	AudioSource.PlayClipAtPoint(finalExplosionSound, transform.position);
 	bigExplosion.Explode();
 	for (var t = 0; t < rockVelocity.length; t++){
 		rockVelocity[t] *= 10.0f;
