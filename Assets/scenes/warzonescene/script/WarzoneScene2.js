@@ -105,11 +105,11 @@ class WarzoneScene2 extends GenericScene {
 		//tell clients large target detected
 		OSCHandler.Instance.DisplayBannerAtClient("TacticalStation", "!!WARNING!!", "ENEMY SHIP DETECTED", 4000);
 		
-		yield(WaitForSeconds(5));	//wait for a bit then fire at the helper
+		yield(WaitForSeconds(4));	//wait for a bit then fire at the helper
 		introShip.GetComponentInChildren(LaserTurretBehaviour).penetrating = true;
 		introShip.fireAtTarget(GameObject.Find("Deadshiptarget").transform);
 		OSCHandler.Instance.DisplayBannerAtClient("TacticalStation", "!!WARNING!!", "LARGE WEAPON CHARGE DETECTED", 4000);
-		yield(WaitForSeconds(2));	//begin big splosion and pass the beam through the ship
+		yield(WaitForSeconds(3));	//begin big splosion and pass the beam through the ship
 		
 		GameObject.Find("DeadShip").GetComponent.<ExplodingShip>().startFireEffects();
 		yield(WaitForSeconds(2));

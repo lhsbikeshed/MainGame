@@ -22,7 +22,7 @@ class MiscSystem extends BaseSubsystem
 		shipsLight = theShip.GetComponentInChildren(Light);
 		shipsLight.intensity = 0.0f;
 		disableSystem();
-		expOverlay = theShip.GetComponentInChildren.<ExplosionOverlayBehaviour>();
+		expOverlay = theShip.GetComponent	.<ExplosionOverlayBehaviour>();
 	}
 	
 	function enableSystem(){

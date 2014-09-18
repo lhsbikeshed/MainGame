@@ -23,9 +23,11 @@ public class RandomLaserEffect : MonoBehaviour {
 			laserLines[i] = t.GetComponent<LineRenderer>();
 
 			laserLines[i].transform.parent = transform;
+			laserLines[i].transform.localPosition = Vector3.zero;
 			laserTimes[i] =  Random.Range(0,3);
 			newTarget(i);
 		}
+		laserPrefab.gameObject.SetActive(false);
 	}
 	
 	// Update is called once per frame
