@@ -1,38 +1,40 @@
 ﻿#pragma strict
-
+/*
+ * Scene script
+ * Ship arrives on scene, slightly off course and far out from the base
+ * captain tells them to approach the base
+ * scenestart causes a fleet of ships to appear
+ * they all shoot the base
+ * base begins to explode
+ * start the timer
+ * 10 mins to escape
+ * at t-1 minute drop the a jumpgate
+ */
+ 
 class WarzoneLandingScene extends GenericScene {
-	
-	/*
-	 * TODO LIST
-	 * move beaming to a trnsporter component
-	 * adjust osc message to route properly to new component
-	 * move targetting and tac radar bits to own components
-	 
-	 */
 
+	//evac timer stuff
 	var evacTimer : float = 900f;
 	var evacRunning : boolean = false;
 	
 
-/* missile stuff */
-	var missilePrefab : Transform;
-
-	
+	/* missile stuff */
+	var missilePrefab : Transform;	
 	private var lastMissileLaunchTime : float;	//last time a missile launch was started
 	private var nextMissileLaunchTime : float; //when does the next missile launch? randomize this
-
 	private var missilesEnabled  : boolean = false;
-	
+	var missileDiff : int = 11;
 	
 	/* refs */
 	private var theShip : Transform;
 	private var shipSystem : ship;	
 	var dynShitField : DynamicShitField;
 	var mapController : MapController;
-	
+	public var fleetShips : GameObject[];
+	public var starBase : Transform;
 	
 	var test : boolean = false;
-	var missileDiff : int = 11;
+	
 	
 	function Start () {
 	
@@ -43,6 +45,7 @@ class WarzoneLandingScene extends GenericScene {
  
 		theShip.rigidbody.drag = 0.7f;
 		shipSystem = theShip.GetComponent.<ship>();
+		
 		
 		
 	}
@@ -64,7 +67,39 @@ class WarzoneLandingScene extends GenericScene {
 	
 	/* kick off this mess */
 	function startScene(){
-
+		//jump the warships into the scene
+		for(var t : GameObject in fleetShips){
+			t.GetComponent.<FleetShipBehaviour>().startJump();
+			
+		}
+		
+		yield WaitForSeconds(4);
+		var s : FleetShipBehaviour;
+		//make them target the base
+		for(var t : GameObject in fleetShips){
+			s =  t.GetComponent.<FleetShipBehaviour>();
+			s.aimAtTarget(starBase);
+			s.fireLaser();
+		}
+		
+		yield WaitForSeconds(9);
+		for(var t : GameObject in fleetShips){
+			s =  t.GetComponent.<FleetShipBehaviour>();
+			s.setLaserPenetration(true);
+		}
+		theShip.GetComponent.<ExplosionOverlayBehaviour>().explode();
+		starBase.GetComponent.<ExplodingBaseBehaviour>().startFallingApart();
+		GameObject.Find("SceneScripts").GetComponent.<DynamicShitField>().setAllVelocities(Vector3( 0, 0, -90));
+		yield WaitForSeconds(1);
+		
+		
+		for(var t : GameObject in fleetShips){
+			if(t != fleetShips[3]){
+				s =  t.GetComponent.<FleetShipBehaviour>();
+				s.jumpDestination = Vector3(0,0,-1000);
+				s.startJump();
+			}
+		}
 		
 		startEvacSequence();
 		
@@ -82,7 +117,8 @@ class WarzoneLandingScene extends GenericScene {
 	}
 	
 	function endScene(){
-		
+		starBase.GetComponent.<ExplodingBaseBehaviour>().finalExplosion();
+		theShip.GetComponent.<ExplosionOverlayBehaviour>().explode();
 		//send out a brace warning to consoles
 		OSCHandler.Instance.DisplayBannerAtClient("TacticalStation", "!!WARNING!!", "INCOMING SHOCKWAVE. BRACE FOR IMPACT", 5000);
 		OSCHandler.Instance.DisplayBannerAtClient("EngineerStation", "!!WARNING!!", "INCOMING SHOCKWAVE. BRACE FOR IMPACT", 5000);
@@ -101,7 +137,7 @@ class WarzoneLandingScene extends GenericScene {
 	function FixedUpdate(){
 		if(test){
 			test = false;
-			startEvacSequence();
+			endScene();
 		}
 	
 		if(evacRunning){
