@@ -33,6 +33,10 @@ class WarzoneLandingScene extends GenericScene {
 	public var fleetShips : GameObject[];
 	public var starBase : Transform;
 	
+	/* scene timer */
+	var sceneStartTime : float = 0.0f;
+	var screensReverted : boolean = false;
+	
 	var test : boolean = false;
 	
 	
@@ -45,6 +49,7 @@ class WarzoneLandingScene extends GenericScene {
  
 		theShip.rigidbody.drag = 0.7f;
 		shipSystem = theShip.GetComponent.<ship>();
+		sceneStartTime = Time.fixedTime;
 		
 		
 		
@@ -140,6 +145,10 @@ class WarzoneLandingScene extends GenericScene {
 			endScene();
 		}
 	
+		if(Time.fixedTime - sceneStartTime > 4.0f && screensReverted == false){
+			configureClientScreens();
+			screensReverted = true;
+		}
 		if(evacRunning){
 			evacTimer -= Time.fixedDeltaTime;
 			
@@ -244,10 +253,16 @@ class WarzoneLandingScene extends GenericScene {
 	
 	
 	function configureClientScreens(){
-	
-		OSCHandler.Instance.ChangeClientScreen("PilotStation", "radar");			//give the pilot a radar
-		OSCHandler.Instance.ChangeClientScreen("TacticalStation", "weapons");		//give the tactical a weapons screen
-		OSCHandler.Instance.ChangeClientScreen("EngineerStation", "power");			//give the engineer power man console
+		//first 4 seconds of the scene should show a restricted area warning, after that go back to default screens
+		if(Time.fixedTime - sceneStartTime > 4.0f){
+			OSCHandler.Instance.ChangeClientScreen("PilotStation", "radar");			//give the pilot a radar
+			OSCHandler.Instance.ChangeClientScreen("TacticalStation", "weapons");		//give the tactical a weapons screen
+			OSCHandler.Instance.ChangeClientScreen("EngineerStation", "power");			//give the engineer power man console
+		} else {
+			OSCHandler.Instance.ChangeClientScreen("PilotStation", "restrictedArea");			
+			OSCHandler.Instance.ChangeClientScreen("TacticalStation", "restrictedArea");		
+			OSCHandler.Instance.ChangeClientScreen("EngineerStation", "restrictedArea");			
+		}
 	
 	}
 
