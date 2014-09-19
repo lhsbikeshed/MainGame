@@ -51,7 +51,9 @@ class WarzoneLandingScene extends GenericScene {
 		shipSystem = theShip.GetComponent.<ship>();
 		sceneStartTime = Time.fixedTime;
 		
-		
+		OSCHandler.Instance.ChangeClientScreen("PilotStation", "restrictedArea");			
+		OSCHandler.Instance.ChangeClientScreen("TacticalStation", "restrictedArea");		
+		OSCHandler.Instance.ChangeClientScreen("EngineerStation", "restrictedArea");	
 		
 	}
 	
