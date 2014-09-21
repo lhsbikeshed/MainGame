@@ -279,6 +279,7 @@ class JumpSystem extends BaseSubsystem
 		setJumpEffectState(false);
 		OSCHandler.Instance.RevertClientScreen("PilotStation", "hyperspace");
 		OSCHandler.Instance.RevertClientScreen("TacticalStation", "hyperspace");
+		GetComponent.<PropulsionSystem>().hyperspaceModifier = false;
 	}
 
 
@@ -290,6 +291,7 @@ class JumpSystem extends BaseSubsystem
 		theShip.GetComponent.<PropulsionSystem>().rotationDisabled  = false;
 		jumping = false;
 		restoreFov = true;
+		GetComponent.<PropulsionSystem>().hyperspaceModifier = false;
 		doJump();
 	}   
 	

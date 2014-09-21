@@ -28,7 +28,7 @@ private var airlockLightState : boolean = false;
 
 public static final var LIGHT_IDLE : int = 0;
 public static final var LIGHT_WARP : int = 1;
-public static final var LIGHT_REDALERT : int = 3;
+public static final var LIGHT_REDALERT : int = 2;
 public static final var LIGHT_BRIEFING : int = 3;
 
 
