@@ -11,6 +11,7 @@ public var rockParts : Transform[];
 public var rockVelocity : Vector3[];
 
 public var exploding : boolean = false;
+public var explosionStartTime : float;
 
 
 public var test : boolean = false;
@@ -30,8 +31,10 @@ function FixedUpdate () {
 		}
 	}
 	if(exploding){
-		for (var t = 0; t < rockVelocity.length; t++){
-			rockParts[t].position += rockVelocity[t];
+		if(Time.fixedTime - explosionStartTime < 90.0f){		//only separate the parts of the base for the first 90 seconds of the explosion
+			for (var t = 0; t < rockVelocity.length; t++){
+				rockParts[t].position += rockVelocity[t];
+			}
 		}
 	}
 }
@@ -41,7 +44,7 @@ function startFallingApart(){
 	UsefulShit.PlayClipAt(rumbleSound, transform.position);
 	exploding = true;
 	gameObject.GetComponent.<Light>().intensity = 8.0f;
-	
+	explosionStartTime = Time.fixedTime;
 	for(var ps : ParticleSystem in GetComponentsInChildren.<ParticleSystem>()){
 		ps.enableEmission = true;
 	}

@@ -32,7 +32,11 @@ public class debrisbehaviour extends DynamicFieldObjectBehaviour{
 	
 	function resetTo(newpos : Vector3, bastard : boolean){
 		//srigidbody.isKinematic = true;
-		
+		var fire : Transform = transform.Find("FlameAttachment");
+		if(fire != null){
+			
+			Destroy(fire.gameObject);
+		}
 		hitShip = false;
 		var rItem : TargettableObject = transform.GetComponent.<TargettableObject>();
 		transform.position = newpos;

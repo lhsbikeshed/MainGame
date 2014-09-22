@@ -9,6 +9,8 @@ var maxDistFront : float = 5000;
 var maxDistBehind : float = 5000;
 
 
+var flameAttachment : Transform; //attaches to bastards
+
 private var objectList: List.<Transform>;
 private var cameraObject : Transform;
 
@@ -116,18 +118,34 @@ function Update () {
 }
 
 function createABastard(){
-	var maxDist : float;
-	var newBasePos : Vector3;
-	var rpos : Vector3;
-	var fov : float;
 	
-	maxDist = maxDistFront; //ship.camera.farClipPlane;
-	newBasePos = ship.transform.position;//+ (Vector3.Normalize(ship.rigidbody.velocity ) * (maxDist));
-	fov = cameraObject.camera.fov / 2.3f;
-	//pick a random item and make it a bastard
-	var rand : int = Random.Range(0, maxNumber);
-	rpos = (ship.transform.rotation * Quaternion.Euler(Random.Range(-fov,fov), Random.Range(-fov,fov), 0)) * Vector3(0, 0,Random.Range(maxDistFront, maxDistFront + 300));
-				
-	objectList[rand].GetComponent.<DynamicFieldObjectBehaviour>().resetTo(newBasePos + rpos,true);
+		var maxDist : float;
+		var newBasePos : Vector3;
+		var rpos : Vector3;
+		var fov : float;
+		
+		maxDist = maxDistFront; //ship.camera.farClipPlane;
+		newBasePos = ship.transform.position;//+ (Vector3.Normalize(ship.rigidbody.velocity ) * (maxDist));
+		fov = cameraObject.camera.fov / 2.3f;
+		//pick a random item and make it a bastard
+		var rand : int = Random.Range(0, maxNumber);
+		rpos = (ship.transform.rotation * Quaternion.Euler(Random.Range(-fov,fov), Random.Range(-fov,fov), 0)) * Vector3(0, 0,Random.Range(maxDistFront, maxDistFront + 300));
+					
+		objectList[rand].GetComponent.<DynamicFieldObjectBehaviour>().resetTo(newBasePos + rpos,true);
+		
+		if(objectList[rand].GetComponent.<DynamicFieldObjectBehaviour>().bastardable == true){
+			//attach fire to the piece 
+			if(flameAttachment != null){
+				var f : Transform  = Instantiate(flameAttachment, Vector3(10000,10000,10000), Quaternion.identity);
+				f.transform.parent = objectList[rand];
+				f.transform.localPosition = Vector3.zero;
+				f.transform.localScale = Vector3.one;
+				f.name = "FlameAttachment";
+			}
+		}
+	
+		
+	
+	
 
 }

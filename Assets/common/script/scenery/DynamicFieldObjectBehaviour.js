@@ -2,6 +2,8 @@
 
 
 class DynamicFieldObjectBehaviour  extends MonoBehaviour {
+
+	public var bastardable : boolean = false;
 	function Start () {
 	
 	}
