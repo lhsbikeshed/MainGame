@@ -16,6 +16,7 @@ class WarzoneLandingScene extends GenericScene {
 	//evac timer stuff
 	var evacTimer : float = 900f;
 	var evacRunning : boolean = false;
+	var redAlertTriggered : boolean = false;
 	
 
 	/* missile stuff */
@@ -36,6 +37,11 @@ class WarzoneLandingScene extends GenericScene {
 	/* scene timer */
 	var sceneStartTime : float = 0.0f;
 	var screensReverted : boolean = false;
+	
+	/* audio assets */
+	public var evacSound : AudioClip;
+	public var warningSound : AudioClip;
+	var warningTimer :float = 0.1f;
 	
 	var test : boolean = false;
 	
@@ -65,6 +71,9 @@ class WarzoneLandingScene extends GenericScene {
 		
 		msg.Append(t);
 		OSCHandler.Instance.SendMessageToAll(msg);
+		
+		AudioSource.PlayClipAtPoint(evacSound, transform.position);
+		
 		//start our evac timer
 		evacRunning = true;
 		
@@ -103,7 +112,7 @@ class WarzoneLandingScene extends GenericScene {
 		for(var t : GameObject in fleetShips){
 			if(t != fleetShips[3]){
 				s =  t.GetComponent.<FleetShipBehaviour>();
-				s.jumpDestination = Vector3(0,0,-1000);
+				s.jumpDestination = Vector3(-1500,0,-2000);
 				s.startJump();
 			}
 		}
@@ -159,6 +168,20 @@ class WarzoneLandingScene extends GenericScene {
 				evacRunning = false;
 				endScene();
 			}
+			
+			if( evacTimer <= 60f){
+				if(redAlertTriggered == false ){
+					redAlertTriggered = true;
+					CabinEffects.Instance().setRedAlert(true);
+				}
+				warningTimer -= Time.fixedDeltaTime;
+				if(warningTimer <= 0.0f){
+					warningTimer = 4.0f;
+					AudioSource.PlayClipAtPoint(warningSound, transform.position);
+				}
+				
+			}
+			
 		}
 		if(missilesEnabled){
 			if(lastMissileLaunchTime + nextMissileLaunchTime < Time.fixedTime && theShip.GetComponent.<Reactor>().systemEnabled == true){
@@ -190,7 +213,12 @@ class WarzoneLandingScene extends GenericScene {
 	}
 
 	
-	
+	function OnDestroy(){
+		if(redAlertTriggered == true){
+				
+			CabinEffects.Instance().setRedAlert(false);
+		}
+	}
 	
 	//OSC HANDLERS
 	
