@@ -207,7 +207,7 @@ function commsMessage(message : OSCPacket){
 			AudioSource.PlayClipAtPoint(hailingSound, playerShip.transform.position);
 			var audioCall : boolean = false;
 			
-			if(message.Data != null){	//if data present and its a 1 then do audio call, else do video
+			if(message.Data.Count > 0){	//if data present and its a 1 then do audio call, else do video
 			
 				if(message.Data[0] == 1){
 				

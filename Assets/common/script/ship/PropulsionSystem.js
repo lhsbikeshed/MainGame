@@ -48,8 +48,8 @@ class PropulsionSystem extends BaseSubsystem
 	function Start(){
 		super.Start();
 		propulsionPowerModifier = new float[3];
-		propulsionPowerModifier[0] = 0.2f;
-		propulsionPowerModifier[1] = 0.3f;
+		propulsionPowerModifier[0] = 0.3f;
+		propulsionPowerModifier[1] = 0.5f;
 		propulsionPowerModifier[2] = 0.7f;
 		
 		
