@@ -1,4 +1,4 @@
-#pragma implicit
+#pragma strict
 import System.Net;
 import System.Collections.Generic;
 import UnityOSC;
@@ -12,6 +12,7 @@ var updateTime : float = 0.125;
 var hailingSound : AudioClip;
 var bingbongNoise : AudioClip;
 private var commsOnline : boolean = false;
+private var lastCommsScreen : String = "ass";
 
 
 var currentScene : GenericScene; //current scene to route /scene messages to
@@ -131,22 +132,12 @@ function FixedUpdate(){
 				} else if (pkt.Address.IndexOf("/game/") == 0){
 					gameMessage(pkt);
 					
-				} else if (pkt.Address.IndexOf("/clientscreen/CommsStation/incomingCall") == 0){
-					if(!commsOnline){
-						AudioSource.PlayClipAtPoint(hailingSound, playerShip.transform.position);
-						OSCHandler.Instance.ChangeClientScreen("CommsStation", "videoDisplay");
-						commsOnline = true;
-					}
-				} else if (pkt.Address.IndexOf("/clientscreen/CommsStation/hangUp") == 0){
-					if(commsOnline){
-						OSCHandler.Instance.RevertClientScreen("CommsStation", "videoDisplay");
-						commsOnline = false;
-					}
-				
-			 	}
+				} else if (pkt.Address.IndexOf("/clientscreen/CommsStation") == 0){
+					commsMessage(pkt);
+				}
 				
 				
-				lastTimeStampProcessed =  pkt.TimeStamp;    
+				
 				pkt.processed = true;                      
 			}
 	   }
@@ -206,7 +197,40 @@ function jumpToScene(id : int){
 	Application.LoadLevel(id);
 }
 
-
+function commsMessage(message : OSCPacket){
+	var msgAddress = message.Address.Split(separator);
+	// [1] = system, 2 = thing, 3 = operation
+	var target = msgAddress[3];
+	
+	if (target == "incomingCall"){
+		if(!commsOnline){
+			AudioSource.PlayClipAtPoint(hailingSound, playerShip.transform.position);
+			var audioCall : boolean = false;
+			
+			if(message.Data != null){	//if data present and its a 1 then do audio call, else do video
+			
+				if(message.Data[0] == 1){
+				
+					audioCall = true;
+				}
+			} 
+			if(audioCall){
+				OSCHandler.Instance.ChangeClientScreen("CommsStation", "audioDisplay");
+				lastCommsScreen = "audioDisplay";
+			} else {
+				OSCHandler.Instance.ChangeClientScreen("CommsStation", "videoDisplay");
+				lastCommsScreen = "videoDisplay";
+			}
+			commsOnline = true;
+		}
+	} else if (target == "hangUp"){
+		if(commsOnline){
+			OSCHandler.Instance.RevertClientScreen("CommsStation", lastCommsScreen);
+			commsOnline = false;
+		}
+	}
+				
+}
 
 
 
