@@ -458,3 +458,23 @@ function OnTriggerEnter(other : Collider){
 		
 	}
 }
+
+function processOSCMessage(msg: OSCPacket){
+	
+	var msgAddress = msg.Address.Split(["/"[0]]);
+	// [1] = System, 2 = Subsystem name, 3 = operation
+	var system = msgAddress[2];
+	var operation = msgAddress[3];
+	
+	if(operation == "getPowerLevels"){
+		var m : OSCMessage = OSCMessage("/system/ship/powerLevels");
+		m.Append(propulsionPower);
+		m.Append(weaponsPower);
+		m.Append(sensorPower);
+		m.Append(internalPower);
+		OSCHandler.Instance.SendMessageToAll(m);
+	
+	}
+}
+
+

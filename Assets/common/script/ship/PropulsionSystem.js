@@ -27,6 +27,10 @@ class PropulsionSystem extends BaseSubsystem
 	var engineLight : Light;
 	
 	
+	public var afterburnerClip : AudioClip;
+	var afterburnerStartTime : float;
+	var afterburnerCooldown : float = 2.0f;
+	var afterburnerCooling : boolean = false;
 	
 	
 	//actual control stuff
@@ -78,6 +82,8 @@ class PropulsionSystem extends BaseSubsystem
 	}
 	
 	function enableSystem(){
+		afterburnerCooling = false;
+		
 		systemEnabled = true;
 		theShip.rigidbody.drag = 0.5f;
 		throttleDisabled = false;
@@ -90,6 +96,20 @@ class PropulsionSystem extends BaseSubsystem
 	}
 	
 	function FixedUpdate () {
+		if(systemEnabled){
+			if(afterburnerCooling){
+				afterburnerCooldown -= Time.fixedDeltaTime;
+				if(afterburnerCooldown < 0.0f){
+					//send a message to clients to say afterburner is active again
+					afterburnerCooling = false;
+					var m: OSCMessage = OSCMessage("/system/propulsion/afterburnerCharged");
+					OSCHandler.Instance.SendMessageToAll(m);
+				}
+			}
+		}
+			
+				
+				
 		
 
 		propulsionModifier = propulsionPowerModifier[theShip.GetComponent.<ship>().propulsionPower - 1]; //(1 + theShip.GetComponent.<ship>().propulsionPower) / 4.0f;
@@ -127,10 +147,22 @@ class PropulsionSystem extends BaseSubsystem
 			//rigidbody.velocity = AddPos * (Time.deltaTime * throttle);
 		}
 		if(throttleDisabled == false){
+			if(afterburnerStartTime + 2.0f > Time.fixedTime){	//afterburner is active
+				thrust += 9000.0f;
+				if (afterburnerCooling == false ){
+					afterburnerCooldown = 8.0f;
+					afterburnerCooling = true;
+					var me: OSCMessage = OSCMessage("/system/propulsion/afterburnerCharging");
+					OSCHandler.Instance.SendMessageToAll(me);
+				}
+			} 
 		
 			rigidbody.AddForce (transform.TransformDirection(Vector3.forward * thrust * 2));
 			rigidbody.AddRelativeForce(Vector3(tx,ty,0));
 			rocketSFXSource.volume = scaledThrottle;
+			
+			
+			
 
 		}
 	    	
@@ -140,6 +172,28 @@ class PropulsionSystem extends BaseSubsystem
 			
 		}
 		
+		
+		
+		
+	}
+	
+	function startAfterburner(){
+		var m : OSCMessage;
+		if(afterburnerCooling){
+			//send an afterburner off warning
+			m = OSCMessage ("/system/propulsion/afterburnerOffline");
+			OSCHandler.Instance.SendMessageToAll(m);
+		} else {
+			
+			//start afterburner
+			afterburnerStartTime = Time.fixedTime;
+			//trigger afterburner effect
+			var a : AudioSource = UsefulShit.PlayClipAt(afterburnerClip, transform.position);
+			a.pitch = Random.Range(0.8f, 1.2f);
+			//tell clients it worked
+			m = OSCMessage ("/system/propulsion/afterburnerActive");
+			OSCHandler.Instance.SendMessageToAll(m);
+		}
 		
 	}
 	
@@ -155,7 +209,10 @@ class PropulsionSystem extends BaseSubsystem
 				} else {
 					enableSystem();
 				}
-		} /*else if (operation == "throttle"){
+		} else if (operation == "afterburner"){
+			startAfterburner();
+		}
+		/*else if (operation == "throttle"){
 			var throttle : float = message.Data[0] ;
 			scaledThrottle =  throttle;
 		}*/
