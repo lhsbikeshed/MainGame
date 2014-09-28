@@ -238,7 +238,8 @@ function commsMessage(message : OSCPacket){
 		}
 		AudioSource.PlayClipAtPoint(hailingSound, playerShip.transform.position);
 		var msg2 : OSCMessage = OSCMessage("/clientscreen/CommsStation/setMovieMode");
-		msg2.Append("never.mov");
+		var file : String = message.Data[0];
+		msg2.Append(file);
 		OSCHandler.Instance.SendMessageToClient("CommsStation", msg2);
 		
 		OSCHandler.Instance.ChangeClientScreen("CommsStation", "videoDisplay");
