@@ -214,6 +214,9 @@ function commsMessage(message : OSCPacket){
 					audioCall = true;
 				}
 			} 
+			var msg : OSCMessage = OSCMessage("/clientscreen/CommsStation/setCameraMode");
+			OSCHandler.Instance.SendMessageToClient("CommsStation", msg);
+			
 			if(audioCall){
 				OSCHandler.Instance.ChangeClientScreen("CommsStation", "audioDisplay");
 				lastCommsScreen = "audioDisplay";
@@ -228,6 +231,19 @@ function commsMessage(message : OSCPacket){
 			OSCHandler.Instance.RevertClientScreen("CommsStation", lastCommsScreen);
 			commsOnline = false;
 		}
+	} else if (target == "playVideo"){
+		if(commsOnline){
+			OSCHandler.Instance.RevertClientScreen("CommsStation", lastCommsScreen);
+			commsOnline = false;
+		}
+		AudioSource.PlayClipAtPoint(hailingSound, playerShip.transform.position);
+		var msg2 : OSCMessage = OSCMessage("/clientscreen/CommsStation/setMovieMode");
+		msg2.Append("never.mov");
+		OSCHandler.Instance.SendMessageToClient("CommsStation", msg2);
+		
+		OSCHandler.Instance.ChangeClientScreen("CommsStation", "videoDisplay");
+		lastCommsScreen = "videoDisplay";
+		commsOnline = true;
 	}
 				
 }
