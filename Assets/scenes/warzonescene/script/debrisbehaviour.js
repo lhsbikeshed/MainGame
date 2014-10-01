@@ -9,12 +9,13 @@ public class debrisbehaviour extends DynamicFieldObjectBehaviour{
 	var startVelocity : Vector3;
 	var bastardVelocity : float = 90.0f;
 	var hitShip : boolean = false;
+	public var randomSpeed : float = 50f;
 
 	
 	function Start () {
 		startVelocity = Random.onUnitSphere * 0.1f;
 		randomRotationSpeed = Random.onUnitSphere * 4.35; //Quaternion.Euler(Random.value * 0.05, Random.value * 0.05, Random.value * 0.05);
-		transform.rigidbody.velocity = startVelocity;
+		transform.rigidbody.velocity = Random.onUnitSphere * randomSpeed;
 	}
 	
 	function OnCollisionEnter(c : Collision){
@@ -71,7 +72,7 @@ public class debrisbehaviour extends DynamicFieldObjectBehaviour{
 				GameObject.Find("TheShip").GetComponent.<TargettingSystem>().updateTrackingList();
 
 			}
-			transform.rigidbody.velocity = startVelocity;
+			transform.rigidbody.velocity = startVelocity + Random.onUnitSphere * randomSpeed;
 		}
 		transform.rigidbody.angularVelocity = Vector3.zero;
 		

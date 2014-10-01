@@ -12,14 +12,40 @@ public static var instance : TargettingSystem;
 
 private var separator : char[] = ["/"[0]];
 
+/* weapon hardpoint deployment state */
+enum WeaponState  { WEAPON_STOWED = 0, WEAPON_TRANSIT = 1, WEAPON_DEPLOYED = 2};
+
+
+public var weaponTransitOutNoise : AudioClip;
+public var weaponTransitInNoise : AudioClip;
+private var weaponTransitNoises : AudioSource;
+public var  weaponState : WeaponState = WeaponState.WEAPON_STOWED;
+private var targetWeaponState : WeaponState = WeaponState.WEAPON_STOWED; 
+private var weaponStateChangeTimer = 0.0f;
+
 
 function Start () {
 	theShip = GameObject.Find("TheShip");
 	grapplingHook  = GetComponentInChildren.<GrapplingHook>();
 	instance = this;
+	weaponTransitNoises = gameObject.AddComponent.<AudioSource>();
+	
 }
 
-function Update () {
+function FixedUpdate () {
+	if(weaponState == weaponState.WEAPON_TRANSIT){
+		weaponStateChangeTimer -= Time.fixedDeltaTime;
+		if(weaponStateChangeTimer <= 0.0f){
+			weaponState = targetWeaponState;
+			
+			//play a sound and tell clients
+			
+			var m : OSCMessage = OSCMessage("/system/targetting/weaponState");
+			var s : int = weaponState;
+			m.Append(s);
+			OSCHandler.Instance.SendMessageToAll(m);
+		}
+	}
 
 }
 
@@ -46,6 +72,63 @@ function clearHighlights(){
 		o.highlighted = false;
 	}
 }
+
+/* ----- WEAPON CONTROL */
+
+function changeWeaponState(newState : int){
+	if(newState != weaponState){
+		Debug.Log("changing weapon state to : " + newState);
+		targetWeaponState = newState;
+		weaponState = WeaponState.WEAPON_TRANSIT;
+		//play a sound as well
+		weaponTransitNoises.Stop();
+		if(newState == weaponState.WEAPON_DEPLOYED && weaponTransitOutNoise != null){
+			weaponTransitNoises.clip = weaponTransitOutNoise;
+			weaponTransitNoises.Play();
+		} else if (newState == weaponState.WEAPON_STOWED && weaponTransitInNoise != null){
+			weaponTransitNoises.clip = weaponTransitInNoise;
+			weaponTransitNoises.Play();
+		}
+			
+		//start the timer
+		weaponStateChangeTimer = 2.0f;
+		
+	}
+}
+
+function fireWeapons(){
+	var msg : OSCMessage;
+
+	if(weaponState == weaponState.WEAPON_DEPLOYED){
+		theShip.GetComponent.<ship>().laserTurret.fireAtTarget(targettedObject);
+		msg = OSCMessage("/system/targetting/weaponFireOk");
+
+	} else {
+		OSCHandler.Instance.DisplayBannerAtClient("TacticalStation", "Error", "Weapons not deployed", 2000);
+		msg = OSCMessage("/system/targetting/weaponFireFail");
+
+	}
+	OSCHandler.Instance.SendMessageToClient("TacticalStation", msg);
+
+		
+}
+
+function fireSmartBomb(){
+	var msg : OSCMessage;
+
+	if(weaponState == weaponState.WEAPON_DEPLOYED){
+		var flar = Instantiate(flarePrefab, theShip.transform.position, theShip.transform.rotation);
+		msg = OSCMessage("/system/targetting/smartBombOk");
+		
+	} else {
+		OSCHandler.Instance.DisplayBannerAtClient("TacticalStation", "Error", "Weapons not deployed", 2000);
+		msg = OSCMessage("/system/targetting/smartBombFail");
+
+	}
+	OSCHandler.Instance.SendMessageToClient("TacticalStation", msg);
+}
+
+/* osc receiver */
 
 function processOSCMessage(message : OSCMessage){
 	var msgAddress = message.Address.Split(separator);
@@ -81,45 +164,22 @@ function processOSCMessage(message : OSCMessage){
 				} 
 			}
 			break;
-		case "fireGrappling":
-			if(grapplingHook.inUse){
-				grapplingHook.Release();
-			} else {
-				if(targettedObject != null && targettedObject.GetComponent.<TargettableObject>().grappleable == true){
-					if((theShip.transform.position - targettedObject.position).magnitude  < 100){
-						grapplingHook.setTarget(targettedObject);
-						
-						grapplingHook.Fire();
-					} else {
-						OSCHandler.Instance.DisplayBannerAtClient("TacticalStation", "No Target", "Target out of range, must be < 100m away", 2000);
-					}
-				} else {
-					OSCHandler.Instance.DisplayBannerAtClient("TacticalStation", "No Target", "No Target Selected", 1000);
-				}
-			}
-			break;
-			
-		case "releaseGrappling":
-			Debug.Log("Release grapple..");
-			grapplingHook.Release();
-			break;
+		
 			
 		case "fireAtTarget":	//fire at targetted object
 			
-			
-			
-//			if(targettedObject != null ){
-				
-			theShip.GetComponent.<ship>().laserTurret.fireAtTarget(targettedObject);
-				
-				
-			
+			fireWeapons();
 			break;
 			
 		case "fireFlare":
-			var flar = Instantiate(flarePrefab, theShip.transform.position, theShip.transform.rotation);
+			fireSmartBomb();
+			break;
+		case "changeWeaponState":
+			
+			changeWeaponState ( message.Data[0] == 0 ? 0 : 2);
 			break;
 		}
+		
 	}
 
 
