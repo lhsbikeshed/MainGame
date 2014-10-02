@@ -75,7 +75,7 @@ public class CablePuzzleSystem : MonoBehaviour {
 				damageTimer = Random.Range (1.0f, 3.0f);
 				OSCMessage msg = new OSCMessage("/ship/damage");	
 				
-				msg.Append(0);		
+				msg.Append(0f);		
 				
 				OSCHandler.Instance.SendMessageToAll(msg);
 			}
