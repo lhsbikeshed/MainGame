@@ -91,7 +91,7 @@ function changeWeaponState(newState : int){
 		}
 			
 		//start the timer
-		weaponStateChangeTimer = 2.0f;
+		weaponStateChangeTimer = 4.5f;
 		
 	}
 }
