@@ -243,7 +243,23 @@ class JumpSystem extends BaseSubsystem
 	 * and we arent currently jumping (prevents idiots from spamming the jump button 
 	*/
 	function startJump(){
-		if(inGate && canJump && !jumping){
+		var noJumpReason : String = "Cannot jump\r\n";
+		var hardPointFail : boolean = false;
+		if(theShip.GetComponent.<UndercarriageBehaviour>().state != UndercarriageBehaviour.UP){
+			hardPointFail = true;
+			noJumpReason += "> Raise Landing Gear\r\n";
+		}
+		if(TargettingSystem.instance.weaponState != WeaponState.WEAPON_STOWED){
+			hardPointFail = true;
+			noJumpReason += "> Retract Weapons Bays";
+		}
+		if(hardPointFail){
+			//give the players the bad news
+			OSCHandler.Instance.DisplayBannerAtClient("TacticalStation", "Jump Error", noJumpReason, 3000);
+			OSCHandler.Instance.DisplayBannerAtClient("EngineerStation", "Jump Error", noJumpReason, 3000);
+			OSCHandler.Instance.DisplayBannerAtClient("PilotStation", "Jump Error", noJumpReason, 3000);
+		}
+		if(inGate && canJump && !jumping && hardPointFail == false){
 			
 			go();
 			jumpStartTime = Time.fixedTime;
