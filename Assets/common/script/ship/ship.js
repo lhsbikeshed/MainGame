@@ -5,10 +5,15 @@ private var ship : Transform;
 
 var docked : boolean;
 var clampSFX : AudioClip;		//clamp releatheCse effect
-var weaponsPower  : int = 2;
-var sensorPower : int = 2;
-var internalPower : int = 2;
-var propulsionPower : int = 2;
+
+
+private var weaponsPower  : int = 2;
+private var sensorPower : int = 2;
+private var internalPower : int = 2;
+private var propulsionPower : int = 2;
+
+
+
 var hullState : float = 100.0f;
 var acceleration : Vector3;
 private var lastVelocity : Vector3;
@@ -335,16 +340,60 @@ function dock(){
 }
 
 
+/* -------------- power handling --------------- */
+function getWeaponsPower() : int {
+	return weaponsPower;
+}
+
+function setWeaponsPower(p : int){
+	p = Mathf.Clamp(p, 0, 12);
+	weaponsPower = p;
+	sendPowerLevelUpdate();
+	
+}
+
+function getInternalPower() : int {
+	return internalPower;
+}
+
+function setInternalPower(p : int){
+	p = Mathf.Clamp(p, 0, 12);
+	internalPower = p;
+	sendPowerLevelUpdate();
+}
+
+function getPropulsionPower() : int {
+	return propulsionPower;
+}
+
+function setPropulsionPower(p : int){
+	p = Mathf.Clamp(p, 0, 12);
+	propulsionPower = p;
+	sendPowerLevelUpdate();
+}
+
+function getSensorPower() : int {
+	return sensorPower;
+}
+
+function setSensorPower(p : int){
+	p = Mathf.Clamp(p, 0, 12);
+	sensorPower = p;
+	sendPowerLevelUpdate();
+}
+
 /*----------------- Updates --------*/
    
 function FixedUpdate(){
 
+	//update the acceleration public var, used for animations of various things
 	acceleration = (rigidbody.velocity - lastVelocity) / Time.fixedDeltaTime;
 	lastVelocity = rigidbody.velocity;
 
-	//repair ship hull if power is == 3
-	if(internalPower == 3 && reactor.systemEnabled){
-		changeHullLevel(0.002f);
+	//repair ship hull, 0.01f is max level, scale from 0-12 that internalpower provides
+	if(reactor.systemEnabled){
+		var repairAmount : float = UsefulShit.map(internalPower, 0, 12, 0, 0.01f);
+		changeHullLevel(repairAmount);
 		reactor.repairReactor();
 		
 	}
@@ -459,6 +508,16 @@ function OnTriggerEnter(other : Collider){
 	}
 }
 
+/* send out updated power levels to the clients */
+function sendPowerLevelUpdate(){
+	var m : OSCMessage = OSCMessage("/system/ship/powerLevels");
+	m.Append(propulsionPower);
+	m.Append(weaponsPower);
+	m.Append(sensorPower);
+	m.Append(internalPower);
+	OSCHandler.Instance.SendMessageToAll(m);
+}
+
 function processOSCMessage(msg: OSCPacket){
 	
 	var msgAddress = msg.Address.Split(["/"[0]]);
@@ -467,13 +526,7 @@ function processOSCMessage(msg: OSCPacket){
 	var operation = msgAddress[3];
 	
 	if(operation == "getPowerLevels"){
-		var m : OSCMessage = OSCMessage("/system/ship/powerLevels");
-		m.Append(propulsionPower);
-		m.Append(weaponsPower);
-		m.Append(sensorPower);
-		m.Append(internalPower);
-		OSCHandler.Instance.SendMessageToAll(m);
-	
+		sendPowerLevelUpdate();
 	}
 }
 

@@ -44,7 +44,7 @@ function fireAtTarget(targettedObject : Transform){
 		if(tscript.exploding == false && state == 0){
 			
 			var targetRange : float = (theShip.transform.position - targettedObject.position).magnitude;
-			weaponsPower =  theShip.GetComponent.<ship>().weaponsPower;
+			weaponsPower =  UsefulShit.map(theShip.GetComponent.<ship>().getWeaponsPower(), 0, 12, 0f, 3f);
 			var maxBeamRange : float = 1000 + weaponsPower * 300;
 			if(targetRange > maxBeamRange){
 				msg = new OSCMessage("/tactical/weapons/targetRange");

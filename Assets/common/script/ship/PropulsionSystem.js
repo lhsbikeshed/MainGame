@@ -13,14 +13,13 @@ class PropulsionSystem extends BaseSubsystem
 	var propulsionModifier : float; //how much we modify the actual throttle on the ship
 	var propulsionOffset : Vector3; //on damage we should vector the thrust
 	var hyperspaceModifier : boolean = false; //is the hyeprspace charging and gimping the engines
+	var propulsionPowerMapping : AnimationCurve;
 	
 	var throttleDisabled : boolean = true;
 	var rotationDisabled : boolean = true;
 	
 	var inBay : boolean = false;
-	
-	var propulsionPowerModifier : float[];
-	
+		
 	var engineParticles : ParticleSystem;
 	var particleRate : AnimationCurve;
 	var baseEmissionRate : float;
@@ -51,10 +50,6 @@ class PropulsionSystem extends BaseSubsystem
 	
 	function Start(){
 		super.Start();
-		propulsionPowerModifier = new float[3];
-		propulsionPowerModifier[0] = 0.3f;
-		propulsionPowerModifier[1] = 0.5f;
-		propulsionPowerModifier[2] = 0.7f;
 		
 		
 		rocketSFXSource = gameObject.AddComponent("AudioSource");
@@ -110,9 +105,9 @@ class PropulsionSystem extends BaseSubsystem
 			
 				
 				
-		
-
-		propulsionModifier = propulsionPowerModifier[theShip.GetComponent.<ship>().propulsionPower - 1]; //(1 + theShip.GetComponent.<ship>().propulsionPower) / 4.0f;
+		//lookup the propulsion modifier for the given amount of power in this system
+		var propLookup = UsefulShit.map(theShip.GetComponent.<ship>().getPropulsionPower(), 0, 12, 0f, 1f);		
+		propulsionModifier = propulsionPowerMapping.Evaluate(propLookup);
 		if(inBay){
 			propulsionModifier *= 0.5f;
 		}
@@ -122,8 +117,7 @@ class PropulsionSystem extends BaseSubsystem
 			propulsionModifier *= 0.3f;
 		}
 		
-		//on damage to left and right engines we should return some sort of direction for the ship to move in
-		//to simulate engines being borked
+		
 		//read the controls just dont apply them unless controlsLocked is false
 		scaledThrottle = translateJoyPos.z;
 		

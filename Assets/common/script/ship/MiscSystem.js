@@ -62,18 +62,8 @@ class MiscSystem extends BaseSubsystem
 		} 
 		if(consuming){
 			oxygenLevel -= consumptionRate;
-			
-			switch(theShip.GetComponent.<ship>().internalPower){
-				case 1:
-					oxygenLevel += 0.001;
-					break;
-				case 2:
-					oxygenLevel += 0.002;
-					break;
-				case 3:
-					oxygenLevel += 0.005;
-					break;
-			}
+			var oxProductionRate = UsefulShit.map(theShip.GetComponent.<ship>().getInternalPower(), 0f, 12f, 0f, 0.01f);
+			oxygenLevel += oxProductionRate;
 		}
 		if(leaking){
 			oxygenLevel -= 0.003;

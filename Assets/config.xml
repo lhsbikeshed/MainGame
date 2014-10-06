@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <config>
-	<testmode>false</testmode>
+	<testmode>true</testmode>
 	<client name="TacticalStation">10.0.0.10:12004</client>
 	<client name="EngineerStation">10.0.0.1:12001</client>
 	<client name="PilotStation">10.0.0.10:12002</client>
@@ -16,3 +16,4 @@
 	<useWebcam>false</useWebcam>
 	
 </config>
+	
