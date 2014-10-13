@@ -13,7 +13,7 @@ public static var instance : TargettingSystem;
 private var separator : char[] = ["/"[0]];
 
 /* weapon hardpoint deployment state */
-enum WeaponState  { WEAPON_STOWED = 0, WEAPON_TRANSIT = 1, WEAPON_DEPLOYED = 2};
+enum WeaponState  { WEAPON_STOWED = 0, WEAPON_DEPLOYED = 1, WEAPON_TRANSIT_OUT = 2, WEAPON_TRANSIT_IN = 3};
 
 
 public var weaponTransitOutNoise : AudioClip;
@@ -33,14 +33,14 @@ function Start () {
 }
 
 function FixedUpdate () {
-	if(weaponState == weaponState.WEAPON_TRANSIT){
+	if(weaponState == weaponState.WEAPON_TRANSIT_IN || weaponState == weaponState.WEAPON_TRANSIT_OUT){
 		weaponStateChangeTimer -= Time.fixedDeltaTime;
 		if(weaponStateChangeTimer <= 0.0f){
 			weaponState = targetWeaponState;
 			
 			//play a sound and tell clients
 			
-			var m : OSCMessage = OSCMessage("/system/targetting/weaponState");
+			var m : OSCMessage = OSCMessage("/ship/weaponState");
 			var s : int = weaponState;
 			m.Append(s);
 			OSCHandler.Instance.SendMessageToAll(m);
@@ -79,7 +79,18 @@ function changeWeaponState(newState : int){
 	if(newState != weaponState){
 		Debug.Log("changing weapon state to : " + newState);
 		targetWeaponState = newState;
-		weaponState = WeaponState.WEAPON_TRANSIT;
+		if(weaponState == WeaponState.WEAPON_DEPLOYED){
+		
+			weaponState = WeaponState.WEAPON_TRANSIT_IN;
+		} else if (weaponState == WeaponState.WEAPON_STOWED){
+			weaponState = weaponState.WEAPON_TRANSIT_OUT;
+		}
+		//tell clients the weapons are moving
+		var m : OSCMessage = OSCMessage("/ship/weaponState");
+		var s : int = weaponState;
+		m.Append(s);
+		OSCHandler.Instance.SendMessageToAll(m);
+		
 		//play a sound as well
 		weaponTransitNoises.Stop();
 		if(newState == weaponState.WEAPON_DEPLOYED && weaponTransitOutNoise != null){
@@ -176,7 +187,7 @@ function processOSCMessage(message : OSCMessage){
 			break;
 		case "changeWeaponState":
 			
-			changeWeaponState ( message.Data[0] == 0 ? 0 : 2);
+			changeWeaponState ( message.Data[0] == 0 ? weaponState.WEAPON_STOWED : weaponState.WEAPON_DEPLOYED);
 			break;
 		}
 		

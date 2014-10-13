@@ -230,6 +230,10 @@ function commsMessage(message : OSCPacket){
 		if(commsOnline){
 			OSCHandler.Instance.RevertClientScreen("CommsStation", lastCommsScreen);
 			commsOnline = false;
+			
+			
+			OSCHandler.Instance.SendMessageToAll(OSCMessage("/ship/comms/hangupCall"));
+			
 		}
 	} else if (target == "playVideo"){
 		if(commsOnline){
@@ -245,6 +249,11 @@ function commsMessage(message : OSCPacket){
 		OSCHandler.Instance.ChangeClientScreen("CommsStation", "videoDisplay");
 		lastCommsScreen = "videoDisplay";
 		commsOnline = true;
+		
+		//now tell all of the clients that a call is coming in. Eventually replace all of the above with this message
+		
+		OSCHandler.Instance.SendMessageToAll(OSCMessage("/ship/comms/incomingCall"));
+		
 	}
 				
 }
