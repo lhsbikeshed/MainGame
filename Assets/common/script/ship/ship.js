@@ -512,9 +512,11 @@ function OnTriggerEnter(other : Collider){
 function sendPowerLevelUpdate(){
 	var m : OSCMessage = OSCMessage("/system/ship/powerLevels");
 	m.Append(propulsionPower);
-	m.Append(weaponsPower);
-	m.Append(sensorPower);
 	m.Append(internalPower);
+	m.Append(sensorPower);
+	m.Append(weaponsPower);
+
+
 	OSCHandler.Instance.SendMessageToAll(m);
 }
 

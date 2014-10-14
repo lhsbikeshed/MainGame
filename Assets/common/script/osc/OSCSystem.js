@@ -360,8 +360,9 @@ function controlMessage(message : OSCPacket){
 		case "subsystemstate":
 			shipSystem.setPropulsionPower (message.Data[0]);
 			shipSystem.setInternalPower( message.Data[1]);
-			shipSystem.setWeaponsPower (message.Data[3]);
+			
 			shipSystem.setSensorPower (message.Data[2]);
+			shipSystem.setWeaponsPower (message.Data[3]);
 			break;
 			
 		
