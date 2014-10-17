@@ -269,8 +269,8 @@ class JumpSystem extends BaseSubsystem
 			theShip.GetComponent.<PropulsionSystem>().rotationDisabled  = true;
 			
 			//test switching the consoles to hyperspace early
-			OSCHandler.Instance.ChangeClientScreen("PilotStation", "hyperspace");
-			OSCHandler.Instance.ChangeClientScreen("TacticalStation", "hyperspace");
+			OSCHandler.Instance.ChangeClientScreen("PilotStation", "hyperspace", true);
+			OSCHandler.Instance.ChangeClientScreen("TacticalStation", "hyperspace", true);
 			
 			var cab : CablePuzzleSystem = GetComponent.<CablePuzzleSystem>();
 			if(cab.isWaiting){

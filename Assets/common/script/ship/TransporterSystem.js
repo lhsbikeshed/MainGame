@@ -31,8 +31,9 @@ class TransporterSystem extends BaseSubsystem implements JammingListener {
 		Debug.Log("cb");
 		if(state == 0){	//failed to jam
 //			AudioSource.PlayClipAtPoint(beamInSfx, theShip.transform.position);
+			
 			OSCHandler.Instance.DisplayBannerAtClient("EngineerStation", "!!WARNING!!", "INTRUDER DETECTED IN TRANSPORTER ROOM, PREPARE TO DUMP AIRLOCK CONTENTS", 1500);
-			OSCHandler.Instance.ChangeClientScreen("EngineerStation", "airlockdump");
+			OSCHandler.Instance.ChangeClientScreen("EngineerStation", "airlockdump", true);
 		} else if (state == 1){
 			//beam was stopped. All consoles see this message
 			//anyway and will revert to their normal function
@@ -89,7 +90,8 @@ class TransporterSystem extends BaseSubsystem implements JammingListener {
 				OSCHandler.Instance.DisplayBannerAtClient("EngineerStation", "!!WARNING!!", "DUMPING AIRLOCK CONTENTS..", 2000);
 				yield WaitForSeconds(1.6);
 				Instantiate(ejectedDudePrefab, theShip.transform.position, theShip.transform.rotation);
-				OSCHandler.Instance.ChangeClientScreen("EngineerStation", "power");
+				OSCHandler.Instance.RevertClientScreen("EngineerStation", "airlockdump");
+				//OSCHandler.Instance.ChangeClientScreen("EngineerStation", "power");
 				//switch engineer back to power
 				
 			}

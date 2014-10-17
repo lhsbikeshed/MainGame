@@ -192,7 +192,7 @@ class Hyperspace extends GenericScene {
 		
 		//OSCHandler.Instance.ChangeClientScreen("PilotStation", "hyperspace");			
 		//OSCHandler.Instance.ChangeClientScreen("TacticalStation", "hyperspace");		
-		OSCHandler.Instance.ChangeClientScreen("EngineerStation", "hyperspace");			
+		OSCHandler.Instance.ChangeClientScreen("EngineerStation", "hyperspace", true);			
 	
 	}
 	

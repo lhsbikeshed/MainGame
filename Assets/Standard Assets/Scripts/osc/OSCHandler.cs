@@ -287,11 +287,12 @@ public class OSCHandler : MonoBehaviour
 	 */
 	public void RevertClientScreen(String station, String callingName){
 		List<ScreenItem> screenStack = clientScreens[station];
+
 		for(int i = screenStack.Count -1; i >= 0; i--){
 			if(screenStack[i].screenName == callingName){
 				screenStack.RemoveAt(i);
 				String screenName = screenStack[0].screenName;
-				Debug.Log ("Changing to : " + screenName);
+				Debug.Log ("Reverting client screen for " + station + " to : " + callingName);
 				try {
 					
 					OSCMessage msg = new OSCMessage("/clientscreen/" + station + "/changeTo");
@@ -317,14 +318,57 @@ public class OSCHandler : MonoBehaviour
 	/* send a message to the client to change screens */
 	public void ChangeClientScreen(String station, String screenName, bool topMost){
 		try {
-			clientScreens[station].Insert(0, new ScreenItem(screenName, topMost));
-			OSCMessage msg = new OSCMessage("/clientscreen/" + station + "/changeTo");
-			msg.Append<String>(screenName);
-			
-			SendMessageToClient (station, msg);
 
-			
-			
+			//if the screen we want to display is topmost AND already exists in the stack then bring it to the front
+			bool didWeRaiseScreen = false;
+			if(topMost){
+				for(int i = clientScreens[station].Count -1; i >= 0; i--){
+
+					if(clientScreens[station][i].screenName == screenName){
+						//promote to top of stack
+						ScreenItem it = clientScreens[station][i];
+						clientScreens[station].RemoveAt(i);
+						clientScreens[station].Insert(0, it);
+						didWeRaiseScreen  = true;
+						Debug.Log ("raised screen " + screenName);
+						OSCMessage msg = new OSCMessage("/clientscreen/" + station + "/changeTo");
+						msg.Append<String>(screenName);
+						
+						SendMessageToClient (station, msg);
+						break;
+					}
+				}
+			}
+
+			//if we didnt raise a screen to the top then insert the screen either on top of the stack
+			// or at the next lowest point below the topmost items
+			if(!didWeRaiseScreen){
+				//if the screen is set to be topmost, then jsut stuff it at index 0
+				//if it isnt then insert it below the topmost screens
+				int index  = 0;
+				if(!topMost){
+					foreach(ScreenItem s in clientScreens[station]){
+						if(s.topMost == false){
+							break;
+						} 
+						index ++;
+
+					}
+				}
+				Debug.Log ("inserting screen " + screenName + " at pos " + index  + " and it is topmost: " + topMost);
+				clientScreens[station].Insert(index, new ScreenItem(screenName, topMost));
+
+				//if we inserted at top of stack then tell the clients to change
+				if(index == 0){
+
+					OSCMessage msg = new OSCMessage("/clientscreen/" + station + "/changeTo");
+					msg.Append<String>(screenName);
+					
+					SendMessageToClient (station, msg);
+				}
+			}
+
+
 			
 		} catch (KeyNotFoundException e ){
 			Debug.Log ("Tried to send client screen change and failed");

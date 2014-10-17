@@ -57,9 +57,9 @@ class WarzoneLandingScene extends GenericScene {
 		shipSystem = theShip.GetComponent.<ship>();
 		sceneStartTime = Time.fixedTime;
 		
-		OSCHandler.Instance.ChangeClientScreen("PilotStation", "restrictedArea");			
-		OSCHandler.Instance.ChangeClientScreen("TacticalStation", "restrictedArea");		
-		OSCHandler.Instance.ChangeClientScreen("EngineerStation", "restrictedArea");	
+		OSCHandler.Instance.ChangeClientScreen("PilotStation", "restrictedArea", true);			
+		OSCHandler.Instance.ChangeClientScreen("TacticalStation", "restrictedArea", true);		
+		OSCHandler.Instance.ChangeClientScreen("EngineerStation", "restrictedArea", true);	
 		
 	}
 	
@@ -157,7 +157,10 @@ class WarzoneLandingScene extends GenericScene {
 		}
 	
 		if(Time.fixedTime - sceneStartTime > 4.0f && screensReverted == false){
-			configureClientScreens();
+			//configureClientScreens();
+			OSCHandler.Instance.RevertClientScreen("TacticalStation", "restrictedArea");
+			OSCHandler.Instance.RevertClientScreen("PilotStation", "restrictedArea");
+			OSCHandler.Instance.RevertClientScreen("EngineerStation", "restrictedArea");
 			screensReverted = true;
 		}
 		if(evacRunning){
@@ -289,9 +292,9 @@ class WarzoneLandingScene extends GenericScene {
 			OSCHandler.Instance.ChangeClientScreen("TacticalStation", "weapons");		//give the tactical a weapons screen
 			OSCHandler.Instance.ChangeClientScreen("EngineerStation", "power");			//give the engineer power man console
 		} else {
-			OSCHandler.Instance.ChangeClientScreen("PilotStation", "restrictedArea");			
-			OSCHandler.Instance.ChangeClientScreen("TacticalStation", "restrictedArea");		
-			OSCHandler.Instance.ChangeClientScreen("EngineerStation", "restrictedArea");			
+			OSCHandler.Instance.ChangeClientScreen("PilotStation", "restrictedArea", true);			
+			OSCHandler.Instance.ChangeClientScreen("TacticalStation", "restrictedArea", true);		
+			OSCHandler.Instance.ChangeClientScreen("EngineerStation", "restrictedArea", true);			
 		}
 	
 	}

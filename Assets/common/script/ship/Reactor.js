@@ -186,10 +186,10 @@ class Reactor extends MonoBehaviour{
 			
 			overloadTime = seconds;
 			
-			OSCHandler.Instance.ChangeClientScreen("PilotStation", "selfdestruct");			
-			OSCHandler.Instance.ChangeClientScreen("TacticalStation", "selfdestruct");		
-			OSCHandler.Instance.ChangeClientScreen("EngineerStation", "selfdestruct");			
-			OSCHandler.Instance.ChangeClientScreen("CommsStation", "selfdestruct");			
+			OSCHandler.Instance.ChangeClientScreen("PilotStation", "selfdestruct", true);			
+			OSCHandler.Instance.ChangeClientScreen("TacticalStation", "selfdestruct",true);		
+			OSCHandler.Instance.ChangeClientScreen("EngineerStation", "selfdestruct", true);			
+			OSCHandler.Instance.ChangeClientScreen("CommsStation", "selfdestruct", true);			
 			
 			
 			lastSecondCounter = 0;

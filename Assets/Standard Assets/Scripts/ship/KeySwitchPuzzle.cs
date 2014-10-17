@@ -30,9 +30,9 @@ public class KeySwitchPuzzle : MonoBehaviour {
 		puzzleState = PuzzleState.WAITING;
 		//change to the auth screens on each console
 		//TODO
-		OSCHandler.Instance.ChangeClientScreen("EngineerStation", "KeyAuth");
-		OSCHandler.Instance.ChangeClientScreen("PilotStation", "KeyAuth");
-		OSCHandler.Instance.ChangeClientScreen("TacticalStation", "KeyAuth");
+		OSCHandler.Instance.ChangeClientScreen("EngineerStation", "KeyAuth", true);
+		OSCHandler.Instance.ChangeClientScreen("PilotStation", "KeyAuth", true);
+		OSCHandler.Instance.ChangeClientScreen("TacticalStation", "KeyAuth", true);
 
 
 	}
