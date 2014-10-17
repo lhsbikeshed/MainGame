@@ -303,7 +303,7 @@ function gameMessage(message : OSCPacket){
 			
 			OSCHandler.Instance.SendMessageToClient(station, m);
 			
-			var currentScreen : String = OSCHandler.Instance.clientScreens[station][0];
+			var currentScreen : String = OSCHandler.Instance.clientScreens[station][0].screenName;
 			
 			m = OSCMessage("/clientscreen/" + station + "/changeTo");
 			m.Append.<String>( currentScreen );
@@ -365,7 +365,13 @@ function controlMessage(message : OSCPacket){
 			shipSystem.setWeaponsPower (message.Data[3]);
 			break;
 			
-		
+		case "screenSelection":
+			//called when the player wants to change screens using a button on the console
+			var who : String = message.Data[0];
+			var toWhat : String = message.Data[1];
+			OSCHandler.Instance.ChangeClientScreen(who, toWhat);
+			break;
+			
 	}
 			
 		

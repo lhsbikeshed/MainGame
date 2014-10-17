@@ -56,6 +56,16 @@ public struct ClientLog
 /// </summary>
 public class OSCHandler : MonoBehaviour
 {
+	public class ScreenItem {
+		public String screenName;
+		public bool topMost = false;
+
+		public ScreenItem(String n, bool topMost){
+			this.screenName = n;
+			this.topMost = topMost;
+		}
+	}
+
 	#region Singleton Constructors
 	static OSCHandler()
 	{
@@ -89,8 +99,7 @@ public class OSCHandler : MonoBehaviour
 	private const int _loglength = 100;
 	#endregion
 	
-	public Dictionary<string, List<string>> clientScreens = new Dictionary<string, List<string>>();
-	//public Dictionary<string, string> previousClientScreens = new Dictionary<string, string>();
+	public Dictionary<string, List<ScreenItem>> clientScreens = new Dictionary<string, List<ScreenItem>>();	//this is a stack for each console. Map console name to list of screens
 	public Dictionary<string, string> configItems = new Dictionary<string, string>();
 	
 	/// <summary>
@@ -143,17 +152,17 @@ public class OSCHandler : MonoBehaviour
 		CreateServer("Clients", 12000);
 		CreateServer("Joystick", 19999);
 		
-		clientScreens["EngineerStation"] = new List<string>();
-		clientScreens["EngineerStation"].Add("power");
+		clientScreens["EngineerStation"] = new List<ScreenItem>();
+		clientScreens["EngineerStation"].Add(new ScreenItem("power", false));
 
-		clientScreens["PilotStation"] = new List<string>();
-		clientScreens["PilotStation"].Add ("docking");
+		clientScreens["PilotStation"] = new List<ScreenItem>();
+		clientScreens["PilotStation"].Add (new ScreenItem("docking", false));
 
-		clientScreens["TacticalStation"] = new List<string>();
-		clientScreens["TacticalStation"].Add ("weapons");
+		clientScreens["TacticalStation"] = new List<ScreenItem>();
+		clientScreens["TacticalStation"].Add (new ScreenItem("weapons", false));
 
-		clientScreens["CommsStation"] = new List<string>();
-		clientScreens["CommsStation"].Add ("idleDisplay");
+		clientScreens["CommsStation"] = new List<ScreenItem>();
+		clientScreens["CommsStation"].Add (new ScreenItem("idleDisplay", false));
 		
 
 	}
@@ -277,11 +286,11 @@ public class OSCHandler : MonoBehaviour
 	 * if not then iterate over screen stack and remove it
 	 */
 	public void RevertClientScreen(String station, String callingName){
-		List<string> screenStack = clientScreens[station];
+		List<ScreenItem> screenStack = clientScreens[station];
 		for(int i = screenStack.Count -1; i >= 0; i--){
-			if(screenStack[i] == callingName){
+			if(screenStack[i].screenName == callingName){
 				screenStack.RemoveAt(i);
-				String screenName = screenStack[0];
+				String screenName = screenStack[0].screenName;
 				Debug.Log ("Changing to : " + screenName);
 				try {
 					
@@ -300,11 +309,15 @@ public class OSCHandler : MonoBehaviour
 		}
 
 	}
+
+	public void ChangeClientScreen(String station, String screenName){
+		ChangeClientScreen(station, screenName, false);
+	}
 	
 	/* send a message to the client to change screens */
-	public void ChangeClientScreen(String station, String screenName){
+	public void ChangeClientScreen(String station, String screenName, bool topMost){
 		try {
-			clientScreens[station].Insert(0, screenName);
+			clientScreens[station].Insert(0, new ScreenItem(screenName, topMost));
 			OSCMessage msg = new OSCMessage("/clientscreen/" + station + "/changeTo");
 			msg.Append<String>(screenName);
 			
