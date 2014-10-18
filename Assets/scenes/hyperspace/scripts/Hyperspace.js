@@ -160,6 +160,10 @@ class Hyperspace extends GenericScene {
 		 	theShip.GetComponent.<PropulsionSystem>().throttleDisabled = false;
 
 			theShip.transform.parent = null;
+			
+			OSCHandler.Instance.RevertClientScreen("PilotStation", "hyperspace");
+			OSCHandler.Instance.RevertClientScreen("TacticalStation", "hyperspace");
+			
 			Application.LoadLevel(ps.hyperspaceDestination);
 		}
 		

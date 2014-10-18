@@ -4,8 +4,10 @@ class JumpSystem extends BaseSubsystem
 
 	var jumpChargePercent : float;	//0->1 of how charged system is
 	var chargeRate : float;			//to tweak jump charge rates
-	var jumpNodeFrequency : int;	//"frequency" of the jump node were using. If this doesnt match the node then
-									//NO JUMPY
+	var jumpRoute : int = -1 ;		//-1 = no route set, other values determine the "route" to take on the printed maps. Currently only 0 is used (mars drop)
+									
+									
+									
 									
 	private var jumpEffect : ParticleSystem;
 
@@ -244,22 +246,26 @@ class JumpSystem extends BaseSubsystem
 	*/
 	function startJump(){
 		var noJumpReason : String = "Cannot jump\r\n";
-		var hardPointFail : boolean = false;
+		var jumpFail : boolean = false;
 		if(theShip.GetComponent.<UndercarriageBehaviour>().state != UndercarriageBehaviour.UP){
-			hardPointFail = true;
+			jumpFail = true;
 			noJumpReason += "> Raise Landing Gear\r\n";
 		}
 		if(TargettingSystem.instance.weaponState != WeaponState.WEAPON_STOWED){
-			hardPointFail = true;
-			noJumpReason += "> Retract Weapons Bays";
+			jumpFail = true;
+			noJumpReason += "> Retract Weapons Bays\r\n";
 		}
-		if(hardPointFail){
+		if(jumpRoute == -1){
+			jumpFail = true;
+			noJumpReason += "> No Route Set\r\n";
+		}
+		if(jumpFail){
 			//give the players the bad news
 			OSCHandler.Instance.DisplayBannerAtClient("TacticalStation", "Jump Error", noJumpReason, 3000);
 			OSCHandler.Instance.DisplayBannerAtClient("EngineerStation", "Jump Error", noJumpReason, 3000);
 			OSCHandler.Instance.DisplayBannerAtClient("PilotStation", "Jump Error", noJumpReason, 3000);
 		}
-		if(inGate && canJump && !jumping && hardPointFail == false){
+		if(inGate && canJump && !jumping && jumpFail == false){
 			
 			go();
 			jumpStartTime = Time.fixedTime;
@@ -309,7 +315,10 @@ class JumpSystem extends BaseSubsystem
 		restoreFov = true;
 		GetComponent.<PropulsionSystem>().hyperspaceModifier = false;
 		doJump();
+		jumpRoute = -1; //players will have to plot again to escape
+		
 	}   
+	
 	
 	
 	
@@ -332,6 +341,13 @@ class JumpSystem extends BaseSubsystem
 			startJump();
 		} else if (operation ==  "startJump"){
 			startJump();
+		} else if (operation == "setRoute"){
+			var r : int = message.Data[0];
+			Debug.Log("Set jump route : " + r);
+			jumpRoute = r;
+		} else if (operation == "clearRoute"){
+			Debug.Log("Cleared jump route");
+			jumpRoute = -1;
 		}
 			
 			

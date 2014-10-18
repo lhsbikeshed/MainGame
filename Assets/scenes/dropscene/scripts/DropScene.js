@@ -336,9 +336,14 @@ class DropScene extends GenericScene {
 		
 						theShip.GetComponent.<JumpSystem>().canJump = true;
 						theShip.GetComponent.<JumpSystem>().inGate = true;
+						theShip.GetComponent.<JumpSystem>().jumpRoute = 1;
 						var s1 : OSCMessage = OSCMessage("/ship/jumpStatus");
 						s1.Append.<int>(1);
 						OSCHandler.Instance.SendMessageToAll(s1);
+						
+						OSCHandler.Instance.RevertClientScreen("PilotStation", "drop");			
+						OSCHandler.Instance.RevertClientScreen("TacticalStation", "drop");		
+						OSCHandler.Instance.RevertClientScreen("EngineerStation", "drop");			
 					}
 					
 				}
@@ -369,9 +374,9 @@ class DropScene extends GenericScene {
 	
 	function configureClientScreens(){
 	
-		OSCHandler.Instance.ChangeClientScreen("PilotStation", "drop");			
-		OSCHandler.Instance.ChangeClientScreen("TacticalStation", "drop");		
-		OSCHandler.Instance.ChangeClientScreen("EngineerStation", "drop");			
+		OSCHandler.Instance.ChangeClientScreen("PilotStation", "drop", true);			
+		OSCHandler.Instance.ChangeClientScreen("TacticalStation", "drop", true);		
+		OSCHandler.Instance.ChangeClientScreen("EngineerStation", "drop", true);			
 	
 	}
 	

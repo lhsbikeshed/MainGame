@@ -7,10 +7,10 @@ var docked : boolean;
 var clampSFX : AudioClip;		//clamp releatheCse effect
 
 
-private var weaponsPower  : int = 2;
-private var sensorPower : int = 2;
-private var internalPower : int = 2;
-private var propulsionPower : int = 2;
+private var weaponsPower  : int = 6;
+private var sensorPower : int = 6;
+private var internalPower : int = 6;
+private var propulsionPower : int = 6;
 
 
 
@@ -439,9 +439,9 @@ function FixedUpdate(){
 function Explode(){
 	CabinEffects.Instance().setRedAlert(false);
 	
-	OSCHandler.Instance.ChangeClientScreen("PilotStation", "failureScreen");
-	OSCHandler.Instance.ChangeClientScreen("EngineerStation", "failureScreen");
-	OSCHandler.Instance.ChangeClientScreen("TacticalStation", "failureScreen");
+	OSCHandler.Instance.ChangeClientScreen("PilotStation", "failureScreen", true);
+	OSCHandler.Instance.ChangeClientScreen("EngineerStation", "failureScreen", true);
+	OSCHandler.Instance.ChangeClientScreen("TacticalStation", "failureScreen", true);
 	exploding = true;
 	for(var i = 0; i < Mathf.FloorToInt(Random.Range(14,24)); i++){
 		windowScript.spawnCrack(Random.Range(100,300));
