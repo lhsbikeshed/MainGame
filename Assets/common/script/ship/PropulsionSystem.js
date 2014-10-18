@@ -15,17 +15,23 @@ class PropulsionSystem extends BaseSubsystem
 	var hyperspaceModifier : boolean = false; //is the hyeprspace charging and gimping the engines
 	var propulsionPowerMapping : AnimationCurve;
 	
+	var thrustReverser : boolean = false;
+	var thrustOutSound : AudioClip;
+	var thrustInSound : AudioClip;
+
 	var throttleDisabled : boolean = true;
 	var rotationDisabled : boolean = true;
 	
+	// are we in the loading bay at the moment, if so then gimp the throttle
 	var inBay : boolean = false;
-		
+	
+	//lights and particles
 	var engineParticles : ParticleSystem;
 	var particleRate : AnimationCurve;
 	var baseEmissionRate : float;
 	var engineLight : Light;
 	
-	
+	//afterburner stuff
 	public var afterburnerClip : AudioClip;
 	var afterburnerStartTime : float;
 	var afterburnerCooldown : float = 2.0f;
@@ -150,8 +156,11 @@ class PropulsionSystem extends BaseSubsystem
 					OSCHandler.Instance.SendMessageToAll(me);
 				}
 			} 
-		
-			rigidbody.AddForce (transform.TransformDirection(Vector3.forward * thrust * 2));
+			if(!thrustReverser){
+				rigidbody.AddForce (transform.TransformDirection(Vector3.forward * thrust * 2));
+			} else {
+				rigidbody.AddForce (transform.TransformDirection(Vector3.forward * thrust * -0.5f));
+			}
 			rigidbody.AddRelativeForce(Vector3(tx,ty,0));
 			rocketSFXSource.volume = scaledThrottle;
 			
@@ -171,9 +180,23 @@ class PropulsionSystem extends BaseSubsystem
 		
 	}
 	
+	function setThrustReverserState(state : boolean){
+		if(thrustReverser != state){
+		
+			thrustReverser = state;
+			if(state){
+				//deploy noise
+				AudioSource.PlayClipAtPoint(thrustOutSound, transform.position);
+			} else {
+				//retract noise
+				AudioSource.PlayClipAtPoint(thrustInSound, transform.position);
+			}
+		}
+	}
+	
 	function startAfterburner(){
 		var m : OSCMessage;
-		if(afterburnerCooling){
+		if(afterburnerCooling || thrustReverser){		//no afterburner if the reverser is deployed or the ab is cooling
 			//send an afterburner off warning
 			m = OSCMessage ("/system/propulsion/afterburnerOffline");
 			OSCHandler.Instance.SendMessageToAll(m);
@@ -205,6 +228,9 @@ class PropulsionSystem extends BaseSubsystem
 				}
 		} else if (operation == "afterburner"){
 			startAfterburner();
+		} else if (operation == "setThrustReverser"){
+			var b : int = message.Data[0];
+			setThrustReverserState(b == 1 ? true : false);
 		}
 		/*else if (operation == "throttle"){
 			var throttle : float = message.Data[0] ;
