@@ -94,9 +94,9 @@ public class CablePuzzleSystem : MonoBehaviour {
 		//send to engineer
 		isRunning = true;
 		isWaiting = false;
-		OSCHandler.Instance.ChangeClientScreen("PilotStation", "cablepuzzle");
-		OSCHandler.Instance.ChangeClientScreen("TacticalStation", "cablepuzzle");
-		OSCHandler.Instance.ChangeClientScreen("EngineerStation", "cablepuzzle");
+		OSCHandler.Instance.ChangeClientScreen("PilotStation", "cablepuzzle", true);
+		OSCHandler.Instance.ChangeClientScreen("TacticalStation", "cablepuzzle", true);
+		OSCHandler.Instance.ChangeClientScreen("EngineerStation", "cablepuzzle", true);
 
 		//transmit the cable list
 		string outLine = "";
