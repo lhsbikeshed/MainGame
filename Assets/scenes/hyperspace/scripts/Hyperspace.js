@@ -163,6 +163,7 @@ class Hyperspace extends GenericScene {
 			
 			OSCHandler.Instance.RevertClientScreen("PilotStation", "hyperspace");
 			OSCHandler.Instance.RevertClientScreen("TacticalStation", "hyperspace");
+			OSCHandler.Instance.RevertClientScreen("EngineerStation", "hyperspace");
 			
 			Application.LoadLevel(ps.hyperspaceDestination);
 		}
