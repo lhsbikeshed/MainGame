@@ -162,13 +162,15 @@ class Reactor extends MonoBehaviour{
 	}
 
 	function interruptOverload(){
-		overloading = false;
-		OSCHandler.Instance.RevertClientScreen("PilotStation", "selfdestruct");			
-		OSCHandler.Instance.RevertClientScreen("TacticalStation", "selfdestruct");			
-		OSCHandler.Instance.RevertClientScreen("EngineerStation", "selfdestruct");	
-		OSCHandler.Instance.RevertClientScreen("CommsStation", "selfdestruct");		
-		//AudioSource.PlayClipAtPoint(destructAbort, transform.position);
-		CabinEffects.Instance().QueueVoiceOver(destructAbort, 0);
+		if(overloading){
+			overloading = false;
+			OSCHandler.Instance.RevertClientScreen("PilotStation", "selfdestruct");			
+			OSCHandler.Instance.RevertClientScreen("TacticalStation", "selfdestruct");			
+			OSCHandler.Instance.RevertClientScreen("EngineerStation", "selfdestruct");	
+			OSCHandler.Instance.RevertClientScreen("CommsStation", "selfdestruct");		
+			//AudioSource.PlayClipAtPoint(destructAbort, transform.position);
+			CabinEffects.Instance().QueueVoiceOver(destructAbort, 0);
+		}
 		
 	}
 	

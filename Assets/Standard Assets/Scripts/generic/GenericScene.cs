@@ -21,6 +21,8 @@ public class GenericScene : MonoBehaviour {
 		
 	}
 
+	/* called when the scene is changed */
+	public virtual void LeaveScene(){}
 
 	public virtual void MapSectorChanged(Vector3 oldSector , Vector3 newSector){}
 

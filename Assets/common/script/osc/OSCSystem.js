@@ -185,6 +185,11 @@ function sendShipStats(){
 
 function jumpToScene(id : int){
 	Debug.Log("Forcing ship to scene: " + id);
+	
+	if(currentScene != null){
+		currentScene.LeaveScene();
+	}
+	
 	var theShip = GameObject.Find("TheShip");
 	theShip.rigidbody.freezeRotation = false;
 	theShip.rigidbody.constraints = RigidbodyConstraints.None;

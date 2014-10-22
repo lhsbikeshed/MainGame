@@ -80,9 +80,6 @@ class JumpSystem extends BaseSubsystem
 		
 	}
 	
-	function abort(){
-		soundSource.Stop();
-	}
 	
 	function doJump(){
 		
@@ -175,6 +172,10 @@ class JumpSystem extends BaseSubsystem
 		if (timeSinceJumpStart  > 5){	//jump at 7 seconds
 			
 			resetAfterJump();
+			var sceneScript  = GameObject.Find("SceneScripts");
+			if(sceneScript != null){
+				sceneScript.GetComponent.<GenericScene>().LeaveScene();
+			}
 			
 			Application.LoadLevel(jumpDest);			
 			Debug.Log("JUMP!");
@@ -221,7 +222,7 @@ class JumpSystem extends BaseSubsystem
 
 		
 		var msg : OSCMessage = OSCMessage("/ship/jumpStatus");	
-		if(inGate && canJump){		
+		if(inGate && canJump && jumpRoute >= 0){		
 			msg.Append.<int>(1);		
 		} else {
 			msg.Append.<int>(0);
@@ -292,7 +293,7 @@ class JumpSystem extends BaseSubsystem
 	/* abort the jump, called if we smash into something during jumping
 	*/
 	function jumpAbort(){
-		abort();
+		soundSource.Stop();
 		theShip.GetComponent.<PropulsionSystem>().rotationDisabled  = false;
 		theShip.GetComponent.<ship>().setControlLock(false);
 		jumping = false;
@@ -345,9 +346,11 @@ class JumpSystem extends BaseSubsystem
 			var r : int = message.Data[0];
 			Debug.Log("Set jump route : " + r);
 			jumpRoute = r;
+			updateJumpStatus();
 		} else if (operation == "clearRoute"){
 			Debug.Log("Cleared jump route");
 			jumpRoute = -1;
+			updateJumpStatus();
 		}
 			
 			

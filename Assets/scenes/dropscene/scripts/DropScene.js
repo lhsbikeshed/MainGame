@@ -341,9 +341,7 @@ class DropScene extends GenericScene {
 						s1.Append.<int>(1);
 						OSCHandler.Instance.SendMessageToAll(s1);
 						
-						OSCHandler.Instance.RevertClientScreen("PilotStation", "drop");			
-						OSCHandler.Instance.RevertClientScreen("TacticalStation", "drop");		
-						OSCHandler.Instance.RevertClientScreen("EngineerStation", "drop");			
+						
 					}
 					
 				}
@@ -354,6 +352,12 @@ class DropScene extends GenericScene {
 		}	
 		
 	
+	}
+	
+	function LeaveScene(){
+		OSCHandler.Instance.RevertClientScreen("PilotStation", "drop");			
+		OSCHandler.Instance.RevertClientScreen("TacticalStation", "drop");		
+		OSCHandler.Instance.RevertClientScreen("EngineerStation", "drop");			
 	}
 	
 	function SendOSCMessage(){

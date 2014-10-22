@@ -64,11 +64,7 @@ class Hyperspace extends GenericScene {
 	}
 	
 	function FixedUpdate () {
-		/*if(lastEngineeringUpdate + 5.0 < Time.fixedTime){
-			missedKA ++;
-			lastEngineeringUpdate = Time.fixedTime;
-					
-		}*/
+		
 		if(missedKA >= maxMissedKeepalives && !exiting){
 			startExit(false);
 			
@@ -127,24 +123,13 @@ class Hyperspace extends GenericScene {
 			//send an osc message /warp/failed {time to failure}
 			theShip.GetComponent.<JumpSystem>().setJumpEffectState(true);
 			if(failure){
-				//power off propulsion/warp and send a general UREFUCKED effects message
-				//theShip.GetComponent.<PropulsionSystem>().disableSystem();
-				//theShip.GetComponent.<JumpSystem>().disableSystem();
+				
 				//broadcast that we failed the jump
 				var msg : OSCMessage = OSCMessage("/scene/warp/failjump");		
 				msg.Append.<int>( 10 ); // 10 seconds until exit fail			
 				OSCHandler.Instance.SendMessageToAll(msg);
 				//see if there is a planet in the scene and fire it off
 				AudioSource.PlayClipAtPoint(gravityFailSfx, transform.position);
-				
-				//slowly rotate the ship downward toward the approaching planet
-				
-				//SPIN THE MOTHERFUCKING SHIP YO
-				//theShip.rigidbody.constraints = RigidbodyConstraints.FreezePosition;
-				//theShip.rigidbody.angularDrag = 0.0f;
-				//theShip.rigidbody.AddRelativeTorque(Vector3(0.0f, 0.0f, 120.0f), ForceMode.Impulse); 
-				
-				
 			} else{
 				var msg2 : OSCMessage = OSCMessage("/scene/warp/exitjump");		
 				msg2.Append.<int>( 10 ); // 10 seconds until exit fail
@@ -163,6 +148,7 @@ class Hyperspace extends GenericScene {
 			
 			OSCHandler.Instance.RevertClientScreen("PilotStation", "hyperspace");
 			OSCHandler.Instance.RevertClientScreen("TacticalStation", "hyperspace");
+			OSCHandler.Instance.RevertClientScreen("EngineerStation", "hyperspace");
 			
 			Application.LoadLevel(ps.hyperspaceDestination);
 		}
@@ -189,6 +175,12 @@ class Hyperspace extends GenericScene {
 		msg.Append.<float>(getTimeRemaining());		
 		msg.Append.<int>(ps.forcedHyperspaceFail == true ? 1 : 0);
 		OSCHandler.Instance.SendMessageToAll( msg);	
+	}
+	
+	function LeaveScene(){
+		OSCHandler.Instance.RevertClientScreen("PilotStation", "hyperspace");
+		OSCHandler.Instance.RevertClientScreen("TacticalStation", "hyperspace");
+		OSCHandler.Instance.RevertClientScreen("EngineerStation", "hyperspace");
 	}
 	
 	function configureClientScreens(){

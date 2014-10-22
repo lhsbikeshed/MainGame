@@ -195,6 +195,8 @@ class PropulsionSystem extends BaseSubsystem
 	}
 	
 	function startAfterburner(){
+		if(!systemEnabled ) return;
+		
 		var m : OSCMessage;
 		if(afterburnerCooling || thrustReverser){		//no afterburner if the reverser is deployed or the ab is cooling
 			//send an afterburner off warning
