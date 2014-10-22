@@ -87,79 +87,9 @@ class Reactor extends MonoBehaviour{
 		}
 	}
 	
-	function reactorState(st :int){
 	
-	//these sounds are now played at the actual console
-//		st = st - 1;//for odd reasons the vals off the switch panel are off by one
-//					//st == 0 is the reactor being shut down by panel switches being wrong
-//		if(st <= 4){
-//			speechSource.Stop();
-//			speechSource.clip = startupSounds[0];
-//			//speechSource.Play();
-//			CabinEffects.Instance().QueueVoiceOver(startupSounds[0]);
-//		
-//		} else if (st < 9){
-//			CabinEffects.Instance().QueueVoiceOver(startupSounds[1]);
-//		} else {
-//			CabinEffects.Instance().QueueVoiceOver(startupSounds[3]);
-//		}
-	}
 	
-	/* quickly boot the reactor after a lightning strike*/
-	function quickBoot(){
-		if(systemEnabled == false){
-			if( runningQuiet == true){
-				systemEnabled = true;
-				runningQuiet = false;
-				soundSource.clip = runningSound;
-				soundSource.loop = true;
-				soundSource.Play();
-				
-				var msg : OSCMessage = OSCMessage("/system/reactor/stateUpdate");		
-				msg.Append.<int>( 1 );
-				
-				msg.Append.<String>( generateFlagString() + ";QUICKBOOT;" ); 			
-				OSCHandler.Instance.SendMessageToAll(msg);
-			} else {
-				enableSystem();
-			}
-		}
-	}
 	
-	function goQuiet(){
-		if(systemEnabled == true && runningQuiet == false){
-			soundSource.Stop();
-			soundSource.clip = stopSound;
-			soundSource.loop = false;
-			soundSource.Play();
-			systemEnabled = false;
-			runningQuiet = true;
-			var msg : OSCMessage = OSCMessage("/system/reactor/stateUpdate");		
-			msg.Append.<int>( 0 );								//FIXME change this to a "quiet" state
-			msg.Append.<String>( generateFlagString() + ";GOQUIET;" ); 	
-			OSCHandler.Instance.SendMessageToAll(msg);
-		}
-	}
-	
-	/* kill the reactor and play the reactor spazz sound */
-	function lightningStrike(){
-		if(systemEnabled == true){
-			if(!runningQuiet){		//if we arent running quietly then damage the ship
-				theShip.GetComponent.<ship>().damageShip(Random.Range(5,10), "Destroyed by nebula lightning");
-			} 
-				
-			reactorFailure();
-			
-		}
-	}
-	
-	function generateFlagString() : String {
-		var flags : String = "";
-		if(brokenBoot){
-			flags = flags + ";BROKENBOOT";
-		}
-		return flags;
-	}
 
 	function interruptOverload(){
 		if(overloading){
@@ -217,7 +147,7 @@ class Reactor extends MonoBehaviour{
 			//var msg : OSCMessage = OSCMessage("/reactor/failed");		
 			msg  = OSCMessage("/system/reactor/stateUpdate");		
 			msg.Append.<int>( 0 );		
-			msg.Append.<String>( generateFlagString() );									
+			msg.Append.<String>( " " );									
 			OSCHandler.Instance.SendMessageToAll(msg);
 			setSubsystemState(false);
 			
@@ -270,7 +200,7 @@ class Reactor extends MonoBehaviour{
 		
 			var msg : OSCMessage = OSCMessage("/system/reactor/stateUpdate");		
 			msg.Append.<int>( 1 );			
-			msg.Append.<String>( generateFlagString() ); //
+			msg.Append.<String>( " "); //
 			OSCHandler.Instance.SendMessageToAll(msg);
 		}
 	}
@@ -285,7 +215,7 @@ class Reactor extends MonoBehaviour{
 			systemEnabled = false;
 			var msg : OSCMessage = OSCMessage("/system/reactor/stateUpdate");		
 			msg.Append.<int>( 0 );
-			msg.Append.<String>( generateFlagString() );			
+			msg.Append.<String>( " " );			
 			OSCHandler.Instance.SendMessageToAll(msg);
 			setSubsystemState(false);
 			
@@ -371,9 +301,9 @@ class Reactor extends MonoBehaviour{
 		}
 	}
 	
-	function repairReactor(){
+	function repairReactor(amt: float){
 		if(fuelLeaking){
-			fuelLeakHealth -= 0.01f;
+			fuelLeakHealth -= amt;
 			if(fuelLeakHealth < 0.0f){
 				fuelLeaking = false;
 				OSCHandler.Instance.DisplayBannerAtClient("EngineerStation", "Repair complete", "Fuel leak stabilised", 4000);
@@ -402,10 +332,6 @@ class Reactor extends MonoBehaviour{
 				}
 		} else if(operation == "fail"){
 			reactorFailure();
-			
-		} else if (operation == "switchState"){
-			var v : int = message.Data[0];
-			reactorState(v);
 			
 		} else if (operation == "silliness"){
 			var b : int = message.Data[0];
