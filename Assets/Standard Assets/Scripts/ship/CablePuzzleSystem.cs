@@ -17,7 +17,7 @@ public class CablePuzzleSystem : MonoBehaviour {
 	PlugPair[] waitingList;
 	List<PlugPair[]> combinationlist = new List<PlugPair[]>();
 
-	bool hasBeenCompleted = false;
+	public bool hasBeenCompleted = false;
 
 	/*  sockets - > plugs
 	 *  [8, 6, 3] , [5, 12, 10]
@@ -40,6 +40,7 @@ public class CablePuzzleSystem : MonoBehaviour {
 	public bool test = false;
 	// Use this for initialization
 	void Start () {
+		hasBeenCompleted = false;
 		//generate the combination list
 		int[, ,] comb = new int[, ,] {	
 			{{14,6,3}, 	{5,12,10}},
@@ -114,12 +115,23 @@ public class CablePuzzleSystem : MonoBehaviour {
 
 	public void puzzleStop(){
 		if(!isRunning ){ return; }
-
+		hasBeenCompleted = true;
+		puzzleComplete = true;
 		isRunning = false;
 		isWaiting = false;
 		OSCHandler.Instance.RevertClientScreen("PilotStation",  "cablepuzzle");
 		OSCHandler.Instance.RevertClientScreen("TacticalStation",  "cablepuzzle");
 		OSCHandler.Instance.RevertClientScreen("EngineerStation",  "cablepuzzle");
+	}
+
+	public void forceStart(){
+		if(isRunning){
+			puzzleStop();
+		} else {
+			isWaiting = true;
+			puzzleStart();
+			Debug.Log ("CablePuzzle: Forced start");
+		}
 	}
 
 
@@ -187,6 +199,9 @@ public class CablePuzzleSystem : MonoBehaviour {
 				isWaiting = true;
 			}
 			Debug.Log ("CablePuzzle: waiting for damage");
+		} else if (operation == "triggerNow"){
+			forceStart();
+
 		} else if (operation == "cancelPuzzle"){
 			puzzleStop();
 		} else if (operation == "connect"){

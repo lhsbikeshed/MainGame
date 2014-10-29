@@ -253,7 +253,7 @@ function commsMessage(message : OSCPacket){
 		
 		OSCHandler.Instance.ChangeClientScreen("CommsStation", "videoDisplay");
 		lastCommsScreen = "videoDisplay";
-		commsOnline = true;
+		commsOnline = true;	
 		
 		//now tell all of the clients that a call is coming in. Eventually replace all of the above with this message
 		
@@ -437,7 +437,9 @@ function systemMessage(message : OSCPacket){
 				
 			}
 			break;
-			
+		case "authsystem":
+			CodeAuthSystem.Instance.processOSCMessage(message);
+			break;
 	}
 		
 	

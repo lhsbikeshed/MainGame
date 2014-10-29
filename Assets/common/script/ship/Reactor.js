@@ -170,7 +170,7 @@ class Reactor extends MonoBehaviour{
 			OSCHandler.Instance.RevertClientScreen("CommsStation", "selfdestruct");		
 			//AudioSource.PlayClipAtPoint(destructAbort, transform.position);
 			CabinEffects.Instance().QueueVoiceOver(destructAbort, 0);
-		}
+		}	
 		
 	}
 	
