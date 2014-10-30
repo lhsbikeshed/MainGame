@@ -10,21 +10,23 @@ class Hyperspace extends GenericScene {
 	
 	var destination : int; //destination scene when we exit
 	var maxTimeInScene : float; //how long before we naturally exit the stream
-	var maxMissedKeepalives : int ; //how many failures the engineer can do before we failexit
+	
 	var forceFail : boolean;		//are we forced to fail(eg in first jump scene)
 	var failSfx : AudioClip[] ; 	//list of sound effects for failures
-	var gravityFailSfx : AudioClip;	//sound to play during failed exit
 	
-	var rotatorObject : Transform; //parent to the particles and ship for rotation goodness
+	
+	
+	var planetFallPrefab : Transform;
+	var cometPrefab : Transform;
 	
 	@HideInInspector
 	
-	private var lastEngineeringUpdate : float;
+	
 	
 	private var failTime : float; //time of failures, used to time colour changes in the warp particles
 	private var warpParticles : ParticleSystem ;
 	
-	var missedKA : int;
+	
 	private var sceneEntryTime : float = -10;
 	private var exiting : boolean = false;
 	private var failing : boolean = false;
@@ -35,6 +37,7 @@ class Hyperspace extends GenericScene {
 	private var theShip : GameObject; //the ship
 	private var ps: PersistentScene;	//global crap
 	private var oscSender : OSCSystem;
+	private var jumpSystem : JumpSystem;
 	
 	private var destinationScene :int = -1;
 	
@@ -42,7 +45,7 @@ class Hyperspace extends GenericScene {
 		if(theShip == null){
 			theShip = GameObject.Find("TheShip");
 		}
-		theShip.transform.parent = rotatorObject;
+		
 		
 		theShip.rigidbody.velocity = Vector3(0,0,0);
 		sceneEntryTime = Time.fixedTime;
@@ -50,12 +53,12 @@ class Hyperspace extends GenericScene {
 		theShip.rigidbody.constraints = RigidbodyConstraints.FreezeAll;
 		//reset the camera in case we came from a dynamic skybox scene
 		theShip.GetComponentInChildren.<ShipCamera>().setSkyboxState (false);
+		jumpSystem = theShip.GetComponent.<JumpSystem>();
 		
-		
-		theShip.GetComponent.<JumpSystem>().setJumpEffectState(false);
-		theShip.GetComponent.<JumpSystem>().inGate = false;
+		jumpSystem.setJumpEffectState(false);
+		jumpSystem.inGate = false;
 		theShip.GetComponentInChildren.<Camera>().backgroundColor = Color(0,0,0);
-		lastEngineeringUpdate = Time.fixedTime;
+		
 		ps = GameObject.Find("PersistentScripts").GetComponent.<PersistentScene>();
 		oscSender = GameObject.Find("PersistentScripts").GetComponent.<OSCSystem>();
 		warpParticles = GameObject.Find("warp bits").GetComponent.<ParticleSystem>();
@@ -66,15 +69,23 @@ class Hyperspace extends GenericScene {
 		  
 		  
 		destinationScene = ps.hyperspaceDestination;
+		if(destinationScene == 2){
+		
+				
+			//instantiate the planet fall prefab
+			var t : Transform = Instantiate(planetFallPrefab, Vector3.zero, Quaternion.identity);
+			t.GetComponent.<PlanetFallEvent>().triggerTime = maxTimeInScene - 5.0f;
+		} else if (destinationScene == 7 ){
+			//instantiate the planet fall prefab
+			var t2 : Transform = Instantiate(cometPrefab, Vector3.zero, Quaternion.identity);
+			t2.GetComponent.<CometEvent>().triggerTime = maxTimeInScene - 8.0f;
+		}
 		
 	}
 	
 	function FixedUpdate () {
 		
-		//if(missedKA >= maxMissedKeepalives && !exiting){
-		//	startExit(false);
-			
-		//}
+		
 		if(Time.fixedTime > sceneEntryTime + maxTimeInScene && !exiting){
 			
 			Debug.Log("EXITING " + Time.fixedTime + " "  + (sceneEntryTime + maxTimeInScene));
@@ -83,26 +94,11 @@ class Hyperspace extends GenericScene {
 		}
 		
 		
-		if(exiting && failing){
-			warpParticles.transform.rotation *= Quaternion.Euler(0,0,Random.Range(-3,3));
-		}
-		
+		// fail colours
 		if(failTime + 1 > Time.fixedTime){
 			warpParticles.startColor = Color(255,0,0);
 		} else {
 			warpParticles.startColor = Color(0,89,107);
-		}
-		if(ps.forcedHyperspaceFail && getTimeRemaining() < 5.0f && !fallingTowardPlanet){
-			fallingTowardPlanet = true;
-			var g : GameObject = GameObject.Find("DynamicCamera");
-			if(g != null){
-				g.GetComponent.<DynamicCamera>().hideCabinCamera();
-				g.GetComponent.<DynamicCamera>().canCabinCamBeUsed = false;
-			}
-		}
-		if(fallingTowardPlanet){
-		
-			rotatorObject.rotation = Quaternion.Euler(0.1, 0.0, 0.0) * rotatorObject.rotation;
 		}
 	}
 	
@@ -111,7 +107,7 @@ class Hyperspace extends GenericScene {
 	}
 	
 	function hadAFail(){
-		missedKA++;
+		
 		failTime = Time.fixedTime;
 		AudioSource.PlayClipAtPoint(failSfx[ Random.Range(0,failSfx.length) ], theShip.transform.position);
 		theShip.GetComponent.<ship>().damageShip(Random.Range(3,10), "Broken apart by hyperspace disturbances");
@@ -135,7 +131,8 @@ class Hyperspace extends GenericScene {
 				msg.Append.<int>( 10 ); // 10 seconds until exit fail			
 				OSCHandler.Instance.SendMessageToAll(msg);
 				//see if there is a planet in the scene and fire it off
-				AudioSource.PlayClipAtPoint(gravityFailSfx, transform.position);
+				
+				
 			} else{
 				var msg2 : OSCMessage = OSCMessage("/scene/warp/exitjump");		
 				msg2.Append.<int>( 10 ); // 10 seconds until exit fail
@@ -177,9 +174,10 @@ class Hyperspace extends GenericScene {
 	
 	function SendOSCMessage(){	
 		var msg : OSCMessage = OSCMessage("/scene/warp/updatestats");
-		msg.Append.<float>(maxMissedKeepalives - missedKA);		
+		msg.Append.<float>(0);		
 		msg.Append.<float>(getTimeRemaining());		
 		msg.Append.<int>(ps.forcedHyperspaceFail == true ? 1 : 0);
+		msg.Append.<int>(jumpSystem.jumpDest);
 		OSCHandler.Instance.SendMessageToAll( msg);	
 	}
 	
