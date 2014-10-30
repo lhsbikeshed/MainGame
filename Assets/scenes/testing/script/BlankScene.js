@@ -21,7 +21,7 @@ class BlankScene extends GenericScene {
 	
 		OSCHandler.Instance.ChangeClientScreen("PilotStation", "radar");			//give the pilot a dockign comp
 		OSCHandler.Instance.ChangeClientScreen("TacticalStation", "weapons");		//give the tactical a weapons screen
-		OSCHandler.Instance.ChangeClientScreen("EngineerStation", "power");			//give the engineer power man console
+		OSCHandler.Instance.ChangeClientScreen("EngineerStation", "plottingDisplay");			//give the engineer power man console
 	
 	}
 	function ProcessOSCMessage(message : OSCPacket){

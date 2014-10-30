@@ -4,7 +4,7 @@ class JumpSystem extends BaseSubsystem
 
 	var jumpChargePercent : float;	//0->1 of how charged system is
 	var chargeRate : float;			//to tweak jump charge rates
-	var jumpRoute : int = -1 ;		//-1 = no route set, other values determine the "route" to take on the printed maps. Currently only 0 is used (mars drop)
+	//var jumpRoute : int = -1 ;		//-1 = no route set, other values determine the "route" to take on the printed maps. Currently only 0 is used (mars drop)
 									
 									
 									
@@ -22,7 +22,7 @@ class JumpSystem extends BaseSubsystem
 	var canJump : boolean;		//are we allowed to jump? Used by Jump Node
 	var inGate : boolean;		//are we in a gate
 	var inTunnelGate : boolean; //are we in a tunnel gate?
-	public var jumpDest : int;	//where we jump to
+	public var jumpDest : int;	//where we jump to after the hyperspace scene is finished
 	
 	var jumping : boolean;			//are we currently accelerating for a jump?
 	private var jumpStartTime : float;		//time we started the jump, jump sequence lasts 7 seconds
@@ -177,8 +177,9 @@ class JumpSystem extends BaseSubsystem
 				sceneScript.GetComponent.<GenericScene>().LeaveScene();
 			}
 			
-			Application.LoadLevel(jumpDest);			
+			Application.LoadLevel(1);			
 			Debug.Log("JUMP!");
+			
 			
 		} 
 	}
@@ -198,6 +199,7 @@ class JumpSystem extends BaseSubsystem
 		
 	   	if(didWeWarpIn){
 			resetAfterJump();
+			jumpDest = -1; //players will have to plot again to escape
 			setJumpEffectState(false);
 			didWeWarpIn = false;
 			shipCamera.setFovs(180);
@@ -222,7 +224,7 @@ class JumpSystem extends BaseSubsystem
 
 		
 		var msg : OSCMessage = OSCMessage("/ship/jumpStatus");	
-		if(inGate && canJump && jumpRoute >= 0){		
+		if(inGate && canJump && jumpDest >= 0){		
 			msg.Append.<int>(1);		
 		} else {
 			msg.Append.<int>(0);
@@ -256,7 +258,7 @@ class JumpSystem extends BaseSubsystem
 			jumpFail = true;
 			noJumpReason += "> Retract Weapons Bays\r\n";
 		}
-		if(jumpRoute == -1){
+		if(jumpDest == -1){
 			jumpFail = true;
 			noJumpReason += "> No Route Set\r\n";
 		}
@@ -316,7 +318,7 @@ class JumpSystem extends BaseSubsystem
 		restoreFov = true;
 		GetComponent.<PropulsionSystem>().hyperspaceModifier = false;
 		doJump();
-		jumpRoute = -1; //players will have to plot again to escape
+		
 		
 	}   
 	
@@ -345,11 +347,14 @@ class JumpSystem extends BaseSubsystem
 		} else if (operation == "setRoute"){
 			var r : int = message.Data[0];
 			Debug.Log("Set jump route : " + r);
-			jumpRoute = r;
+			jumpDest = r;
+			var ps : PersistentScene = GameObject.Find("PersistentScripts").GetComponent.<PersistentScene>();
+			ps.hyperspaceDestination = jumpDest;
+			
 			updateJumpStatus();
 		} else if (operation == "clearRoute"){
 			Debug.Log("Cleared jump route");
-			jumpRoute = -1;
+			jumpDest = -1;
 			updateJumpStatus();
 		}
 			

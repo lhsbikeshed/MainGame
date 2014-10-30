@@ -72,7 +72,7 @@ class DropScene extends GenericScene {
 		jumpSystem = theShip.GetComponent.<JumpSystem>();
 		//we store this so that the players cant accidentally override it. if they do then we force it back
 		//on the console. The ship will then emergency jump down the right route
-		jumpRoute = jumpSystem.jumpRoute;
+		jumpRoute = 3;	//always jump to warzone after this scene
 		
 		hulltemperature = new float[6];
 		hullDirections = new Vector3[6];
@@ -267,12 +267,12 @@ class DropScene extends GenericScene {
 		
 		//fix possible jump route overwrites
 		//if the players manage to reset the route then force it to the one we had when starting the scene
-		if(puzzleComplete && jumpSystem.jumpRoute < 0){
-			jumpSystem.jumpDest = 1;
+		if(puzzleComplete && jumpSystem.jumpDest < 0){
+			jumpSystem.jumpDest = 3;	//force to warzone scene
 		
 			jumpSystem.canJump = true;
 			jumpSystem.inGate = true;
-			jumpSystem.jumpRoute = jumpRoute;
+			
 			jumpSystem.updateJumpStatus();
 			
 			var s1 : OSCMessage = OSCMessage("/ship/jumpStatus");
@@ -360,7 +360,7 @@ class DropScene extends GenericScene {
 		
 						theShip.GetComponent.<JumpSystem>().canJump = true;
 						theShip.GetComponent.<JumpSystem>().inGate = true;
-						theShip.GetComponent.<JumpSystem>().jumpRoute = 1;
+						theShip.GetComponent.<JumpSystem>().jumpDest = 3;
 						var s1 : OSCMessage = OSCMessage("/ship/jumpStatus");
 						s1.Append.<int>(1);
 						OSCHandler.Instance.SendMessageToAll(s1);

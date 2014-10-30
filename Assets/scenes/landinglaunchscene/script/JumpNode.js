@@ -1,6 +1,6 @@
 #pragma strict
 
-var destinationScene : int;
+//var destinationScene : int;
 var jumpNodeFrequency : int;
 var forcedFail : boolean; //do we force a failure on this jump?
 
@@ -30,10 +30,10 @@ function OnTriggerEnter (other : Collider) {
 			
 			theShip.GetComponent.<JumpSystem>().updateJumpStatus();
 			
-			theShip.GetComponent.<JumpSystem>().jumpDest = 1;
 			var ps : PersistentScene = GameObject.Find("PersistentScripts").GetComponent.<PersistentScene>();
-			ps.hyperspaceDestination = destinationScene;
+			
 			ps.forcedHyperspaceFail = forcedFail;
+			
 			
 			
 		} 

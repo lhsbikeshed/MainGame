@@ -63,11 +63,11 @@ public class CometScene extends GenericScene implements CodeAuthSystem.AuthCodeL
 			var ps : PersistentScene = GameObject.Find("PersistentScripts").GetComponent.<PersistentScene>();
 			ps.hyperspaceDestination = 3;
 			ps.forcedHyperspaceFail = false;	
-			theShip.GetComponent.<JumpSystem>().jumpDest = 1;
+			
 
 			theShip.GetComponent.<JumpSystem>().canJump = true;
 			theShip.GetComponent.<JumpSystem>().inGate = true;
-			theShip.GetComponent.<JumpSystem>().jumpRoute = 1;
+			theShip.GetComponent.<JumpSystem>().jumpDest = 3;	//set dest to warzone scene
 			var s1 : OSCMessage = OSCMessage("/ship/jumpStatus");
 			s1.Append.<int>(1);
 			OSCHandler.Instance.SendMessageToAll(s1);

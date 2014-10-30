@@ -36,6 +36,8 @@ class Hyperspace extends GenericScene {
 	private var ps: PersistentScene;	//global crap
 	private var oscSender : OSCSystem;
 	
+	private var destinationScene :int = -1;
+	
 	function Start () {
 		if(theShip == null){
 			theShip = GameObject.Find("TheShip");
@@ -61,14 +63,18 @@ class Hyperspace extends GenericScene {
 		
 		 theShip.GetComponent.<PropulsionSystem>().throttleDisabled = true;
 		  
+		  
+		  
+		destinationScene = ps.hyperspaceDestination;
+		
 	}
 	
 	function FixedUpdate () {
 		
-		if(missedKA >= maxMissedKeepalives && !exiting){
-			startExit(false);
+		//if(missedKA >= maxMissedKeepalives && !exiting){
+		//	startExit(false);
 			
-		}
+		//}
 		if(Time.fixedTime > sceneEntryTime + maxTimeInScene && !exiting){
 			
 			Debug.Log("EXITING " + Time.fixedTime + " "  + (sceneEntryTime + maxTimeInScene));
