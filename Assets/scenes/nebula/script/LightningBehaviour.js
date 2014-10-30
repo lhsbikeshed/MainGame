@@ -121,11 +121,11 @@ public class LightningBehaviour extends DynamicFieldObjectBehaviour{
 				OSCHandler.Instance.SendMessageToAll(msg);
 				
 				var reactor : Reactor = theShip.GetComponent.<Reactor>();
-				reactor.lightningStrike();
-				if(!reactor.runningQuiet){
+				//reactor.lightningStrike();
+				//if(!reactor.runningQuiet){
 					//bump the ship
-					theShip.rigidbody.AddExplosionForce(100,theShip.transform.position + Random.onUnitSphere * 5.0f, 100,0, ForceMode.Impulse);
-				}
+				//	theShip.rigidbody.AddExplosionForce(100,theShip.transform.position + Random.onUnitSphere * 5.0f, 100,0, ForceMode.Impulse);
+				//}
 			}
 		} else if (state == STATE_FIRING){
 			chargeAmount -= 0.01f + Random.Range(-0.05, 0.05);

@@ -394,7 +394,7 @@ function FixedUpdate(){
 	if(reactor.systemEnabled){
 		var repairAmount : float = UsefulShit.map(internalPower, 0, 12, 0, 0.01f);
 		changeHullLevel(repairAmount);
-		reactor.repairReactor();
+		reactor.repairReactor(repairAmount);
 		
 	}
 	

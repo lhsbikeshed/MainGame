@@ -54,7 +54,10 @@ class DropScene extends GenericScene {
 	private var lastTurbulence : float;
 	private var nextTurbulence : float;
 	
-	
+	//ship refs
+	private var jumpSystem : JumpSystem;
+	private var jumpRoute : int  = -1;
+	private var puzzleComplete : boolean = false;
 	
 	function Start () {
 		//get references
@@ -66,6 +69,10 @@ class DropScene extends GenericScene {
 		fireBallSound = GameObject.Find("atmosphereparticle").GetComponent.<AudioSource>();
 		dustBallObject = gameObject.Find("dustparticle").GetComponent.<ParticleSystem>();
 		theShip = GameObject.Find("TheShip");
+		jumpSystem = theShip.GetComponent.<JumpSystem>();
+		//we store this so that the players cant accidentally override it. if they do then we force it back
+		//on the console. The ship will then emergency jump down the right route
+		jumpRoute = jumpSystem.jumpRoute;
 		
 		hulltemperature = new float[6];
 		hullDirections = new Vector3[6];
@@ -122,7 +129,7 @@ class DropScene extends GenericScene {
 		
 		//set up turbulence stuff
 		lastTurbulence = Time.fixedTime + 3.0;
-		nextTurbulence = Random.RandomRange(5.0, 15.0);
+		nextTurbulence = Random.Range(5.0, 15.0);
 		
 	}
 	
@@ -257,6 +264,23 @@ class DropScene extends GenericScene {
 			//OH FUCK
 			hitPlanet();
 		}
+		
+		//fix possible jump route overwrites
+		//if the players manage to reset the route then force it to the one we had when starting the scene
+		if(puzzleComplete && jumpSystem.jumpRoute < 0){
+			jumpSystem.jumpDest = 1;
+		
+			jumpSystem.canJump = true;
+			jumpSystem.inGate = true;
+			jumpSystem.jumpRoute = jumpRoute;
+			jumpSystem.updateJumpStatus();
+			
+			var s1 : OSCMessage = OSCMessage("/ship/jumpStatus");
+			s1.Append.<int>(jumpRoute);
+			OSCHandler.Instance.SendMessageToAll(s1);
+			
+		}
+						
 	}
 	function hitPlanet(){
 		//silence all sounds, play a humongous crash and kill the players. Black out screen
@@ -341,6 +365,7 @@ class DropScene extends GenericScene {
 						s1.Append.<int>(1);
 						OSCHandler.Instance.SendMessageToAll(s1);
 						
+						puzzleComplete = true;
 						
 					}
 					
