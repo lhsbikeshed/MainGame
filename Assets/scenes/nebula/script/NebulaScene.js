@@ -276,7 +276,7 @@ class NebulaScene extends GenericScene {
 				cloud.resetTo(pos);
 				cloud.targetStrike = theShip.transform;
 				cloud.strikeAtTarget();
-				theShip.GetComponent.<ship>().damageShip(Random.Range(1,3), "Reactor overloaded by Lightning");
+				theShip.GetComponent.<ShipCore>().damageShip(Random.Range(1,3), "Reactor overloaded by Lightning");
 				AudioSource.PlayClipAtPoint(strikeClip, theShip.transform.position);	//SOUND
 				theShip.rigidbody.AddExplosionForce(100,theShip.transform.position + Random.onUnitSphere * 5.0f, 100,0, ForceMode.Impulse);
 				var msg2 : OSCMessage = OSCMessage("/system/powerManagement/lightningStrike");	

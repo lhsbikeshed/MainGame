@@ -110,7 +110,7 @@ class Hyperspace extends GenericScene {
 		
 		failTime = Time.fixedTime;
 		AudioSource.PlayClipAtPoint(failSfx[ Random.Range(0,failSfx.length) ], theShip.transform.position);
-		theShip.GetComponent.<ship>().damageShip(Random.Range(3,10), "Broken apart by hyperspace disturbances");
+		theShip.GetComponent.<ShipCore>().damageShip(Random.Range(3,10), "Broken apart by hyperspace disturbances");
 	}
 	
 	

@@ -237,7 +237,7 @@ class JumpSystem extends BaseSubsystem
 
 		go();
 		jumpStartTime = Time.fixedTime;
-		theShip.GetComponent.<ship>().setControlLock(true);
+		theShip.GetComponent.<ShipCore>().setControlLock(true);
 		jumping = true;
 		rigidbody.drag = 0.05f;
 		theShip.GetComponent.<PropulsionSystem>().rotationDisabled  = true;
@@ -272,7 +272,7 @@ class JumpSystem extends BaseSubsystem
 			
 			go();
 			jumpStartTime = Time.fixedTime;
-			theShip.GetComponent.<ship>().setControlLock(true);
+			theShip.GetComponent.<ShipCore>().setControlLock(true);
 			jumping = true;
 			rigidbody.drag = 0.05f;
 			theShip.GetComponent.<PropulsionSystem>().rotationDisabled  = true;
@@ -297,7 +297,7 @@ class JumpSystem extends BaseSubsystem
 	function jumpAbort(){
 		soundSource.Stop();
 		theShip.GetComponent.<PropulsionSystem>().rotationDisabled  = false;
-		theShip.GetComponent.<ship>().setControlLock(false);
+		theShip.GetComponent.<ShipCore>().setControlLock(false);
 		jumping = false;
 		rigidbody.drag = 1.0f;
 		restoreFov = true;
@@ -312,7 +312,7 @@ class JumpSystem extends BaseSubsystem
 	*/
 	function resetAfterJump(){
 		rigidbody.drag = 1.0f;
-		theShip.GetComponent.<ship>().setControlLock(false);
+		theShip.GetComponent.<ShipCore>().setControlLock(false);
 		theShip.GetComponent.<PropulsionSystem>().rotationDisabled  = false;
 		jumping = false;
 		restoreFov = true;

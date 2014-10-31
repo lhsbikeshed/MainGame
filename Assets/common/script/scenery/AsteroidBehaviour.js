@@ -19,7 +19,7 @@ public class AsteroidBehaviour extends DynamicFieldObjectBehaviour{
 	function OnCollisionEnter(c : Collision){
 		if (c.gameObject.name == "TheShip"){
 		
-			gameObject.Find("TheShip").GetComponent.<ship>().damageShip(Random.Range(2,12), "Smashed into iceball");
+			gameObject.Find("TheShip").GetComponent.<ShipCore>().damageShip(Random.Range(2,12), "Smashed into iceball");
 			
 		}
 	

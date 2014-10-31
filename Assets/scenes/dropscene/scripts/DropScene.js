@@ -250,7 +250,7 @@ class DropScene extends GenericScene {
 					warningAudio.PlayClipAtPoint(warningLoop, theShip.transform.position);
 				}
 				if(Random.Range(0,100) < 15){
-					theShip.GetComponent.<ship>().damageShip(0, "Hull Smashed By Atmosphere");
+					theShip.GetComponent.<ShipCore>().damageShip(0, "Hull Smashed By Atmosphere");
 			}	}
 			
 		} else {
@@ -292,7 +292,7 @@ class DropScene extends GenericScene {
 			fireBallSound.volume = 0;
 			//var ps : PersistentScene = GameObject.Find("PersistentScripts").GetComponent.<PersistentScene>();
 			//ps.shipDead("Crashed into planet");
-			theShip.GetComponent.<ship>().damageShip(1000, "Smeared across surface of a dust planet");
+			theShip.GetComponent.<ShipCore>().damageShip(1000, "Smeared across surface of a dust planet");
 		}
 	}
 		
@@ -307,7 +307,7 @@ class DropScene extends GenericScene {
 			AudioSource.PlayClipAtPoint(explodeSound, theShip.transform.position);
 			
 			yield WaitForSeconds(16);
-			theShip.GetComponent.<ship>().damageShip(1000, "Burnt by the fires of unplanned re-entry");
+			theShip.GetComponent.<ShipCore>().damageShip(1000, "Burnt by the fires of unplanned re-entry");
 			//yield.WaitForSeconds(2);
 		
 			//var ps : PersistentScene = GameObject.Find("PersistentScripts").GetComponent.<PersistentScene>();

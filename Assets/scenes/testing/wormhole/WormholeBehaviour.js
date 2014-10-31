@@ -155,7 +155,7 @@ class WormholeBehaviour extends TargettableObject{
 				
 				if(c.name == "TheShip"){
 					var dam: float = 10 * (1.0f - Mathf.Clamp((c.transform.position - transform.position).magnitude / 300.0f, 0, 1));
-					c.gameObject.GetComponent.<ship>().damageShip(dam, "Destroyed by spatial distortions");
+					c.gameObject.GetComponent.<ShipCore>().damageShip(dam, "Destroyed by spatial distortions");
 				}
 			}
 		}

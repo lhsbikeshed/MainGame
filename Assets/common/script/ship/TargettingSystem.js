@@ -111,7 +111,7 @@ function fireWeapons(){
 	var msg : OSCMessage;
 
 	if(weaponState == weaponState.WEAPON_DEPLOYED){
-		theShip.GetComponent.<ship>().laserTurret.fireAtTarget(targettedObject);
+		theShip.GetComponent.<ShipCore>().laserTurret.fireAtTarget(targettedObject);
 		msg = OSCMessage("/system/targetting/weaponFireOk");
 
 	} else {

@@ -62,7 +62,7 @@ class MiscSystem extends BaseSubsystem
 		} 
 		if(consuming){
 			oxygenLevel -= consumptionRate;
-			var oxProductionRate = UsefulShit.map(theShip.GetComponent.<ship>().getInternalPower(), 0f, 12f, 0f, 0.01f);
+			var oxProductionRate = UsefulShit.map(theShip.GetComponent.<ShipCore>().getInternalPower(), 0f, 12f, 0f, 0.01f);
 			oxygenLevel += oxProductionRate;
 		}
 		if(leaking){
@@ -98,17 +98,17 @@ class MiscSystem extends BaseSubsystem
 			setExternalLight(state);
 		} else if (operation == "blastShield"){
 			var doorState: boolean = message.Data[0] == 1 ? false : true; 
-			theShip.GetComponent.<ship>().setShutterState(doorState);
+			theShip.GetComponent.<ShipCore>().setShutterState(doorState);
 			Debug.Log("aids");
 		} else if (operation == "dockingClamp"){
 			if(message.Data[0] == 1){  	//enable the clamp
-				theShip.GetComponent.<ship>().releaseDock();
+				theShip.GetComponent.<ShipCore>().releaseDock();
 				if(dockingClamp){
 					
 					dockingClamp.setGearState(false);
 					}
 			} else {				
-				theShip.GetComponent.<ship>().dock();
+				theShip.GetComponent.<ShipCore>().dock();
 			}
 			
 		}

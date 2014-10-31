@@ -21,7 +21,7 @@ var currentScene : GenericScene; //current scene to route /scene messages to
 //references to things we want to monitor
 private var playerShip : GameObject;
 private var propulsionSystem : PropulsionSystem;
-private var shipSystem : ship;
+private var shipSystem : ShipCore;
 private var miscSystem : MiscSystem;
 private var jumpSystem : JumpSystem;
 private var targettingSystem : TargettingSystem;
@@ -63,7 +63,7 @@ function init(){
 	playerShip = GameObject.Find("TheShip");
 	if(playerShip != null){
 		propulsionSystem = playerShip.GetComponent.<PropulsionSystem>();
-		shipSystem = playerShip.GetComponent.<ship>();
+		shipSystem = playerShip.GetComponent.<ShipCore>();
 		miscSystem = playerShip.GetComponent.<MiscSystem>();
 		jumpSystem = playerShip.GetComponent.<JumpSystem>();
 		targettingSystem = playerShip.GetComponent.<TargettingSystem>();
@@ -157,7 +157,7 @@ function sendShipStats(){
 		
 		var oxLevel : float = miscSystem.oxygenLevel;
 		var jl : float = jumpSystem.jumpChargePercent;
-		var hull : float = playerShip.GetComponent.<ship>().hullState;
+		var hull : float = playerShip.GetComponent.<ShipCore>().hullState;
 		msg.Append.<float>(jl);
 		msg.Append.<float>(oxLevel);
 		msg.Append.<float>(hull);
@@ -299,7 +299,7 @@ function gameMessage(message : OSCPacket){
 			break;
 		case "KillPlayers":
 		Debug.Log(message.Data[0]);
-			playerShip.GetComponent.<ship>().damageShip(1000, message.Data[0]);
+			playerShip.GetComponent.<ShipCore>().damageShip(1000, message.Data[0]);
 			break;
 		case "Hello":
 			var m : OSCMessage = OSCMessage("/scene/change");
@@ -395,7 +395,7 @@ function systemMessage(message : OSCPacket){
 			break;
 			
 		case "ship":
-			shipSystem.GetComponent.<ship>().processOSCMessage(message);
+			shipSystem.GetComponent.<ShipCore>().processOSCMessage(message);
 		case "propulsion":								// PROPULSION CONTROL -----------------
 			propulsionSystem.processOSCMessage(message);
 			break;

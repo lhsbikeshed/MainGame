@@ -32,7 +32,7 @@ function StartFlight(){
 	nextWaypoint = waypointList[0];
 	running = true;
 	waypointIndex = 0;
-	theShip.GetComponent.<ship>().setControlLock(true);
+	theShip.GetComponent.<ShipCore>().setControlLock(true);
 	
 }
 
@@ -48,7 +48,7 @@ function SetAutopilotRoute(container : GameObject){
 
 function PauseFlight(){
 	running = false;
-	theShip.GetComponent.<ship>().setControlLock(false);
+	theShip.GetComponent.<ShipCore>().setControlLock(false);
 }
 
 function isRunning() : boolean {

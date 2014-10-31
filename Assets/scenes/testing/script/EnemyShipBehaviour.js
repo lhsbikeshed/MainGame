@@ -196,7 +196,7 @@ class EnemyShipBehaviour extends TargettableObject {
 				
 				if( !miss ){
 					var diffMod : float = difficulty * 5.0f;
-					theShip.GetComponent.<ship>().damageShip(Random.Range(7.0f, 12.0f + diffMod), "Destroyed by hostile fire");
+					theShip.GetComponent.<ShipCore>().damageShip(Random.Range(7.0f, 12.0f + diffMod), "Destroyed by hostile fire");
 					
 				}
 				
@@ -242,7 +242,7 @@ class EnemyShipBehaviour extends TargettableObject {
 				scanDone (false);
 				
 			}
-			if(theShip.GetComponent.<ship>().acceleration.magnitude > 5.0f){	//if any point the ship accelerates too much then detect them
+			if(theShip.GetComponent.<ShipCore>().acceleration.magnitude > 5.0f){	//if any point the ship accelerates too much then detect them
 				scanDone (false);
 				
 			}

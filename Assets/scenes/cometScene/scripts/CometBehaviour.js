@@ -1,4 +1,4 @@
-﻿#pragma strict
+#pragma strict
 
 
 
@@ -22,6 +22,6 @@ function OnTriggerEnter(c : Collider){
 	if(c.name == "SkyboxCamera"){
 		//we whomped the player, blow them up
 		var theShip = GameObject.Find("TheShip");
-		theShip.GetComponent.<ship>().damageShip(1000, "Unplanned collision with Comet Surface");
+		theShip.GetComponent.<ShipCore>().damageShip(1000, "Unplanned collision with Comet Surface");
 	}
 }

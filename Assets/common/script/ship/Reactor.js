@@ -249,7 +249,7 @@ class Reactor extends MonoBehaviour{
 					theShip.GetComponent.<DistanceSpeaker>().SpeakDistance(t, 1, false);
 						
 					if(t == 0){
-						theShip.GetComponent.<ship>().damageShip(1000, "Self destructed");
+						theShip.GetComponent.<ShipCore>().damageShip(1000, "Self destructed");
 					}
 				}
 			}

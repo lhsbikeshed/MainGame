@@ -126,7 +126,7 @@ class IncomingMissile extends TargettableObject {
 	function OnTriggerEnter(c : Collider){
 		if(c.collider.name == "TheShip" ){
 			if(!isDummy){
-				c.gameObject.GetComponent.<ship>().damageShip(Random.Range(8,12), "Exploded by missile");
+				c.gameObject.GetComponent.<ShipCore>().damageShip(Random.Range(8,12), "Exploded by missile");
 			}
 			c.rigidbody.rigidbody.AddExplosionForce(200, transform.position, 100,0,ForceMode.Impulse);
 			explode();

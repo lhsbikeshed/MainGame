@@ -112,7 +112,7 @@ class PropulsionSystem extends BaseSubsystem
 				
 				
 		//lookup the propulsion modifier for the given amount of power in this system
-		var propLookup = UsefulShit.map(theShip.GetComponent.<ship>().getPropulsionPower(), 0, 12, 0f, 1f);		
+		var propLookup = UsefulShit.map(theShip.GetComponent.<ShipCore>().getPropulsionPower(), 0, 12, 0f, 1f);		
 		propulsionModifier = propulsionPowerMapping.Evaluate(propLookup);
 		if(inBay){
 			propulsionModifier *= 0.5f;

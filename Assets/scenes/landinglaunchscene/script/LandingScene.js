@@ -86,7 +86,7 @@ class LandingScene extends GenericScene {
 				autopilot.PauseFlight();
 			}
 		}
-		theShip.GetComponent.<ship>().setControlLock(false);
+		theShip.GetComponent.<ShipCore>().setControlLock(false);
 	}
 	
 	//OSC HANDLER

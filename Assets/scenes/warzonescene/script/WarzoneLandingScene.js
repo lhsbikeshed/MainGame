@@ -28,7 +28,7 @@ class WarzoneLandingScene extends GenericScene {
 	
 	/* refs */
 	private var theShip : Transform;
-	private var shipSystem : ship;	
+	private var shipSystem : ShipCore;	
 	var dynShitField : DynamicShitField;
 	var mapController : MapController;
 	public var fleetShips : GameObject[];
@@ -54,7 +54,7 @@ class WarzoneLandingScene extends GenericScene {
 				theShip.GetComponentInChildren.<ShipCamera>().setSkyboxState (true);
  
 		theShip.rigidbody.drag = 0.7f;
-		shipSystem = theShip.GetComponent.<ship>();
+		shipSystem = theShip.GetComponent.<ShipCore>();
 		sceneStartTime = Time.fixedTime;
 		
 		OSCHandler.Instance.ChangeClientScreen("PilotStation", "restrictedArea", true);			
@@ -147,7 +147,7 @@ class WarzoneLandingScene extends GenericScene {
 		
 		yield WaitForSeconds(3.8f);
 		theShip.rigidbody.AddExplosionForce(100.0f, theShip.transform.position + Random.onUnitSphere * 10.0f, 30.0f, 0.0f);
-		theShip.GetComponent.<ship>().damageShip(1000, "Destroyed by shockwave");
+		theShip.GetComponent.<ShipCore>().damageShip(1000, "Destroyed by shockwave");
 	}
 	
 	function FixedUpdate(){
