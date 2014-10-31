@@ -6,7 +6,6 @@ var targettedObject : Transform;
 var hookArmed : boolean = false;
 var flarePrefab : Transform;
 
-private var grapplingHook : GrapplingHook;
 public static var instance : TargettingSystem;
 
 
@@ -26,7 +25,6 @@ private var weaponStateChangeTimer = 0.0f;
 
 function Start () {
 	theShip = GameObject.Find("TheShip");
-	grapplingHook  = GetComponentInChildren.<GrapplingHook>();
 	instance = this;
 	weaponTransitNoises = gameObject.AddComponent.<AudioSource>();
 	
