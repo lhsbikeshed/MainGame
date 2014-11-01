@@ -64,7 +64,7 @@ private var theCamera : Transform;
 //subsystems
 private var reactor : Reactor;
 private var propulsion : PropulsionSystem;
-private var shieldSystem : ShieldSubsystem;
+
 private var jumpSystem : JumpSystem;
 private var miscSystem : MiscSystem;
 
@@ -101,7 +101,6 @@ function Start () {
 	//get subsystem refs
 	reactor = GetComponent.<Reactor>();
 	propulsion = GetComponent.<PropulsionSystem>();
-	shieldSystem = GetComponent.<ShieldSubsystem>();
 	jumpSystem = GetComponent.<JumpSystem>();
 	shipCamera = gameObject.GetComponentInChildren.<ShipCamera>(); //Find("camera").GetComponent.<ShipCamera>();
 	undercarriage = GetComponentInChildren.<UndercarriageBehaviour>();
