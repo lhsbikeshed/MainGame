@@ -8,8 +8,7 @@ var state : int = 1;
 var howManyInContact : int = -1;	//how many feet are touching the docking bay?
 
 var transitSound : AudioClip;
-var retractedSound : AudioClip;
-var extendedSound : AudioClip;
+
 
 var forPlayer : boolean = true;
 
@@ -49,15 +48,15 @@ function Update () {
 			wheelPosition = Mathf.MoveTowards(wheelPosition, wheelDownPos - 0.01, speed * Time.deltaTime);
 		} else {
 			state = DOWN;
-			if(extendedSound != null){
-				//AudioSource.PlayClipAtPoint(extendedSound, transform.position);
-				CabinEffects.Instance().QueueVoiceOver(extendedSound);
-			}
+			
 			//updateFootColliders(true);
 			if(forPlayer){
 				var msg : OSCMessage = OSCMessage("/ship/undercarriage");
 				msg.Append.<int>(state);
 				OSCHandler.Instance.SendMessageToAll(msg);
+				var tm : OSCMessage = new OSCMessage("/ship/effect/playSound");
+				tm.Append("gearExtended");
+				OSCHandler.Instance.SendMessageToClient("PilotStation", tm);
 			}
 		}
 		
@@ -66,15 +65,16 @@ function Update () {
 			wheelPosition = Mathf.MoveTowards(wheelPosition, wheelUpPos + 0.01, speed * Time.deltaTime);
 		} else {
 			state = UP;
-			if(retractedSound != null){
-				//AudioSource.PlayClipAtPoint(retractedSound, transform.position);
-				CabinEffects.Instance().QueueVoiceOver(retractedSound);
-			}
+			
+			
 			//updateFootColliders(false);
 			if(forPlayer){
 				var msg2 : OSCMessage = OSCMessage("/ship/undercarriage");
 				msg2.Append.<int>(state);
 				OSCHandler.Instance.SendMessageToAll(msg2);
+				var t : OSCMessage = new OSCMessage("/ship/effect/playSound");
+				t.Append("gearRetracted");
+				OSCHandler.Instance.SendMessageToClient("PilotStation", t);
 			}
 		}
 		

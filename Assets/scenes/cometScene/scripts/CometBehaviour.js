@@ -19,7 +19,7 @@ function FixedUpdate(){
 }
 
 function OnTriggerEnter(c : Collider){
-	if(c.name == "SkyboxCamera"){
+	if(c.name == "skyboxCamera"){
 		//we whomped the player, blow them up
 		var theShip = GameObject.Find("TheShip");
 		theShip.GetComponent.<ShipCore>().damageShip(1000, "Unplanned collision with Comet Surface");

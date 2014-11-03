@@ -23,7 +23,7 @@ public class CometScene extends GenericScene implements CodeAuthSystem.AuthCodeL
 	function Start () {
 		skyboxCameraActive = true;
 		theShip = GameObject.Find("TheShip").transform;
-		skyboxCamera = GameObject.Find("SkyboxCamera").transform;
+		skyboxCamera = GameObject.Find("skyboxCamera").transform;
 		cablePuzzleSystem = theShip.GetComponent.<CablePuzzleSystem>();
 		CodeAuthSystem.Instance.addListener(this);
 
@@ -38,6 +38,12 @@ public class CometScene extends GenericScene implements CodeAuthSystem.AuthCodeL
 		} else if(puzzleState == puzzleState.STATE_CODE){
 			doCodeWait();
 		}
+		
+		
+		var lookAt : Quaternion = Quaternion.LookRotation(-Vector3.forward);
+		theShip.transform.rotation = Quaternion.RotateTowards(theShip.rotation, lookAt, Time.deltaTime * 10f);
+		var shipDir : Vector3 = theShip.TransformDirection(Vector3.forward).normalized;
+		var direction : float = Vector3.Dot(shipDir, (theShip.position - mainComet.position).normalized);
 
 	}
 	
@@ -76,14 +82,20 @@ public class CometScene extends GenericScene implements CodeAuthSystem.AuthCodeL
 	}
 	
 	function startScene(){
-		//turn off the propulsion system but allow rotations
-		theShip.GetComponent.<PropulsionSystem>().disableSystem();	
+		//turn off the propulsion system but allow translation
+		theShip.GetComponent.<PropulsionSystem>().disableSystem();
+		theShip.GetComponent.<PropulsionSystem>().translationDisabled = false;	
+		theShip.rigidbody.drag = 0.5f;	
 		//turn off jumpSystem	
 		theShip.GetComponent.<JumpSystem>().disableSystem();
 		//play a failure sound effect of some sort
 		
 		cablePuzzleSystem.forceStart();
 		puzzleState = puzzleState.STATE_CABLE;
+		
+		//now set the pilot screen to use the collision avoidance system
+		OSCHandler.Instance.RevertClientScreen("PilotStation", "cablepuzzle");
+		OSCHandler.Instance.ChangeClientScreen("PilotStation", "radar", false);
 	}
 	
 	function LeaveScene(){

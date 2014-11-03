@@ -21,6 +21,7 @@ class PropulsionSystem extends BaseSubsystem
 
 	var throttleDisabled : boolean = true;
 	var rotationDisabled : boolean = true;
+	var translationDisabled : boolean = true;
 	
 	// are we in the loading bay at the moment, if so then gimp the throttle
 	var inBay : boolean = false;
@@ -79,6 +80,7 @@ class PropulsionSystem extends BaseSubsystem
 		propulsionModifier = 0.0f;
 		throttleDisabled = true;
 		rotationDisabled = true;
+		translationDisabled = true;
 		engineParticles.enableEmission = false;
 	}
 	
@@ -89,6 +91,7 @@ class PropulsionSystem extends BaseSubsystem
 		theShip.rigidbody.drag = 0.5f;
 		throttleDisabled = false;
 		rotationDisabled = false;
+		translationDisabled = false;
 		engineParticles.enableEmission = true;
 		engineParticles.emissionRate = baseEmissionRate * particleRate.Evaluate(scaledThrottle);
 		engineParticles.startSpeed = -baseEmissionRate * particleRate.Evaluate(scaledThrottle);
@@ -161,12 +164,11 @@ class PropulsionSystem extends BaseSubsystem
 			} else {
 				rigidbody.AddForce (transform.TransformDirection(Vector3.forward * thrust * -0.5f));
 			}
-			rigidbody.AddRelativeForce(Vector3(tx,ty,0));
+			
 			rocketSFXSource.volume = scaledThrottle;
-			
-			
-			
-
+		}
+		if(translationDisabled == false){
+			rigidbody.AddRelativeForce(Vector3(tx,ty,0));
 		}
 	    	
 		
