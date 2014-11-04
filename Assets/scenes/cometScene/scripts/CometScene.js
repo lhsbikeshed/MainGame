@@ -95,7 +95,7 @@ public class CometScene extends GenericScene implements CodeAuthSystem.AuthCodeL
 		
 		//now set the pilot screen to use the collision avoidance system
 		OSCHandler.Instance.RevertClientScreen("PilotStation", "cablepuzzle");
-		OSCHandler.Instance.ChangeClientScreen("PilotStation", "radar", false);
+		OSCHandler.Instance.ChangeClientScreen("PilotStation", "collisionradar", false);
 	}
 	
 	function LeaveScene(){

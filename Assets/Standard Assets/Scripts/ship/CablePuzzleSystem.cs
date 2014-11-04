@@ -73,7 +73,7 @@ public class CablePuzzleSystem : MonoBehaviour {
 			/* randomly flicker the damage effect */
 			damageTimer -= Time.fixedDeltaTime;
 			if(damageTimer < 0.0f){
-				damageTimer = Random.Range (1.0f, 3.0f);
+				damageTimer = Random.Range (3.0f, 6.0f);
 				OSCMessage msg = new OSCMessage("/ship/damage");	
 				
 				msg.Append(0f);		
