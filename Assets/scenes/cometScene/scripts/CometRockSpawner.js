@@ -15,14 +15,16 @@ private var lastSpawnTime : float;
 private var nextSpawnTime : float;
 private var theShip : Transform;
 
+private var startPosition : Vector3;
+
 function Start () {
 	theShip = GameObject.Find("TheShip").transform;
-
+	startPosition = transform.position;
 	rockPool = new Transform[poolSize];
 	
 	//fill the pool
 	for(var i = 0; i < poolSize; i++){
-		var t : Transform = Instantiate(rockPrefabs [ Random.Range(0, rockPrefabs.length) ] , Vector3(10000,10000,10000), Quaternion.identity);
+		var t : Transform = Instantiate(rockPrefabs [ Random.Range(0, rockPrefabs.length) ] , Vector3(0,0,-10000), Quaternion.identity);
 		t.gameObject.SetActive(false);
 		
 		rockPool[i] = t;
@@ -33,7 +35,7 @@ function Start () {
 function FixedUpdate () {
 
 	var pos : Vector3 = theShip.position;
-	pos.z = -195;
+	pos.z = startPosition.z;
 	transform.position = pos;
 	if(Time.fixedTime - lastSpawnTime > nextSpawnTime){
 		lastSpawnTime = Time.fixedTime;

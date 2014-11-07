@@ -40,10 +40,10 @@ public class CometScene extends GenericScene implements CodeAuthSystem.AuthCodeL
 		}
 		
 		
-		var lookAt : Quaternion = Quaternion.LookRotation(-Vector3.forward);
-		theShip.transform.rotation = Quaternion.RotateTowards(theShip.rotation, lookAt, Time.deltaTime * 10f);
-		var shipDir : Vector3 = theShip.TransformDirection(Vector3.forward).normalized;
-		var direction : float = Vector3.Dot(shipDir, (theShip.position - mainComet.position).normalized);
+//		var lookAt : Quaternion = Quaternion.LookRotation(-Vector3.forward);
+//		theShip.transform.rotation = Quaternion.RotateTowards(theShip.rotation, lookAt, Time.deltaTime * 10f);
+//		var shipDir : Vector3 = theShip.TransformDirection(Vector3.forward).normalized;
+//		var direction : float = Vector3.Dot(shipDir, (theShip.position - mainComet.position).normalized);
 
 	}
 	
@@ -108,7 +108,15 @@ public class CometScene extends GenericScene implements CodeAuthSystem.AuthCodeL
 
 
 	function ProcessOSCMessage( msg : OSCPacket ){
-	
+		var msgAddress = msg.Address.Split(separator);
+		// [1] = System, 2 = Subsystem name, 3 = operation
+		var system = msgAddress[2];
+		var operation = msgAddress[3];
+		
+		if(operation == "escape"){
+			puzzleComplete();
+			
+		}
 	
 	
 	}

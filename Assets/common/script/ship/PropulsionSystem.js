@@ -53,6 +53,7 @@ class PropulsionSystem extends BaseSubsystem
 
 	var engineSFX : AudioClip;		//engine sound effect
 	
+	public static var instance : PropulsionSystem;
 	
 	
 	function Start(){
@@ -71,6 +72,7 @@ class PropulsionSystem extends BaseSubsystem
 	
 	function Awake(){
 		theShip = GameObject.Find("TheShip");
+		instance = this;
 	}
 	
 	function disableSystem(){
