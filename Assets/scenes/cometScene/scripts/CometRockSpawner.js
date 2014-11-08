@@ -10,12 +10,15 @@ private var rockPool  :Transform[];
 
 
 var spawnRate : float = 1;
+var initialSpeed : float = 20f;
 
 private var lastSpawnTime : float;
 private var nextSpawnTime : float;
 private var theShip : Transform;
 
 private var startPosition : Vector3;
+
+private var spawnRocks: boolean = true;
 
 function Start () {
 	theShip = GameObject.Find("TheShip").transform;
@@ -32,15 +35,31 @@ function Start () {
 
 }
 
+
+
+/* update the rate at which we spawn rocks */
+function setRate(newRate : float){
+	if(newRate <= 0.0f){
+		spawnRocks = false;
+	} else {
+		spawnRocks = true;
+			
+		spawnRate = newRate;
+		nextSpawnTime = 1/spawnRate;
+	}
+}
+
 function FixedUpdate () {
 
 	var pos : Vector3 = theShip.position;
 	pos.z = startPosition.z;
 	transform.position = pos;
-	if(Time.fixedTime - lastSpawnTime > nextSpawnTime){
-		lastSpawnTime = Time.fixedTime;
-		nextSpawnTime = Random.value * 10 * 1/spawnRate;
-		spawnNew();	
+	if(spawnRocks){
+		if(Time.fixedTime - lastSpawnTime > nextSpawnTime){
+			lastSpawnTime = Time.fixedTime;
+			nextSpawnTime =  1/spawnRate;
+			spawnNew();	
+		}
 	}
 
 }
@@ -50,7 +69,7 @@ function spawnNew(){
 	if(t != null){
 		t.position = Vector3(Random.value * spawnArea.size.x, Random.value * spawnArea.size.y, Random.value * spawnArea.size.z) + transform.position - spawnArea.size / 2f;
 		t.gameObject.SetActive(true);
-		t.rigidbody.velocity = Vector3.forward * 15;
+		t.rigidbody.velocity = Vector3.forward * initialSpeed;
 	}
 }
 

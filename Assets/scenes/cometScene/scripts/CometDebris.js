@@ -29,6 +29,7 @@ function OnEnable(){
 	mat.color.a = alph;
 	transform.rotation = Random.rotation;
 	fadeDone = false;
+	GetComponent.<TargettableObject>().highlighted = false;
 }
 
 function OnCollisionEnter(c : Collision){
@@ -38,9 +39,27 @@ function OnCollisionEnter(c : Collision){
 	}
 }
 
+function OnTriggerEnter(c : Collider){
+	if(c.name == "ShipMover"){
+		var trackable : TargettableObject = GetComponent.<TargettableObject>();
+		if(trackable != null){
+			trackable.highlighted = true;
+		}
+	}
+}
+
+function OnTriggerExit(c : Collider){
+	if(c.name == "ShipMover"){
+		var trackable : TargettableObject = GetComponent.<TargettableObject>();
+		if(trackable != null){
+			trackable.highlighted = false;
+		}
+	}
+}
+
 function FixedUpdate () {
 	if(alph < 1.0f) {
-		alph += 0.1f;
+		alph += 0.05f;
 	} else {
 		alph = 1.0f;
 		fadeDone = true;
@@ -53,7 +72,8 @@ function FixedUpdate () {
 	var dir : float = Vector3.Dot((transform.position - theShip.position).normalized, theShip.forward);
 	if(dir < 0f){
 		//its behind..
-		if((transform.position - theShip.position).magnitude > 50f){
+		//if((transform.position - theShip.position).magnitude > 50f){
+		if(transform.position.z > 100f){
 			//mark inactive and move out of harms way
 			transform.position = Vector3(0,0,-10000);
 			transform.rotation = Random.rotation;

@@ -16,10 +16,17 @@ public class CometScene extends GenericScene implements CodeAuthSystem.AuthCodeL
 	public var theShip : Transform;
 	public var skyboxCamera : Transform;
 	
+	public var rockSpawner : CometRockSpawner;
+	
 	var cablePuzzleSystem : CablePuzzleSystem;
 	
 	var puzzleState = PuzzleState.STATE_ENTER;
+
+	var ambientPingNoises : AudioClip[];
+	private var lastPingNoise : float = 0f;
+	private var nextPingNoise : float = 1f;
 	
+			
 	function Start () {
 		skyboxCameraActive = true;
 		theShip = GameObject.Find("TheShip").transform;
@@ -32,11 +39,28 @@ public class CometScene extends GenericScene implements CodeAuthSystem.AuthCodeL
 
 	function FixedUpdate () {
 		distanceToDeath = (skyboxCamera.position - mainComet.position).magnitude;
+		if(distanceToDeath < 900){
+			rockSpawner.setRate(0f);	//turn off rocks close to the comet as they look shit
+		} else {
+			//scale the rate depending on distance
+			var rate : float = UsefulShit.map(distanceToDeath, 2700, 500, 1, 10);
+			rockSpawner.setRate(rate);
+		}
 		
 		if(puzzleState == puzzleState.STATE_CABLE){
 			doCableWait();
 		} else if(puzzleState == puzzleState.STATE_CODE){
 			doCodeWait();
+		}
+		
+		/* do random hull pinging noises */
+		if(Time.fixedTime - lastPingNoise > nextPingNoise){
+			lastPingNoise = Time.fixedTime;
+			nextPingNoise = UsefulShit.map(distanceToDeath, 2700, 0, 3, 1);
+			nextPingNoise += Random.value * 2;
+			var clip : AudioClip = ambientPingNoises[ Random.Range(0, ambientPingNoises.length) ];
+			var tempAs : AudioSource = UsefulShit.PlayClipAt(clip, theShip.position + Random.onUnitSphere * 5f);
+			tempAs.pitch = Random.Range(0.8f, 1.2f);
 		}
 		
 		
