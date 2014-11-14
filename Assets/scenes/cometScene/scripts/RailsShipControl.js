@@ -3,6 +3,8 @@
 var stickPos : Vector3;
 var angleClampMin : Vector3;
 var angleClampMax : Vector3;
+var xVelocityLimit : float = 10;
+var yVelocityLimit : float = 10;
 
 var moveScale : float = 0.7f;
 
@@ -65,5 +67,7 @@ function oldMove(){
     var newPos : Vector3 = Vector3(newRot.y, -newRot.x, 0) * 0.01f;
     newPos = theShip.TransformDirection(newPos);
     newPos.z = 0;
+    newPos.x = Mathf.Clamp(newPos.x, -xVelocityLimit, xVelocityLimit);
+    newPos.y = Mathf.Clamp(newPos.y, -yVelocityLimit, yVelocityLimit);
     transform.position += newPos;
 }

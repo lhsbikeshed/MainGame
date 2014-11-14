@@ -38,7 +38,14 @@ public class CometScene extends GenericScene implements CodeAuthSystem.AuthCodeL
 	}
 
 	function FixedUpdate () {
-		distanceToDeath = (skyboxCamera.position - mainComet.position).magnitude;
+		//work out how far we are from the comet
+		//trace a ray from the skyboxcamera to the main comet, take distance of first collision
+		var direction : Vector3 = -(skyboxCamera.position - mainComet.position).normalized;
+		var hit : RaycastHit;
+		var collision : boolean = Physics.Raycast(skyboxCamera.position, direction, hit, Mathf.Infinity, 1 << 9);
+		if(collision){
+			distanceToDeath = hit.distance;
+		}
 		if(distanceToDeath < 900){
 			rockSpawner.setRate(0f);	//turn off rocks close to the comet as they look shit
 		} else {
@@ -128,6 +135,9 @@ public class CometScene extends GenericScene implements CodeAuthSystem.AuthCodeL
 	
 	}
 
+	function fireABastard(){
+		rockSpawner.spawnInFrontOfPlayer();
+	}
 	
 
 
@@ -140,12 +150,20 @@ public class CometScene extends GenericScene implements CodeAuthSystem.AuthCodeL
 		if(operation == "escape"){
 			puzzleComplete();
 			
+		} else if (operation == "bastard"){
+			fireABastard();
 		}
 	
 	
 	}
 
-	function SendOSCMessage(){}
+	function SendOSCMessage(){
+		//send out a "distance to death" signal
+		var msg : OSCMessage = OSCMessage("/ship/state/altitude");
+		msg.Append(distanceToDeath);
+		OSCHandler.Instance.SendMessageToAll(msg);
+	
+	}
 
 	/* send out osc messages for client screens */
 	function configureClientScreens(){}
