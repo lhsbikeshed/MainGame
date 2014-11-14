@@ -397,6 +397,10 @@ class DropScene extends GenericScene {
 		msg.Append.<float>(diffVector.y);
 		msg.Append.<float>(diffVector.z);
 		OSCHandler.Instance.SendMessageToAll(msg);
+		
+		msg = OSCMessage("/ship/state/altitude");
+		msg.Append.<float>(altitude - minAltitude);
+		OSCHandler.Instance.SendMessageToAll(msg);
 	
 	
 	}

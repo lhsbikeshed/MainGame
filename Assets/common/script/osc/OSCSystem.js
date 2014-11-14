@@ -50,6 +50,10 @@ function Awake(){
 	var msg : OSCMessage = OSCMessage("/scene/change");
 	msg.Append.<int>(Application.loadedLevel);
 	OSCHandler.Instance.SendMessageToAll(msg);
+	//since this is only ever called at the start of the game
+	//send a reset signal to all consoles
+	msg = OSCMessage("/game/reset");
+	OSCHandler.Instance.SendMessageToAll(msg);
 	init();
 }
 

@@ -17,8 +17,11 @@ private var nextSpawnTime : float;
 private var theShip : Transform;
 
 private var startPosition : Vector3;
+private var bastardCooldown : float = 0;
 
 private var spawnRocks: boolean = true;
+
+private var ourPlane : Plane;
 
 function Start () {
 	theShip = GameObject.Find("TheShip").transform;
@@ -32,6 +35,8 @@ function Start () {
 		
 		rockPool[i] = t;
 	}
+	
+	ourPlane = new Plane(transform.forward, transform.position);
 
 }
 
@@ -50,8 +55,10 @@ function setRate(newRate : float){
 }
 
 function FixedUpdate () {
-
-	var pos : Vector3 = theShip.position;
+	bastardCooldown -= Time.fixedDeltaTime;
+	
+	var pos : Vector3 = theShip.position + theShip.rigidbody.velocity;
+	
 	pos.z = startPosition.z;
 	transform.position = pos;
 	if(spawnRocks){
@@ -63,6 +70,21 @@ function FixedUpdate () {
 	}
 
 }
+
+function spawnInFrontOfPlayer(){
+	if(bastardCooldown < 0.0f){
+		var t : Transform = findFreeFromPool();
+		if(t != null){
+			t.position = Vector3(theShip.position.x, theShip.position.y, startPosition.z) + Random.onUnitSphere * 15f;
+			t.gameObject.SetActive(true);
+			t.rigidbody.velocity = Vector3.forward * initialSpeed;
+			bastardCooldown = 1f;
+		}
+		
+	}
+
+}
+
 
 function spawnNew(){
 	var t : Transform = findFreeFromPool();
