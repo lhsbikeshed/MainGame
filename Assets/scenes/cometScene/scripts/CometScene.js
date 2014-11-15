@@ -46,7 +46,7 @@ public class CometScene extends GenericScene implements CodeAuthSystem.AuthCodeL
 		if(collision){
 			distanceToDeath = hit.distance;
 		}
-		if(distanceToDeath < 900){
+		if(distanceToDeath < 300){
 			rockSpawner.setRate(0f);	//turn off rocks close to the comet as they look shit
 		} else {
 			//scale the rate depending on distance

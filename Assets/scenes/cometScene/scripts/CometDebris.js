@@ -30,6 +30,7 @@ function OnEnable(){
 	transform.rotation = Random.rotation;
 	fadeDone = false;
 	GetComponent.<TargettableObject>().highlighted = false;
+	GetComponent.<AudioSource>().pitch = Random.Range(0.8f, 1.3f);
 }
 
 function OnCollisionEnter(c : Collision){

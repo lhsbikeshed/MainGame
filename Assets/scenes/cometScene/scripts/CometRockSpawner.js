@@ -5,6 +5,7 @@ var rockPrefabs : Transform[];
 var poolSize : int = 20;
 
 var spawnArea : Bounds;
+var velAdjust : float = 1;
 
 private var rockPool  :Transform[];
 
@@ -57,7 +58,7 @@ function setRate(newRate : float){
 function FixedUpdate () {
 	bastardCooldown -= Time.fixedDeltaTime;
 	
-	var pos : Vector3 = theShip.position + theShip.rigidbody.velocity;
+	var pos : Vector3 = theShip.position + theShip.rigidbody.velocity * velAdjust;
 	
 	pos.z = startPosition.z;
 	transform.position = pos;
@@ -91,7 +92,9 @@ function spawnNew(){
 	if(t != null){
 		t.position = Vector3(Random.value * spawnArea.size.x, Random.value * spawnArea.size.y, Random.value * spawnArea.size.z) + transform.position - spawnArea.size / 2f;
 		t.gameObject.SetActive(true);
-		t.rigidbody.velocity = Vector3.forward * initialSpeed;
+		var randRot : Quaternion = Quaternion.Euler(Random.Range(-5, 5), Random.Range(-5,5),0);
+		
+		t.rigidbody.velocity = randRot * Vector3.forward * (initialSpeed + Random.Range(-5,15));
 	}
 }
 

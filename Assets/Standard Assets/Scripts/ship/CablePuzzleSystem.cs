@@ -43,11 +43,11 @@ public class CablePuzzleSystem : MonoBehaviour {
 		hasBeenCompleted = false;
 		//generate the combination list
 		int[, ,] comb = new int[, ,] {	
-			{{14,6,3}, 	{5,12,10}},
+			{{14,6,3}, 	{5,12,10}},		//
 			{{2, 3, 11}, {10, 12, 4}},
 			{{6, 11, 14}, {12, 4, 10}},
 			{{3, 6, 14}, {10, 9, 5}},
-			{{13, 4, 14}, {5, 6, 10}}		
+			{{13, 4, 14}, {5, 6, 10}}	//9bc	
 
 		};
 		selectedPatch = Random.Range(0, 5);
