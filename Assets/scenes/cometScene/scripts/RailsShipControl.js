@@ -15,6 +15,9 @@ private var rotZ : float;
 private var theShip : Transform;
 private var initialShipRotation : Vector3;
 
+var stability : float = 1.0f;
+var speed : float = 1.0f;
+
 
 /* lock the ship to this object, halt its movement*/
 function Start () {
@@ -44,6 +47,17 @@ function newMove(){
 	var yVal = Vector3.Project(shipRot, transform.up);
 	
 	transform.position += new Vector3(xVal.x, yVal.y, 0) * moveScale;
+	
+	var predictedFwd : Vector3 = Quaternion.AngleAxis(
+         theShip.rigidbody.angularVelocity.magnitude * Mathf.Rad2Deg * stability / speed,
+         theShip.rigidbody.angularVelocity
+     ) * -theShip.transform.forward;
+ 
+     var torqueVector : Vector3 = Vector3.Cross(predictedFwd, Vector3.forward);
+     theShip.rigidbody.AddTorque(torqueVector * speed * speed);
+     
+	
+	
 	
 }
 

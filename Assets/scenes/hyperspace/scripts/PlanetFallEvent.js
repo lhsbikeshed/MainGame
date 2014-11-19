@@ -14,7 +14,7 @@ function Start () {
 	if(theShip == null){
 		theShip = GameObject.Find("TheShip");
 	}
-	
+	startTime = Time.fixedTime;
 }
 
 function startSequence(){
@@ -23,7 +23,7 @@ function startSequence(){
 	GameObject.Find("warp bits").transform.parent = rotatorObject;
 	
 	
-	startTime = Time.fixedTime;
+	
 	AudioSource.PlayClipAtPoint(gravityFailSfx, transform.position);
 	fallingTowardPlanet = true;
 }

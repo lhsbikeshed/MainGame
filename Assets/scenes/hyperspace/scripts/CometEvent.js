@@ -15,11 +15,12 @@ function Start () {
 		theShip = GameObject.Find("TheShip");
 	}
 	cometPrefab.parent = null;
+	startTime = Time.fixedTime;
 }
 
 function startSequence(){
 	
-	startTime = Time.fixedTime;
+	
 	
 	running = true;
 	
