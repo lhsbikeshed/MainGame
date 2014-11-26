@@ -116,6 +116,7 @@ function Start () {
 	
 	
 	externalSFX = gameObject.AddComponent("AudioSource");
+	externalSFX.playOnAwake = false;
 	
 }
 

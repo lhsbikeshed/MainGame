@@ -47,6 +47,8 @@ function Start () {
 	shipsComputerSource = gameObject.AddComponent(AudioSource);
 	loopingAudioSource = gameObject.AddComponent(AudioSource);
 	loopingAudioSource.clip = redAlertLoop;
+	loopingAudioSource.playOnAwake = false;
+	shipsComputerSource.playOnAwake = false;
 	_instance = this;
 	
 	clipQueue = new List.<AudioEntry>();

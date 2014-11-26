@@ -27,6 +27,7 @@ function Start () {
 	theShip = GameObject.Find("TheShip");
 	instance = this;
 	weaponTransitNoises = gameObject.AddComponent.<AudioSource>();
+	weaponTransitNoises.playOnAwake = false;
 	
 }
 
