@@ -137,6 +137,7 @@ function setShutterState(state : boolean){
 }
 
 function OnCollisionEnter(c : Collision){
+
 	var onFoot : boolean = false;
 	for(var cp : ContactPoint in c.contacts){
 		var relativePosition = transform.InverseTransformPoint(cp.point);
