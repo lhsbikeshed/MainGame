@@ -10,11 +10,15 @@ var testVector : Vector3;
 var helpForceAmount : float = 5;
 
 var crossBeamPrefab : Transform;
+var moverPrefab : Transform;
+
 
 public class TunnelController extends MonoBehaviour {
 
 	function Start () {
 		theShip = GameObject.Find("TheShip").transform;
+		
+		
 		
 		//spawn some cross beams
 		var amount : int = Random.Range(14, 18);
@@ -43,10 +47,24 @@ public class TunnelController extends MonoBehaviour {
 		}
 		
 	}
+	
+	function positionShipAtStart(){
+		theShip.position = transform.TransformPoint(wayPoints[0]);
+		var mt = Instantiate(moverPrefab, Vector3.zero, Quaternion.identity);
+		
+		mt.parent = theShip;
+		mt.localPosition = Vector3.zero;
+		mt.localRotation = Quaternion.Euler(0,0,0);
+		moverPrefab = mt;
+		theShip.rigidbody.constraints = RigidbodyConstraints.None;
+		moverPrefab.GetComponent.<Light>().intensity = 0.0f;
+	}
 
 	function FixedUpdate () {
 		doPositionHelp();	//slowly recentre the ship in the tunnel as a help toward more challenged pilots
-
+		var intens = moverPrefab.GetComponent.<Light>().intensity;
+		intens = Mathf.Lerp(intens, 1.51, Time.fixedDeltaTime);
+		moverPrefab.GetComponent.<Light>().intensity = intens;
 	}
 
 

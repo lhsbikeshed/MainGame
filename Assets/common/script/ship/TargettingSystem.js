@@ -207,7 +207,13 @@ function sendOSCUpdates(){
 			var t:Transform = objectList[i].transform;
 			var pos : Vector3 = t.position - theShip.transform.position;
 			var missScript : TargettableObject = t.GetComponent.<TargettableObject>();
-			if(missScript.visibleAtClient == true && missScript.exploding == false){
+			var uniObj = t.GetComponent.<UniverseObject>();
+			var dontSend = false;
+			if(uniObj != null && uniObj.inDetailSpace == false){
+				dontSend = true;
+			}
+			
+			if(missScript.visibleAtClient == true && missScript.exploding == false && dontSend == false){
 				var statString : String = "";
 				for(var statId = 0; statId < missScript.statNames.length; statId++){
 					statString += missScript.statNames[statId] + ":" + missScript.statValues[statId] + ",";

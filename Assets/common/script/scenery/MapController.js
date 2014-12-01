@@ -14,11 +14,16 @@ private var ps : PersistentScene;
 
 public static var _instance : MapController;
 
+public var universeScale : float = 0.02f;	//scale factor between large space and detail space
+public var iUniverseScale : float;			//scale factor between detail -> large space
+
 private var cellChangeListeners : List.<CellChangeListener>;
 
 
 
 function Awake () {
+	iUniverseScale = 1f / universeScale;
+
 	mapObjects = new List.<GameObject>();
 	ps = GameObject.Find("PersistentScripts").GetComponent.<PersistentScene>();
 	sectorPos = new int[3];

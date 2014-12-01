@@ -1,7 +1,7 @@
 #pragma strict
 
 private var ship : Transform;
-
+public static var instance : ShipCore;
 
 var docked : boolean;
 var clampSFX : AudioClip;		//clamp releatheCse effect
@@ -90,7 +90,7 @@ private var lastNetworkTime : float = 0.0f;
  
  */
 function Start () {
-
+	instance = this;
 	ship = GameObject.Find("TheShip").transform;
 	laserTurret = GetComponentInChildren(ShipsLaser);
 	theCamera = ship.Find("camera");

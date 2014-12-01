@@ -26,13 +26,17 @@ public class CometScene extends GenericScene implements CodeAuthSystem.AuthCodeL
 	private var lastPingNoise : float = 0f;
 	private var nextPingNoise : float = 1f;
 	
+	private var inTunnel = false;
+	
+	
+	
 			
 	function Start () {
 		skyboxCameraActive = true;
 		theShip = GameObject.Find("TheShip").transform;
 		skyboxCamera = GameObject.Find("skyboxCamera").transform;
 		cablePuzzleSystem = theShip.GetComponent.<CablePuzzleSystem>();
-		CodeAuthSystem.Instance.addListener(this);
+		//CodeAuthSystem.Instance.addListener(this);
 
 		startScene();
 	}
@@ -40,25 +44,14 @@ public class CometScene extends GenericScene implements CodeAuthSystem.AuthCodeL
 	function FixedUpdate () {
 		//work out how far we are from the comet
 		//trace a ray from the skyboxcamera to the main comet, take distance of first collision
-		var direction : Vector3 = -(skyboxCamera.position - mainComet.position).normalized;
-		var hit : RaycastHit;
-		var collision : boolean = Physics.Raycast(skyboxCamera.position, direction, hit, Mathf.Infinity, 1 << 9);
-		if(collision){
-			distanceToDeath = hit.distance;
-		}
-		if(distanceToDeath < 300){
-			rockSpawner.setRate(0f);	//turn off rocks close to the comet as they look shit
-		} else {
-			//scale the rate depending on distance
-			var rate : float = UsefulShit.map(distanceToDeath, 2700, 500, 1, 10);
-			rockSpawner.setRate(rate);
+		
+		if(!inTunnel){
+			calculateDistance();
 		}
 		
 		if(puzzleState == puzzleState.STATE_CABLE){
 			doCableWait();
-		} else if(puzzleState == puzzleState.STATE_CODE){
-			doCodeWait();
-		}
+		} 
 		
 		/* do random hull pinging noises */
 		if(Time.fixedTime - lastPingNoise > nextPingNoise){
@@ -78,9 +71,46 @@ public class CometScene extends GenericScene implements CodeAuthSystem.AuthCodeL
 
 	}
 	
-	/* wait for the auth code to complete*/
-	function doCodeWait(){
+	function calculateDistance(){
+		var startPos : Vector3;
+		var inDetailSpace = mainComet.GetComponent.<UniverseObject>().inDetailSpace;
+		if(inDetailSpace){
+			startPos = theShip.position;
+		} else {
+			startPos = skyboxCamera.position;
+		}
+		
+		var hit : RaycastHit;
+		var ray : Ray = Ray(startPos, mainComet.position - startPos);
+		var collision : boolean = mainComet.GetComponentInChildren.<Collider>().Raycast(ray, hit, Mathf.Infinity);
+		if(collision){
+			distanceToDeath = hit.distance;
+			if(inDetailSpace == false){
+				distanceToDeath *= MapController._instance.iUniverseScale;
+			}
+		}
+		if(distanceToDeath < 5600f){
+			rockSpawner.setRate(0f);	//turn off rocks close to the comet as they look shit
+		} else {
+			//scale the rate depending on distance
+			var rate : float = UsefulShit.map(distanceToDeath, 11000, 5600, 1, 10);
+			rockSpawner.setRate(rate);
+		}
 	}
+	
+	function enteredTunnel(){
+		rockSpawner.gameObject.SetActive(false);
+		mainComet.gameObject.SetActive(false);
+		inTunnel = true;
+	}
+	
+	function tunnelComplete(){
+		Debug.Log("tunnel complete");
+		puzzleComplete();
+		inTunnel = false;
+	}
+	
+	
 	
 	/* wait for the cable puzzle to complete, once complete send out the auth screen stuff */
 	function doCableWait(){	
@@ -94,7 +124,7 @@ public class CometScene extends GenericScene implements CodeAuthSystem.AuthCodeL
 	/* code ok, prepare the ship for emergency jump
 	*/
 	function puzzleComplete(){
-			CodeAuthSystem.Instance.stopCodeRequest("EngineerStation");
+			//CodeAuthSystem.Instance.stopCodeRequest("EngineerStation");
 			theShip.GetComponent.<JumpSystem>().enableSystem();
 			theShip.GetComponent.<PropulsionSystem>().enableSystem();
 			var ps : PersistentScene = GameObject.Find("PersistentScripts").GetComponent.<PersistentScene>();
@@ -184,7 +214,8 @@ public class CometScene extends GenericScene implements CodeAuthSystem.AuthCodeL
 		STATE_ENTER = 0,
 		STATE_CABLE = 1,
 		STATE_CODE = 2,
-		STATE_COMPLETE = 3
+		STATE_COMPLETE = 3,
+	
 	}
 	
 }

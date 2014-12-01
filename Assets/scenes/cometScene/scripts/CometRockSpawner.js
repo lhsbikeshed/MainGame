@@ -41,6 +41,13 @@ function Start () {
 
 }
 
+function OnDisable(){
+	for(var t : Transform in rockPool){
+		t.gameObject.SetActive (false);
+		
+	}
+}
+
 
 
 /* update the rate at which we spawn rocks */
