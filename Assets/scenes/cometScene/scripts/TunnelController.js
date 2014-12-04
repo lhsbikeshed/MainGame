@@ -12,6 +12,9 @@ var helpForceAmount : float = 5;
 var crossBeamPrefab : Transform;
 var moverPrefab : Transform;
 
+public var aimVector : Vector3;
+
+
 
 public class TunnelController extends MonoBehaviour {
 
@@ -48,6 +51,14 @@ public class TunnelController extends MonoBehaviour {
 		
 	}
 	
+	function OnTriggerEnter(col : Collider){
+		if(col.gameObject.name == "TheShip"){
+			Debug.Log ("exitted tunnel");
+			gameObject.Find("SceneScripts").GetComponent.<CometScene>().tunnelComplete();
+			moverPrefab.parent = null;
+		}
+	}
+	
 	function positionShipAtStart(){
 		theShip.position = transform.TransformPoint(wayPoints[0]);
 		var mt = Instantiate(moverPrefab, Vector3.zero, Quaternion.identity);
@@ -57,7 +68,9 @@ public class TunnelController extends MonoBehaviour {
 		mt.localRotation = Quaternion.Euler(0,0,0);
 		moverPrefab = mt;
 		theShip.rigidbody.constraints = RigidbodyConstraints.None;
+		theShip.rigidbody.velocity = theShip.forward * 100f;
 		moverPrefab.GetComponent.<Light>().intensity = 0.0f;
+		
 	}
 
 	function FixedUpdate () {
@@ -83,6 +96,9 @@ public class TunnelController extends MonoBehaviour {
 			forceVector = (transform.TransformPoint(forceVector) - theShip.position).normalized;
 			testVector = forceVector * 10f;
 			theShip.rigidbody.AddForce(forceVector.normalized * helpForceAmount, ForceMode.Acceleration);
+			
+			//calculate aim vector
+			aimVector = (wayPoints[ind-1] - wayPoints[ind]).normalized;
 			
 		}
 			
@@ -139,8 +155,6 @@ public class TunnelController extends MonoBehaviour {
 			Gizmos.DrawSphere(p1,15);
 			
 			
-		}
-		
-			
+		}			
 	}
 }

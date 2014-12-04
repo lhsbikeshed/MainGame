@@ -11,6 +11,8 @@ var speed : float = 14.0f;
 var velocity : float = 100f;
 var moveScale = 10f;
 
+public var aimVector = Vector3.forward;
+
 
 function Start () {
 	//rigidbody.isKinematic = true;
@@ -25,7 +27,7 @@ function FixedUpdate () {
          theShip.rigidbody.angularVelocity
      ) * -theShip.transform.forward;
  
-     var torqueVector : Vector3 = Vector3.Cross(predictedFwd, Vector3.forward);
+     var torqueVector : Vector3 = Vector3.Cross(predictedFwd, aimVector);
      theShip.rigidbody.AddTorque(torqueVector * speed * speed);
      
      

@@ -27,6 +27,8 @@ public class CometScene extends GenericScene implements CodeAuthSystem.AuthCodeL
 	private var nextPingNoise : float = 1f;
 	
 	private var inTunnel = false;
+	private var tunnelExited = false;
+	private var exitPercentage : float =0.0f;
 	
 	
 	
@@ -39,6 +41,8 @@ public class CometScene extends GenericScene implements CodeAuthSystem.AuthCodeL
 		//CodeAuthSystem.Instance.addListener(this);
 
 		startScene();
+		
+		JumpSystem.Instance.addRequirement(new SystemRequirement("GRAVITYWELL", "Large Gravity well detected"));
 	}
 
 	function FixedUpdate () {
@@ -62,12 +66,11 @@ public class CometScene extends GenericScene implements CodeAuthSystem.AuthCodeL
 			var tempAs : AudioSource = UsefulShit.PlayClipAt(clip, theShip.position + Random.onUnitSphere * 5f);
 			tempAs.pitch = Random.Range(0.8f, 1.2f);
 		}
-		
-		
-//		var lookAt : Quaternion = Quaternion.LookRotation(-Vector3.forward);
-//		theShip.transform.rotation = Quaternion.RotateTowards(theShip.rotation, lookAt, Time.deltaTime * 10f);
-//		var shipDir : Vector3 = theShip.TransformDirection(Vector3.forward).normalized;
-//		var direction : float = Vector3.Dot(shipDir, (theShip.position - mainComet.position).normalized);
+		if(tunnelExited){
+			exitPercentage = Mathf.Clamp(exitPercentage + 0.05f, 0.0f, 1.0f);
+			GameObject.Find("Directional light").GetComponent.<Light>().intensity = 0.5f * exitPercentage;
+			RenderSettings.ambientLight = Color(0.72, 0.72, 0.72) * exitPercentage;
+		}
 
 	}
 	
@@ -102,12 +105,17 @@ public class CometScene extends GenericScene implements CodeAuthSystem.AuthCodeL
 		rockSpawner.gameObject.SetActive(false);
 		mainComet.gameObject.SetActive(false);
 		inTunnel = true;
+		
 	}
 	
 	function tunnelComplete(){
 		Debug.Log("tunnel complete");
 		puzzleComplete();
 		inTunnel = false;
+		mainComet.gameObject.SetActive(true);
+		mainComet.position.z = 25698.77;
+		
+		tunnelExited = true;
 	}
 	
 	
@@ -124,6 +132,9 @@ public class CometScene extends GenericScene implements CodeAuthSystem.AuthCodeL
 	/* code ok, prepare the ship for emergency jump
 	*/
 	function puzzleComplete(){
+	
+			JumpSystem.Instance.removeRequirement("GRAVITYWELL");
+	
 			//CodeAuthSystem.Instance.stopCodeRequest("EngineerStation");
 			theShip.GetComponent.<JumpSystem>().enableSystem();
 			theShip.GetComponent.<PropulsionSystem>().enableSystem();

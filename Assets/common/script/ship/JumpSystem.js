@@ -33,6 +33,8 @@ class JumpSystem extends BaseSubsystem
 	private var theCamera : Transform;
 	
 	var jumpBlocked : boolean;
+	
+	public static var Instance : JumpSystem;
 
 
 		
@@ -55,6 +57,7 @@ class JumpSystem extends BaseSubsystem
 		}
 		
 		jumpBlocked = false;
+		Instance = this;
 	}
 	
 	
@@ -247,7 +250,7 @@ class JumpSystem extends BaseSubsystem
 	 * only works if we are inside a gate ring, the jump system reports its charged
 	 * and we arent currently jumping (prevents idiots from spamming the jump button 
 	*/
-	function startJump(){
+	function startJump(){	//TODO replace these with systemrequirements
 		var noJumpReason : String = "Cannot jump\r\n";
 		var jumpFail : boolean = false;
 		if(theShip.GetComponent.<UndercarriageBehaviour>().state != UndercarriageBehaviour.UP){
@@ -262,12 +265,18 @@ class JumpSystem extends BaseSubsystem
 			jumpFail = true;
 			noJumpReason += "> No Route Set\r\n";
 		}
+		if(canBeUsed() ==  false){
+			jumpFail = true;
+			noJumpReason += getRequirementString();
+		}
 		if(jumpFail){
 			//give the players the bad news
 			OSCHandler.Instance.DisplayBannerAtClient("TacticalStation", "Jump Error", noJumpReason, 3000);
 			OSCHandler.Instance.DisplayBannerAtClient("EngineerStation", "Jump Error", noJumpReason, 3000);
 			OSCHandler.Instance.DisplayBannerAtClient("PilotStation", "Jump Error", noJumpReason, 3000);
 		}
+		
+		
 		if(inGate && canJump && !jumping && jumpFail == false){
 			
 			go();

@@ -23,6 +23,8 @@ private var bastardCooldown : float = 0;
 private var spawnRocks: boolean = true;
 
 private var ourPlane : Plane;
+private var particles : ParticleSystem;
+
 
 function Start () {
 	theShip = GameObject.Find("TheShip").transform;
@@ -38,7 +40,7 @@ function Start () {
 	}
 	
 	ourPlane = new Plane(transform.forward, transform.position);
-
+	particles = GetComponentInChildren.<ParticleSystem>();
 }
 
 function OnDisable(){
@@ -63,6 +65,8 @@ function setRate(newRate : float){
 }
 
 function FixedUpdate () {
+	particles.emissionRate = UsefulShit.map(spawnRate, 0.0f, 10f, 0f, 400f);
+
 	bastardCooldown -= Time.fixedDeltaTime;
 	
 	var pos : Vector3 = theShip.position + theShip.rigidbody.velocity * velAdjust;
