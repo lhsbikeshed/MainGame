@@ -36,7 +36,10 @@ class JumpSystem extends BaseSubsystem
 	
 	public static var Instance : JumpSystem;
 
-
+	function Awake(){
+		super.Awake();
+		Instance = this;
+	}
 		
 	function Start () {
 		super();
@@ -57,7 +60,6 @@ class JumpSystem extends BaseSubsystem
 		}
 		
 		jumpBlocked = false;
-		Instance = this;
 	}
 	
 	
@@ -253,10 +255,7 @@ class JumpSystem extends BaseSubsystem
 	function startJump(){	//TODO replace these with systemrequirements
 		var noJumpReason : String = "Cannot jump\r\n";
 		var jumpFail : boolean = false;
-		if(theShip.GetComponent.<UndercarriageBehaviour>().state != UndercarriageBehaviour.UP){
-			jumpFail = true;
-			noJumpReason += "> Raise Landing Gear\r\n";
-		}
+		
 		if(TargettingSystem.instance.weaponState != WeaponState.WEAPON_STOWED){
 			jumpFail = true;
 			noJumpReason += "> Retract Weapons Bays\r\n";
@@ -265,6 +264,7 @@ class JumpSystem extends BaseSubsystem
 			jumpFail = true;
 			noJumpReason += "> No Route Set\r\n";
 		}
+		// other requirements are handled by the requirements system stuff. landing gear and gravity well so far.
 		if(canBeUsed() ==  false){
 			jumpFail = true;
 			noJumpReason += getRequirementString();

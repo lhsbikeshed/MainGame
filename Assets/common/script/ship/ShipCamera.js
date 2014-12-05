@@ -13,7 +13,7 @@ var canopyCamera : Camera;
 
 var useExternalCamera : boolean  = false;
 
-private var skyboxCamera : Camera;
+var skyboxCamera : Camera;
 
 
 private var originalPos  :Vector3;
@@ -63,15 +63,24 @@ function Start () {
 			canopyCamera.rect.width = 1.0f;
 		}
 	}
+	
+	getSkyboxCamera();
 }
 
-function OnLevelWasLoaded (level : int) {
+function getSkyboxCamera(){
 	var scam : GameObject = GameObject.Find("skyboxCamera");
 	if(scam != null){
+
 		skyboxCamera = scam.GetComponent.<Camera>();
 	} else {
 		skyboxCamera = null;
+		Debug.Log("no skybox camera in scene");
 	}
+}
+
+function OnLevelWasLoaded (level : int) {
+	
+	getSkyboxCamera();
 }  
 
 
@@ -99,10 +108,10 @@ function shakeFor(seconds : float){
 
 function setFovs(fov : float){
 	for(var c : Camera in cameras){
-		c.fov = fov;
+		c.fieldOfView = fov;
 	}
 	if(skyboxCamera != null){
-		skyboxCamera.fov = fov;
+		skyboxCamera.fieldOfView = fov;
 	}
 }
 
@@ -122,6 +131,7 @@ function setSkyboxState(state : boolean){
 			c.clearFlags = CameraClearFlags.Depth;
 		}
 		
+		
 	} else {
 		for(var c : Camera in cameras){
 			c.clearFlags = CameraClearFlags.Depth;
@@ -130,7 +140,7 @@ function setSkyboxState(state : boolean){
 				c.clearFlags = CameraClearFlags.Skybox;
 			}
 		}
-		
+		skyboxCamera = null;
 		//take the last 2 cameras and set them to clear to skybox
 //		cameras[cameras.length -1].clearFlags = CameraClearFlags.Skybox;
 //		cameras[cameras.length -2].clearFlags = CameraClearFlags.Skybox;		

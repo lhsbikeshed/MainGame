@@ -22,12 +22,15 @@ class BaseSubsystem extends MonoBehaviour
 	
 	protected var requirementList : List.<SystemRequirement>;
 	
+	function Awake(){
+		requirementList = new List.<SystemRequirement>();
+	}
 
 	function Start () {
 		theShip = GameObject.Find("TheShip");
 		reactor = theShip.GetComponent.<Reactor>();
 		oscSender = GameObject.Find("PersistentScripts").GetComponent.<OSCSystem>();
-		requirementList = new List.<SystemRequirement>();
+	
 	}
 	
 	/* add a requirement for this system to function */

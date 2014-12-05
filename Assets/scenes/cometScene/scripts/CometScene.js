@@ -31,6 +31,9 @@ public class CometScene extends GenericScene implements CodeAuthSystem.AuthCodeL
 	private var exitPercentage : float =0.0f;
 	
 	
+	var minRangeForRocks : float = 7000f;
+	var maxRangeForRocks : float = 30000f;
+	
 	
 			
 	function Start () {
@@ -41,7 +44,7 @@ public class CometScene extends GenericScene implements CodeAuthSystem.AuthCodeL
 		//CodeAuthSystem.Instance.addListener(this);
 
 		startScene();
-		
+		//lock the jump system with a requirement telling the players they need to clear the gravity well of the asteroid first
 		JumpSystem.Instance.addRequirement(new SystemRequirement("GRAVITYWELL", "Large Gravity well detected"));
 	}
 
@@ -51,6 +54,13 @@ public class CometScene extends GenericScene implements CodeAuthSystem.AuthCodeL
 		
 		if(!inTunnel){
 			calculateDistance();
+			if(distanceToDeath < minRangeForRocks){
+				rockSpawner.setRate(0f);	//turn off rocks close to the comet as they look shit
+			} else {
+				//scale the rate depending on distance
+				var rate : float = UsefulShit.map(distanceToDeath, maxRangeForRocks, minRangeForRocks, 1, 10);
+				rockSpawner.setRate(rate);
+			}
 		}
 		
 		if(puzzleState == puzzleState.STATE_CABLE){
@@ -60,7 +70,7 @@ public class CometScene extends GenericScene implements CodeAuthSystem.AuthCodeL
 		/* do random hull pinging noises */
 		if(Time.fixedTime - lastPingNoise > nextPingNoise){
 			lastPingNoise = Time.fixedTime;
-			nextPingNoise = UsefulShit.map(distanceToDeath, 2700, 0, 3, 1);
+			nextPingNoise = UsefulShit.map(distanceToDeath, minRangeForRocks, 0, 3, 1);
 			nextPingNoise += Random.value * 2;
 			var clip : AudioClip = ambientPingNoises[ Random.Range(0, ambientPingNoises.length) ];
 			var tempAs : AudioSource = UsefulShit.PlayClipAt(clip, theShip.position + Random.onUnitSphere * 5f);
@@ -92,13 +102,7 @@ public class CometScene extends GenericScene implements CodeAuthSystem.AuthCodeL
 				distanceToDeath *= MapController._instance.iUniverseScale;
 			}
 		}
-		if(distanceToDeath < 5600f){
-			rockSpawner.setRate(0f);	//turn off rocks close to the comet as they look shit
-		} else {
-			//scale the rate depending on distance
-			var rate : float = UsefulShit.map(distanceToDeath, 11000, 5600, 1, 10);
-			rockSpawner.setRate(rate);
-		}
+		
 	}
 	
 	function enteredTunnel(){
@@ -132,10 +136,10 @@ public class CometScene extends GenericScene implements CodeAuthSystem.AuthCodeL
 	/* code ok, prepare the ship for emergency jump
 	*/
 	function puzzleComplete(){
-	
+			//clear the gravity well requirement as we're now outside of it.
 			JumpSystem.Instance.removeRequirement("GRAVITYWELL");
 	
-			//CodeAuthSystem.Instance.stopCodeRequest("EngineerStation");
+			//turn on the jump system and set it to IDGAF ABOUT ROUTES mode. This is a fucking hack.
 			theShip.GetComponent.<JumpSystem>().enableSystem();
 			theShip.GetComponent.<PropulsionSystem>().enableSystem();
 			var ps : PersistentScene = GameObject.Find("PersistentScripts").GetComponent.<PersistentScene>();
@@ -146,11 +150,13 @@ public class CometScene extends GenericScene implements CodeAuthSystem.AuthCodeL
 			theShip.GetComponent.<JumpSystem>().canJump = true;
 			theShip.GetComponent.<JumpSystem>().inGate = true;
 			theShip.GetComponent.<JumpSystem>().jumpDest = 3;	//set dest to warzone scene
+			//i dont think this class should be responsible for this
 			var s1 : OSCMessage = OSCMessage("/ship/jumpStatus");
 			s1.Append.<int>(1);
 			OSCHandler.Instance.SendMessageToAll(s1);
 			
-			OSCHandler.Instance.DisplayBannerAtClient("EngineerStation", "SUCCESS", "ENGAGE JUMP DRIVE", 4000);
+			//tell the players the gravity well has been cleared
+			OSCHandler.Instance.DisplayBannerAtClient("EngineerStation", "SUCCESS", "Gravity well cleared\r\nEngage hyperspace system to resume course", 4000);
 	}
 	
 	function startScene(){

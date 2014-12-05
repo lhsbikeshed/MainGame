@@ -40,7 +40,7 @@ public class TunnelObstacleBehaviour extends GeneralTrackableTarget {
 	}
 
 	function OnTriggerEnter(col : Collider){
-		Debug.Log(col.gameObject.name);
+//		Debug.Log(col.gameObject.name);
 		
 		if(col.gameObject.name == "TheShip"){
 			doExplosion(col.rigidbody.transform.position);

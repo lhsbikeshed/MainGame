@@ -32,6 +32,10 @@ function Start () {
 	
 	contactsThisFrame = new boolean[colliders.Length];
 	wheelPosition = wheelDownPos;
+	if(state == DOWN){
+		var sysReq : SystemRequirement = new SystemRequirement("GEAR", "Raise landing gear");
+		JumpSystem.Instance.addRequirement(sysReq);
+	}
 	
 }
 //true for collide, false for not
@@ -57,6 +61,12 @@ function Update () {
 				var tm : OSCMessage = new OSCMessage("/ship/effect/playSound");
 				tm.Append("gearExtended");
 				OSCHandler.Instance.SendMessageToClient("PilotStation", tm);
+				
+				//update the jump system requirements to prevent jumping with undercarriage down
+				var sysReq : SystemRequirement = new SystemRequirement("GEAR", "Raise landing gear");
+				JumpSystem.Instance.addRequirement(sysReq);
+				
+				
 			}
 		}
 		
@@ -75,6 +85,8 @@ function Update () {
 				var t : OSCMessage = new OSCMessage("/ship/effect/playSound");
 				t.Append("gearRetracted");
 				OSCHandler.Instance.SendMessageToClient("PilotStation", t);
+				JumpSystem.Instance.removeRequirement("GEAR");
+				
 			}
 		}
 		
