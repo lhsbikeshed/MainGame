@@ -54,25 +54,32 @@ function OnDisable(){
 
 /* update the rate at which we spawn rocks */
 function setRate(newRate : float){
-	if(newRate <= 0.0f){
+	if(newRate <= 0.1f){
 		spawnRocks = false;
+		particles.enableEmission = false;
+
 	} else {
 		spawnRocks = true;
-			
+		particles.enableEmission = true;
+
 		spawnRate = newRate;
 		nextSpawnTime = 1/spawnRate;
 	}
 }
 
 function FixedUpdate () {
+	//scale the rate of particles depending on rock spawn rate
 	particles.emissionRate = UsefulShit.map(spawnRate, 0.0f, 10f, 0f, 400f);
-
+	
+	//prevent GM from spamming the bastard spawner
 	bastardCooldown -= Time.fixedDeltaTime;
 	
-	var pos : Vector3 = theShip.position + theShip.rigidbody.velocity * velAdjust;
-	
+	//match positions with the ship but move ahead of them so there is always rocks in its path
+	var pos : Vector3 = theShip.position + theShip.rigidbody.velocity * velAdjust;	
 	pos.z = startPosition.z;
 	transform.position = pos;
+	
+	//spawn rocks
 	if(spawnRocks){
 		if(Time.fixedTime - lastSpawnTime > nextSpawnTime){
 			lastSpawnTime = Time.fixedTime;

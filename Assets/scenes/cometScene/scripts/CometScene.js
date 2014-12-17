@@ -77,7 +77,7 @@ public class CometScene extends GenericScene implements CodeAuthSystem.AuthCodeL
 			tempAs.pitch = Random.Range(0.8f, 1.2f);
 		}
 		if(tunnelExited){
-			exitPercentage = Mathf.Clamp(exitPercentage + 0.05f, 0.0f, 1.0f);
+			exitPercentage = Mathf.Clamp(exitPercentage + 0.01f, 0.0f, 1.0f);
 			GameObject.Find("Directional light").GetComponent.<Light>().intensity = 0.5f * exitPercentage;
 			RenderSettings.ambientLight = Color(0.72, 0.72, 0.72) * exitPercentage;
 		}
