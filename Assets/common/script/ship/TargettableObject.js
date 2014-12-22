@@ -30,6 +30,8 @@ class TargettableObject  extends MonoBehaviour{
 	var visibleAtPilot : boolean = true;		//visible for pilot?
 	var highlighted : boolean = false;
 	
+	var doNotInterpolate : boolean = false;	//do not interpolate the position of this object at the radar client end
+	
 	
 	
 	function Start () {
@@ -42,6 +44,12 @@ class TargettableObject  extends MonoBehaviour{
 		
 		statValues[0] = 1;
 		
+	}
+	
+	function setPosition(newPosition : Vector3){
+		transform.position = newPosition;
+		doNotInterpolate = true;	//this will be cleared after the next radar update. It prevents targets jumping around the radar
+									//and looking crappy
 	}
 	
 	/* object statistic handlers, "stats" are things sent to the radar/tactical comp when in range*/	

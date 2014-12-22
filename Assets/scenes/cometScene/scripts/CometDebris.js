@@ -76,7 +76,10 @@ function FixedUpdate () {
 		//if((transform.position - theShip.position).magnitude > 50f){
 		if(transform.position.z > 100f){
 			//mark inactive and move out of harms way
-			transform.position = Vector3(0,0,-10000);
+			
+			//transform.position = Vector3(0,0,-10000);
+			GetComponent.<TargettableObject>().setPosition(Vector3(0,0,-10000));
+
 			transform.rotation = Random.rotation;
 			gameObject.SetActive(false);
 		}

@@ -108,7 +108,9 @@ function spawnInFrontOfPlayer(){
 function spawnNew(){
 	var t : Transform = findFreeFromPool();
 	if(t != null){
-		t.position = Vector3(Random.value * spawnArea.size.x, Random.value * spawnArea.size.y, Random.value * spawnArea.size.z) + transform.position - spawnArea.size / 2f;
+		var newpos : Vector3 = Vector3(Random.value * spawnArea.size.x, Random.value * spawnArea.size.y, Random.value * spawnArea.size.z) + transform.position - spawnArea.size / 2f;
+		t.GetComponent.<TargettableObject>().setPosition(newpos);
+		
 		t.gameObject.SetActive(true);
 		var randRot : Quaternion = Quaternion.Euler(Random.Range(-5, 5), Random.Range(-5,5),0);
 		

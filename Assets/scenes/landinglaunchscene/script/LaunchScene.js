@@ -23,7 +23,7 @@ class LaunchScene extends GenericScene {
 	function Start () {
 		dockChamber = GameObject.Find("DockChamber").GetComponent.<DockChamberScript>();
 		theShip = GameObject.Find("TheShip").transform;
-		theShip.GetComponentInChildren.<ShipCamera>().setSkyboxState (false);
+		//theShip.GetComponentInChildren.<ShipCamera>().setSkyboxState (false);
 	}
 	
 	function Update () {

@@ -24,7 +24,6 @@ private var shakeStart : float;
 private var timedShaking : boolean = false;
 
 function Start () {
-	var ratio : float = Screen.width / Screen.height;
 	
 	//if(ratio > 1){
 	var curWidth : int = Convert.ToInt32(OSCHandler.Instance.configItems["resolutionWidth"]);
@@ -72,6 +71,7 @@ function getSkyboxCamera(){
 	if(scam != null){
 
 		skyboxCamera = scam.GetComponent.<Camera>();
+		Debug.Log("...found skybox camera");
 	} else {
 		skyboxCamera = null;
 		Debug.Log("no skybox camera in scene");
@@ -126,6 +126,9 @@ function FixedUpdate(){
 function setSkyboxState(state : boolean){
 
 	if(state == true){
+		Debug.Log("ships camera set to skybox mode");
+		getSkyboxCamera();
+
 		//take all of the associated cameras and set to Do not clear
 		for(var c : Camera in cameras){
 			c.clearFlags = CameraClearFlags.Depth;
@@ -133,6 +136,7 @@ function setSkyboxState(state : boolean){
 		
 		
 	} else {
+		Debug.Log("Ships camera set to non-skybox mode");
 		for(var c : Camera in cameras){
 			c.clearFlags = CameraClearFlags.Depth;
 			
