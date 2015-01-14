@@ -11,10 +11,11 @@ class LaunchScene extends GenericScene {
 	var camPoint : CameraPoint;
 	
 	private var dockChamber : DockChamberScript;
+	public var clamp : ClampAnimator;
+	public var playerClamp : ClampAnimator;
 	private var theShip : Transform;
 	
 	var autopilotRoutes : GameObject[];
-	var clamp : Transform;
 	
 	var autoPilotPrefab : Transform;
 	
@@ -69,7 +70,10 @@ class LaunchScene extends GenericScene {
 		otherShip.SetReactorState(true);
 		yield WaitForSeconds(1.5);
 		GameObject.Find("npcvan").GetComponent.<UndercarriageBehaviour>().setGearState(false);
-		clamp.GetComponent.<UndercarriageBehaviour>().setGearState(false);
+
+		//drop the ship
+		clamp.trigger();
+
 		yield WaitForSeconds(3.5);
 		otherShip.transform.rigidbody.constraints = RigidbodyConstraints.None;
 		otherShip.SetAutopilotRoute(autopilotRoutes[0]);
@@ -106,6 +110,13 @@ class LaunchScene extends GenericScene {
 	function hyperspaceOtherShip(){
 		var otherShip : NPCShip = GameObject.Find("npcvan").GetComponent.<NPCShip>();
 		otherShip.startJump();
+	}
+	
+	function releaseDockingClamp(){
+		playerClamp.trigger();
+		yield WaitForSeconds(1);
+		theShip.GetComponent.<ShipCore>().releaseClamp();
+		
 	}
 	
 	function ProcessOSCMessage(message : OSCPacket){
@@ -153,6 +164,9 @@ class LaunchScene extends GenericScene {
 				break;
 			case "otherShipHyperspace":
 				hyperspaceOtherShip();
+				break;
+			case "releaseClamp":
+				releaseDockingClamp();
 				break;
 		}
 	

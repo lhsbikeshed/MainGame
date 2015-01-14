@@ -360,9 +360,9 @@ function controlMessage(message : OSCPacket){
 			break;
 		case "releaseClamp":						// DOCKING CONNECTOR -------------------------------------
 			if (message.Data[0]  == 1){
-				shipSystem.releaseDock();
+				shipSystem.releaseClamp();
 			} else {
-				shipSystem.dock();
+				shipSystem.enableClamp();
 			}
 			break;
 		

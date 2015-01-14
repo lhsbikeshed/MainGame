@@ -100,16 +100,8 @@ class MiscSystem extends BaseSubsystem
 			var doorState: boolean = message.Data[0] == 1 ? false : true; 
 			theShip.GetComponent.<ShipCore>().setShutterState(doorState);
 			Debug.Log("aids");
-		} else if (operation == "dockingClamp"){
-			if(message.Data[0] == 1){  	//enable the clamp
-				theShip.GetComponent.<ShipCore>().releaseDock();
-				if(dockingClamp){
-					
-					dockingClamp.setGearState(false);
-					}
-			} else {				
-				theShip.GetComponent.<ShipCore>().dock();
-			}
+		
+		
 			
 		}
 	}

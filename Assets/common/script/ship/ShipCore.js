@@ -298,7 +298,7 @@ function OnLevelWasLoaded (level : int) {
 
 /* Release docking clamp
 */
-function releaseDock(){
+function releaseClamp(){
 	if (docked && dockingChange == false){
 		dockingChange = true;
 		externalSFX.clip = clampSFX;
@@ -321,7 +321,7 @@ function releaseDock(){
 }
 
 /* Permanently stick the ship in place, only works if all four feet are in contact with floor*/
-function dock(){
+function enableClamp(){
 	if (!docked && dockingChange == false ){
 		dockingChange = true;
 		externalSFX.clip = clampSFX;
