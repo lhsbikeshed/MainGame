@@ -29,6 +29,7 @@ public class CometScene extends GenericScene implements CodeAuthSystem.AuthCodeL
 	private var inTunnel = false;
 	private var tunnelExited = false;
 	private var exitPercentage : float =0.0f;
+	private var jumpReady = false;
 	
 	
 	var minRangeForRocks : float = 7000f;
@@ -65,7 +66,9 @@ public class CometScene extends GenericScene implements CodeAuthSystem.AuthCodeL
 		
 		if(puzzleState == puzzleState.STATE_CABLE){
 			doCableWait();
-		} 
+		} else if (puzzleState == puzzleState.STATE_COMPLETE){
+			waitForTunnelExit();
+		}
 		
 		/* do random hull pinging noises */
 		if(Time.fixedTime - lastPingNoise > nextPingNoise){
@@ -105,6 +108,35 @@ public class CometScene extends GenericScene implements CodeAuthSystem.AuthCodeL
 		
 	}
 	
+	function waitForTunnelExit(){
+		if(tunnelExited && !jumpReady){
+			jumpReady = true;
+			//clear the gravity well requirement as we're now outside of it.
+			JumpSystem.Instance.removeRequirement("GRAVITYWELL");
+	
+			//turn on the jump system and set it to IDGAF ABOUT ROUTES mode. This is a fucking hack.
+			theShip.GetComponent.<JumpSystem>().enableSystem();
+			theShip.GetComponent.<PropulsionSystem>().enableSystem();
+			var ps : PersistentScene = GameObject.Find("PersistentScripts").GetComponent.<PersistentScene>();
+			ps.hyperspaceDestination = 3;
+			ps.forcedHyperspaceFail = false;	
+			
+
+			theShip.GetComponent.<JumpSystem>().canJump = true;
+			theShip.GetComponent.<JumpSystem>().inGate = true;
+			theShip.GetComponent.<JumpSystem>().jumpDest = 3;	//set dest to warzone scene
+			//i dont think this class should be responsible for this
+			var s1 : OSCMessage = OSCMessage("/ship/jumpStatus");
+			s1.Append.<int>(1);
+			OSCHandler.Instance.SendMessageToAll(s1);
+			
+			//tell the players the gravity well has been cleared
+			OSCHandler.Instance.DisplayBannerAtClient("EngineerStation", "SUCCESS", "Gravity well cleared\r\nEngage hyperspace system to resume course", 4000);
+		}
+	
+	
+	}
+	
 	function enteredTunnel(){
 		rockSpawner.gameObject.SetActive(false);
 		mainComet.gameObject.SetActive(false);
@@ -134,29 +166,14 @@ public class CometScene extends GenericScene implements CodeAuthSystem.AuthCodeL
 	}
 	
 	/* code ok, prepare the ship for emergency jump
+	* TODO: this is broken
+	* ship should return to normal operation 
+	* and then once outside of the tunnel spool up the jump system
 	*/
 	function puzzleComplete(){
-			//clear the gravity well requirement as we're now outside of it.
-			JumpSystem.Instance.removeRequirement("GRAVITYWELL");
-	
-			//turn on the jump system and set it to IDGAF ABOUT ROUTES mode. This is a fucking hack.
-			theShip.GetComponent.<JumpSystem>().enableSystem();
-			theShip.GetComponent.<PropulsionSystem>().enableSystem();
-			var ps : PersistentScene = GameObject.Find("PersistentScripts").GetComponent.<PersistentScene>();
-			ps.hyperspaceDestination = 3;
-			ps.forcedHyperspaceFail = false;	
-			
-
-			theShip.GetComponent.<JumpSystem>().canJump = true;
-			theShip.GetComponent.<JumpSystem>().inGate = true;
-			theShip.GetComponent.<JumpSystem>().jumpDest = 3;	//set dest to warzone scene
-			//i dont think this class should be responsible for this
-			var s1 : OSCMessage = OSCMessage("/ship/jumpStatus");
-			s1.Append.<int>(1);
-			OSCHandler.Instance.SendMessageToAll(s1);
-			
-			//tell the players the gravity well has been cleared
-			OSCHandler.Instance.DisplayBannerAtClient("EngineerStation", "SUCCESS", "Gravity well cleared\r\nEngage hyperspace system to resume course", 4000);
+		puzzleState = PuzzleState.STATE_COMPLETE;
+		
+		
 	}
 	
 	function startScene(){
@@ -220,7 +237,8 @@ public class CometScene extends GenericScene implements CodeAuthSystem.AuthCodeL
 		if(puzzleState == puzzleState.STATE_CODE){
 			Debug.Log("auth code return state : " + state);
 			if(state == CodeAuthSystem.CodeState.CODE_OK){
-				//yay! restore power and start emergency jump system
+	
+				//unlock the jump system and revert screens to normal					
 				puzzleComplete();
 				
 			}
