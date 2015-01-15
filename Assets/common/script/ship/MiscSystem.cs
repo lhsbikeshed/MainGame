@@ -70,8 +70,9 @@ public class MiscSystem: BaseSubsystem
 		}
 		if(leaking){
 			oxygenLevel -= 0.003f;
+
 		}
-		oxygenLevel = (float)Mathf.Clamp((int)oxygenLevel, 0, 100);
+		oxygenLevel = (float)Mathf.Clamp(oxygenLevel, 0, 100);
 		if(oxygenLevel < 15.0f && oxygenLevel >= 0.01f){
 			float rate = map(oxygenLevel, 15.0f, 0.0f, 1.0f, 3.0f);
 			expOverlay.setHeartRate(rate);
@@ -101,11 +102,7 @@ public class MiscSystem: BaseSubsystem
 			setExternalLight(state);
 		} else if (operation == "blastShield"){
 			bool doorState = (int)message.Data[0] == 1 ? false : true; 
-			theShip.GetComponent<ShipCore>().setShutterState(doorState);
-			UnityEngine.Debug.Log("aids");
-		
-		
-			
+			theShip.GetComponent<ShipCore>().setShutterState(doorState);			
 		}
 	}
 		public float map(float x,float in_min,float in_max,float out_min,float out_max)

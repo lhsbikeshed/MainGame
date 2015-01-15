@@ -308,7 +308,6 @@ public class OSCSystem:MonoBehaviour{
 				GameObject.Find("PersistentScripts").GetComponent<PersistentScene>().gameWin();
 				break;
 			case "KillPlayers":
-			UnityEngine.Debug.Log(message.Data[0]);
 				StartCoroutine(playerShip.GetComponent<ShipCore>().damageShip(1000.0f, "" + message.Data[0]));
 				break;
 			case "Hello":

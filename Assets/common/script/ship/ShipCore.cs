@@ -197,14 +197,7 @@ public class ShipCore:MonoBehaviour{
 		
 		
 	}
-	
-	
-	public void Update()
-	{
-	
-		 
-	}
-	
+
 	
 	/* damage the ship, give an amount and reason. If the ship dies during this damage then the consoles will
 	 * display the reason 
