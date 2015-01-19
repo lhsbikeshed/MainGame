@@ -59,7 +59,7 @@ public class OSCSystem:MonoBehaviour{
 		//since this is only ever called at the start of the game
 		//send a reset signal to all consoles
 		msg = new OSCMessage("/game/reset");
-		OSCHandler.Instance.SendMessageToAll(msg);
+		//OSCHandler.Instance.SendMessageToAll(msg);
 		init();
 	}
 	

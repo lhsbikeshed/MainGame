@@ -50,6 +50,7 @@ public class CablePuzzleSystem : MonoBehaviour {
 			{{13, 4, 14}, {5, 6, 10}}	//9bc	
 
 		};
+		Random.seed = (int)(Time.time* 100);
 		selectedPatch = Random.Range(0, 5);
 
 
@@ -60,6 +61,8 @@ public class CablePuzzleSystem : MonoBehaviour {
 			waitingList[i].socketId = comb[selectedPatch,0,i];
 			waitingList[i].ok = false;
 		}
+
+			
 
 	}
 
@@ -90,6 +93,7 @@ public class CablePuzzleSystem : MonoBehaviour {
 		if(hasBeenCompleted ==  false){
 			AudioSource.PlayClipAtPoint(failClip, transform.position);
 		}
+		OSCHandler.Instance.SendMessageToAll(new OSCMessage("BITCHES"));
 		//power off all screens
 		//pick a random connection chain
 		//send to engineer
@@ -100,14 +104,7 @@ public class CablePuzzleSystem : MonoBehaviour {
 		OSCHandler.Instance.ChangeClientScreen("EngineerStation", "cablepuzzle", true);
 
 		//transmit the cable list
-		string outLine = "";
 		OSCMessage m = new OSCMessage("/system/cablePuzzle/connectionList");
-//		for(int i = 0; i < 3; i++){
-//			outLine = waitingList[i].plugId + ":" + waitingList[i].socketId;
-//			Debug.Log (outLine);
-//
-//			m.Append(outLine);
-//		}
 		m.Append(selectedPatch);
 		OSCHandler.Instance.SendMessageToAll(m);
 
