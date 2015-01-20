@@ -81,6 +81,8 @@ public class LaunchScene: GenericScene {
 
 		yield return new WaitForSeconds(3.5f);
 		otherShip.transform.rigidbody.constraints = RigidbodyConstraints.None;
+		otherShip.rigidbody.AddRelativeForce(Vector3.down * 30.0f, ForceMode.Impulse);
+		otherShip.rigidbody.AddRelativeTorque(Vector3.forward * UnityEngine.Random.Range(-10.0f, 10.0f), ForceMode.Impulse);
 		otherShip.SetAutopilotRoute(autopilotRoutes[0]);
 		otherShip.StartFlight();
 		
