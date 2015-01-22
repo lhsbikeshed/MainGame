@@ -91,7 +91,7 @@ public class DynamicCamera:MonoBehaviour{
 			sbNew.layer = 9;
 			skyboxCamera = sbNew.GetComponent<Camera>();
 			skyboxCamera.cullingMask = 1 << LayerMask.NameToLayer("skybox") ;
-			skyboxCamera.fov = camera.fov;
+			skyboxCamera.fieldOfView = camera.fieldOfView;
 			skyboxCamera.depth = camera.depth;
 			skyboxCamera.farClipPlane = 5500.0f;
 			camera.depth += 1.0f;
@@ -167,7 +167,7 @@ public class DynamicCamera:MonoBehaviour{
 		transform.localPosition = Vector3.zero;
 		transform.localRotation = Quaternion.identity;
 		transform.LookAt(theShip);
-		camera.fov = 60.0f;
+		camera.fieldOfView = 60.0f;
 		lookAtShip = true;
 		canCabinCamBeUsed = true;
 	}

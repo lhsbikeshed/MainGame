@@ -85,7 +85,7 @@ public class TargettableObject: MonoBehaviour{
 	
 	}
 	
-	public virtual void GetShot(float damage){}
+	public virtual void ApplyDamage(DamageTypes type, float damage){}
 	
 	
 	public virtual IEnumerator explode(){

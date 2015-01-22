@@ -63,7 +63,7 @@ public class ShipsLaser:MonoBehaviour{
 					float damage = (1.0f - Mathf.Clamp((int)(targetRange / maxBeamRange), 0,1)) * (  weaponsPower  / 3.0f) * tscript.baseDamage;
 					
 					
-					tscript.GetShot(damage);
+					tscript.ApplyDamage(DamageTypes.DAMAGE_LASER, damage);
 				
 				
 					state = 1;
@@ -85,7 +85,7 @@ public class ShipsLaser:MonoBehaviour{
 			target = targettedObject;
 			UnityEngine.Debug.Log("npc fire");
 			TargettableObject tscript = targettedObject.GetComponent<TargettableObject>();
-			tscript.GetShot(1.0f);
+			tscript.ApplyDamage(DamageTypes.DAMAGE_LASER, 1.0f);
 		}
 	}
 	

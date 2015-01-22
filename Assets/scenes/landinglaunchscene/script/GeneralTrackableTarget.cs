@@ -37,7 +37,7 @@ public class GeneralTrackableTarget: TargettableObject {
 	}
 	
 	//strength is whatever the 
-	public override void GetShot(float damage){
+	public override void ApplyDamage(DamageTypes type, float damage){
 		if(damageable){
 			health -=damage;
 			if(health <= 0){
@@ -54,8 +54,9 @@ public class GeneralTrackableTarget: TargettableObject {
 			//trigger particle effects
 			if(parts == null){
 				parts = GetComponentInChildren<ParticleSystem>();
+				parts.Play();
 			}
-			parts.Play();
+
 			AudioSource.PlayClipAtPoint(sounds[randomSound], transform.position);
 			yield return new WaitForSeconds(6.0f);
 			Destroy(gameObject);

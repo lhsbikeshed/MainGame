@@ -36,7 +36,7 @@ public class CameraPoint:MonoBehaviour{
 	
 	public void FixedUpdate(){
 		if(zoomOnEnter && startZoom){
-			cam.camera.fov = Mathf.Clamp( Mathf.Lerp(startFov, endFov, (Time.fixedTime - fovChangeStart) / fovChangeTime), startFov,endFov);
+			cam.camera.fieldOfView = Mathf.Clamp( Mathf.Lerp(startFov, endFov, (Time.fixedTime - fovChangeStart) / fovChangeTime), startFov,endFov);
 		}
 	}
 	
@@ -63,7 +63,7 @@ public class CameraPoint:MonoBehaviour{
 				if(!followShip){
 					cam.transform.rotation = transform.rotation;
 				}
-				cam.camera.fov = startFov;
+				cam.camera.fieldOfView = startFov;
 				fovChangeStart = Time.fixedTime;
 				startZoom = true;
 			}

@@ -106,22 +106,23 @@ public class DockChamberScript:MonoBehaviour{
 	}
 	
 	public void OnTriggerEnter(Collider other){
-		
-		if(other.attachedRigidbody.transform.name == "TheShip"){
-			inBay = true;
-			theShip.GetComponent<PropulsionSystem>().inBay = true;
-			ignoringCollisions = true;
-			
-			stationCollider.isTrigger = true;
-			UnityEngine.Debug.Log("Enter : Disabled collider");
-			if(theShip.parent == null){	//and were in contact with the docking bay
-				theShip.parent = transform;
-				if(PersistentScene.networkReady == true){
-					networkView.RPC ("Enter", RPCMode.Others);
+			if(other.attachedRigidbody != null){
+			if(other.attachedRigidbody.transform.name == "TheShip"){
+				inBay = true;
+				theShip.GetComponent<PropulsionSystem>().inBay = true;
+				ignoringCollisions = true;
+				
+				stationCollider.isTrigger = true;
+				UnityEngine.Debug.Log("Enter : Disabled collider");
+				if(theShip.parent == null){	//and were in contact with the docking bay
+					theShip.parent = transform;
+					if(PersistentScene.networkReady == true){
+						networkView.RPC ("Enter", RPCMode.Others);
+					}
 				}
+			} else {
+				other.attachedRigidbody.transform.parent = transform;
 			}
-		} else {
-			other.attachedRigidbody.transform.parent = transform;
 		}
 	
 	}

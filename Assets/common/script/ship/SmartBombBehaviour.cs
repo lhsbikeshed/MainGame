@@ -56,7 +56,7 @@ public class SmartBombBehaviour:MonoBehaviour{
 	    	TargettableObject t = hitColliders[i].GetComponent<TargettableObject>();
 	    	
 	    	if(t != null){
-	    		t.GetShot(100.0f);
+	    		t.ApplyDamage(DamageTypes.DAMAGE_EMP, 100.0f);
 	    	}
 	    }
 		

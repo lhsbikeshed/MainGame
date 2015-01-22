@@ -53,56 +53,7 @@ public class DynamicMapObject:MonoBehaviour{
 		cols = gameObject.GetComponentsInChildren<Collider>();
 		originalPosition = transform.position;
 		mapController = GameObject.Find("SceneScripts").GetComponent<MapController>();
-		//sectorCoord[0] = 50;
-		//sectorCoord[1] = 50;
-		//sectorCoord[2] = 50;
-										
-		if(generateSkyBoxVersion || skyboxDummy != null){
-			//mapController = GameObject.Find("SceneScripts").GetComponent.<MapController>();
-			skyboxCamera = GameObject.Find("SkyboxCamera").GetComponent<SkyboxCamera>();
-		
-			float cellSize = (float)mapController.cellSize;
-			float scaleVal = skyboxCamera.translateScale;
-			
-			Vector3 newPos = new Vector3( cellSize * sectorCoord[0], 
-											cellSize * sectorCoord[1],
-											cellSize * sectorCoord[2]) * scaleVal + transform.position * scaleVal;
-				
-			
-			if(generateSkyBoxVersion && !gameObject.name.Contains("(Clone)")){
-				clone = (GameObject)Instantiate(gameObject, newPos, transform.rotation);
-				
-				Destroy(clone.GetComponent<DynamicMapObject>());
-				clone.transform.localScale = transform.localScale * scaleVal;
-				clone.SetActiveRecursively(true);
-				clone.layer = 9;
-				clone.tag = "";
-				//remove all colliders, change layers
-				foreach(Transform t in clone.GetComponentsInChildren<Transform>()){
-					t.gameObject.layer = 9;
-					t.tag = "";
-					Collider col = t.GetComponent<Collider>();
-					if(col != null){
-						Destroy(col);
-					}
-				}
-			
-			}
-			if(skyboxDummy != null){
-				
-				clone = (GameObject)Instantiate(skyboxDummy.gameObject, newPos, transform.rotation);
-				
-				clone.transform.localScale = transform.localScale * scaleVal;
-				clone.SetActiveRecursively(true);
-				clone.layer = 9;
-				clone.tag = "";
-				foreach(Transform t in clone.GetComponentsInChildren<Transform>()){
-					t.gameObject.layer = 9;
-					t.tag = "";
-					
-				}
-			}
-		}
+
 		mapController.addObject(gameObject);
 		
 		
@@ -110,7 +61,7 @@ public class DynamicMapObject:MonoBehaviour{
 	}
 	/* default behaviours for active/deactive*/
 	public void DefaultActivation(){
-		gameObject.SetActiveRecursively( true);
+		gameObject.SetActive( true);
 		TargettableObject rItem = GetComponent<TargettableObject>();
 		if(rItem != null){
 			rItem.enabled = true;
@@ -119,7 +70,7 @@ public class DynamicMapObject:MonoBehaviour{
 			c.enabled = true;
 		}
 		if(clone != null){
-			clone.SetActiveRecursively(false);
+			clone.SetActive(false);
 		}
 	}
 	
@@ -133,11 +84,11 @@ public class DynamicMapObject:MonoBehaviour{
 		if(rItem != null){
 			rItem.enabled = false;
 		}
-		gameObject.SetActiveRecursively(false);
+		gameObject.SetActive(false);
 		
 		
 		if(clone != null){
-			clone.SetActiveRecursively(true);
+			clone.SetActive(true);
 		}
 	}
 	

@@ -1,0 +1,3 @@
+﻿public enum DamageTypes {
+	DAMAGE_LASER, DAMAGE_EMP, DAMAGE_COLLISION, DAMAGE_EXPLOSION
+}

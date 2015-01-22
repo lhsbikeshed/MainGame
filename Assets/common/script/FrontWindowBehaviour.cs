@@ -42,8 +42,8 @@ public class FrontWindowBehaviour:MonoBehaviour{
 	
 		
 		planes = new System.Collections.Generic.List<UnityEngine.Transform>();
-		crackPrefab.gameObject.active = false;
-		airleakPrefab.gameObject.active = false;
+		crackPrefab.gameObject.SetActive(false);
+		airleakPrefab.gameObject.SetActive (false);
 		theShip = GameObject.Find("TheShip").transform;
 		
 	}

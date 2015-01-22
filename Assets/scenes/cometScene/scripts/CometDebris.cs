@@ -2,7 +2,7 @@ using UnityEngine;
 using System;
 
 
-public class CometDebris:MonoBehaviour{
+public class CometDebris : GeneralTrackableTarget{
 	
 	public Transform theShip;
 	public Material fadeMaterial;
@@ -13,7 +13,8 @@ public class CometDebris:MonoBehaviour{
 	Material mat;
 	bool fadeDone = false;
 	
-	public void Start() {
+	public override void Start() {
+		base.Start();
 		theShip = GameObject.Find("TheShip").transform;
 		
 		rigidbody.angularVelocity = UnityEngine.Random.onUnitSphere * 0.1f;

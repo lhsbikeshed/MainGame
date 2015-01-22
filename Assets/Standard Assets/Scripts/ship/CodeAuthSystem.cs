@@ -14,6 +14,8 @@ public class CodeAuthSystem : MonoBehaviour {
 	float duration = 0f;
 	float startTime = 0f;
 
+	string runningOn = "";
+
 
 	void Start () {
 		Instance = this;
@@ -52,6 +54,7 @@ public class CodeAuthSystem : MonoBehaviour {
 			}
 		}
 		isRunning = false;
+		OSCHandler.Instance.RevertClientScreen(runningOn, "authdisplay");
 
 
 	}
@@ -68,6 +71,7 @@ public class CodeAuthSystem : MonoBehaviour {
 	public void startCodeRequest(string stationName, string text, string code, float duration){
 		if(!isRunning){
 			Debug.Log ("Starting code request..");
+			runningOn = stationName;
 			this.duration = duration;
 			startTime = Time.fixedTime;
 			//switch the requested screen to the code one

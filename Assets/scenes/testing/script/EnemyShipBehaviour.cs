@@ -374,7 +374,7 @@ public class EnemyShipBehaviour: TargettableObject {
 	
 	
 	
-	public override void GetShot(float damage){
+	public override void ApplyDamage(DamageTypes type,  float damage){
 		//find out which subsystem is targetted and whomp it
 		//weapons disabled at < 0.0 health
 		//hull < 0 = EXPLODSIONS

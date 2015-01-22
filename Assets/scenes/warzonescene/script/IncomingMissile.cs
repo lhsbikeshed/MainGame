@@ -115,7 +115,7 @@ public class IncomingMissile: TargettableObject {
 	
 	
 	//strength is whatever the 
-	public override void GetShot(float damage){
+	public override void ApplyDamage(DamageTypes type, float damage){
 	
 		
 		

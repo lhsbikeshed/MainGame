@@ -58,7 +58,7 @@ public class TunnelEntranceBehaviour:MonoBehaviour{
 					theShip.parent = null;
 					tunnel.positionShipAtStart();
 					inTunnel = true;
-					GameObject.Find("SceneScripts").GetComponent<CometScene>().enteredTunnel();
+					GameObject.Find("SceneScripts").GetComponent<CometTunnelScene>().enteredTunnel();
 				}
 			}
 		}
