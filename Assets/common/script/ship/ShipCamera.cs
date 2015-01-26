@@ -27,6 +27,8 @@ public class ShipCamera:MonoBehaviour{
 	float shakeTime;
 	float shakeStart;
 	bool timedShaking = false;
+
+	float currentFov = 85f;
 	
 	public void Start() {
 		
@@ -75,7 +77,7 @@ public class ShipCamera:MonoBehaviour{
                 canopyCamera.rect = tmp_cs4;
 			}
 		}
-		
+		currentFov = cameras[0].fieldOfView;
 		getSkyboxCamera();
 	}
 	
@@ -126,6 +128,11 @@ public class ShipCamera:MonoBehaviour{
 		if(skyboxCamera != null){
 			skyboxCamera.fieldOfView = fov;
 		}
+		currentFov = fov;
+	}
+
+	public float getFov(){
+		return currentFov;
 	}
 	
 	public void FixedUpdate(){

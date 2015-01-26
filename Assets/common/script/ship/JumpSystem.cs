@@ -33,7 +33,7 @@ public class JumpSystem: BaseSubsystem
 
 	float cablePuzzleFailTimer = 0.0f;
 	ShipCamera shipCamera;
-	Transform theCamera;
+
 	
 	public bool jumpBlocked;
 	
@@ -51,7 +51,7 @@ public class JumpSystem: BaseSubsystem
 		soundSource.clip = chargeSound;
 		
 				
-		theCamera = GameObject.Find("camera").transform;
+	
 
 		jumpEffect = transform.Find("JumpEffects").GetComponent<ParticleSystem>();
 			shipCamera = gameObject.GetComponentInChildren<ShipCamera>(); //Find("camera").GetComponent.<ShipCamera>();
@@ -194,8 +194,8 @@ public class JumpSystem: BaseSubsystem
 	
 	//restore fov after a jump - not used until i split the guilayer and game into seperate cameras
 	if (restoreFov){
-		shipCamera.setFovs( Mathf.Lerp(theCamera.camera.fieldOfView,85.0f,Time.deltaTime * 5.0f) );
-		if (theCamera.camera.fieldOfView <= 85.0f){
+		shipCamera.setFovs( Mathf.Lerp(shipCamera.getFov(),85.0f,Time.deltaTime * 5.0f) );
+		if (shipCamera.getFov() <= 85.0f){
 			shipCamera.setFovs(85.0f);
 			restoreFov = false;
 		}
