@@ -10,9 +10,9 @@ public class JumpSystem: BaseSubsystem
 	//var jumpRoute : int = -1 ;		//-1 = no route set, other values determine the "route" to take on the printed maps. Currently only 0 is used (mars drop)
 									
 									
+	JumpEffects jumpEffects;					
 									
-									
-	ParticleSystem jumpEffect;
+
 
 	AudioSource soundSource;
 	public AudioClip chargeSound;
@@ -51,12 +51,13 @@ public class JumpSystem: BaseSubsystem
 		soundSource.clip = chargeSound;
 		
 				
-	
+		jumpEffects = GetComponentInChildren<JumpEffects>();
 
-		jumpEffect = transform.Find("JumpEffects").GetComponent<ParticleSystem>();
-			shipCamera = gameObject.GetComponentInChildren<ShipCamera>(); //Find("camera").GetComponent.<ShipCamera>();
 
-		setJumpEffectState(false);
+
+		shipCamera = gameObject.GetComponentInChildren<ShipCamera>(); //Find("camera").GetComponent.<ShipCamera>();
+
+		jumpEffects.setJumpEffectState(false);
 		if(didWeWarpIn){
 			restoreFov = true;
 			shipCamera.setFovs(180.0f);
@@ -172,7 +173,7 @@ public class JumpSystem: BaseSubsystem
 		}
 		if(timeSinceJumpStart > 2){	//turn on effects at 2 seconds
 			
-			setJumpEffectState(true);
+				jumpEffects.setJumpEffectState(true);
 			shipCamera.setFovs(85 + ((Time.fixedTime - jumpStartTime - 2) / 3.0f ) * 30);
 		}
 			
@@ -208,23 +209,13 @@ public class JumpSystem: BaseSubsystem
 	   	if(didWeWarpIn){
 			resetAfterJump();
 			jumpDest = -1; //players will have to plot again to escape
-			setJumpEffectState(false);
+			jumpEffects.setJumpEffectState(false);
 			didWeWarpIn = false;
 			shipCamera.setFovs(180.0f);
 		}
 	}   
 	
-	public void setJumpEffectState(bool state){
-		
-		if(jumpEffect == null){
-			jumpEffect = transform.Find("JumpEffects").GetComponent<ParticleSystem>();
-		}
-		if(state){
-			jumpEffect.enableEmission = true;
-		} else {
-			jumpEffect.enableEmission = false;
-		}
-	}
+
 	
 	/* work out if we can actually jump or not and send that status to the clients
 	*/
@@ -313,7 +304,7 @@ public class JumpSystem: BaseSubsystem
 		jumping = false;
 		rigidbody.drag = 1.0f;
 		restoreFov = true;
-		setJumpEffectState(false);
+		jumpEffects.setJumpEffectState(false);
 		OSCHandler.Instance.RevertClientScreen("PilotStation", "hyperspace");
 		OSCHandler.Instance.RevertClientScreen("TacticalStation", "hyperspace");
 		GetComponent<PropulsionSystem>().hyperspaceModifier = false;

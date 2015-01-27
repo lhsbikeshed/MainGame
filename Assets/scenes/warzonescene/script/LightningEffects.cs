@@ -4,13 +4,16 @@ using System.Collections;
 public class LightningEffects : MonoBehaviour {
 
 	public float flashRate = 1.0f;
+	public float maxFlashDuration = 1.8f;
 	public float size = 10f;
 	public Vector3 direction = Vector3.zero;
+
 	public float directionBias = 1.0f;
+	public float wobbliness = 10f;
 
 	public Transform targetStrike  ;
 
-	private Vector3[] randomPts;
+	private Vector3[] randomPts = new Vector3[10];
 	private LineRenderer lineRenderer;
 	private float lastPosSwitch = 0f; //last time the bolt flickered;
 
@@ -32,26 +35,27 @@ public class LightningEffects : MonoBehaviour {
 		randomPts = new Vector3[10];
 		lineRenderer.SetVertexCount(randomPts.Length);
 		//calculate a target position based on direction
+		
+		float targetAngle = (1f - directionBias) * 180f;
+		Vector3 pos = Quaternion.Euler( Random.Range(-targetAngle, targetAngle), Random.Range(-targetAngle, targetAngle), 0) * transform.TransformDirection(direction.normalized);
 
-		float targetAngle = (1f - directionBias) * 360f;
-		Vector3 pos = Quaternion.Euler( Random.Range(0, targetAngle), 0, Random.Range(0, targetAngle)) * transform.TransformDirection(direction);
 
-
-		Vector3 targetPos = transform.position + pos * size;
+		Vector3 targetPos =  pos * size;
 		for( var i = 0; i < 10; i++){
-			randomPts[i] = Vector3.Slerp(transform.position, targetPos, i / 10.0f);
+			randomPts[i] = Vector3.Slerp(Vector3.zero, targetPos, i / 10.0f);
 			//now move that point outward from the line
-			randomPts[i] += Random.onUnitSphere * (size / 20f);
+			randomPts[i] += Random.onUnitSphere * wobbliness;
 			
 			lineRenderer.SetPosition(i, randomPts[i]);
 		}
 		lineRenderer.enabled = true;
-		
+		lineRenderer.useWorldSpace = false;
 	}
 
 	void OnDrawGizmos(){
 
-		Gizmos.DrawLine(transform.position, transform.position + transform.TransformDirection(direction) * size);
+		Gizmos.DrawLine(transform.position, transform.position + transform.TransformDirection(direction.normalized) * size);
+
 	}
 	
 	
@@ -61,7 +65,7 @@ public class LightningEffects : MonoBehaviour {
 		if(nextFlashTime <= 0.0f){
 			flashing = true;
 
-			flashDuration = Random.Range (0.1f, 1.8f);
+			flashDuration = Random.Range (0.1f, maxFlashDuration);
 			nextFlashTime = flashDuration + Random.Range(0.5f, flashRate);
 			strikeAtRandom();
 		}
@@ -78,12 +82,12 @@ public class LightningEffects : MonoBehaviour {
 				
 				for( int i = 0; i < 10; i++){
 					if(targetStrike != null){
-						randomPts[i] = Vector3.Slerp(transform.position, targetStrike.position, i / 10.0f);
+						randomPts[i] = Vector3.Slerp(Vector3.zero, targetStrike.position, i / 10.0f);
 						if(i < 9){
-							randomPts[i] += Random.onUnitSphere * (size / 20f);
+							randomPts[i] += Random.onUnitSphere * wobbliness;
 						}
 					} else {
-						randomPts[i] += Random.onUnitSphere * (size / 20f);
+						randomPts[i] += Random.onUnitSphere * wobbliness;
 					}
 					lineRenderer.SetPosition(i, randomPts[i]);
 				}

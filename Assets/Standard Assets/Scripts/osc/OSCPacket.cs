@@ -22,6 +22,7 @@ using System;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Text;
+using UnityEngine;
 
 namespace UnityOSC
 {
@@ -165,6 +166,18 @@ namespace UnityOSC
 					bytes.AddRange(valueData);
 					data = bytes.ToArray();
 					break;
+
+				case "Vector3":
+					Vector3 val = (Vector3)valueObject;
+					String s = val.x + ":" + val.y + ":" + val.z;
+					data = Encoding.ASCII.GetBytes(s);
+					break;
+
+			case "Quaternion":
+				Quaternion q = (Quaternion)valueObject;
+				String s2 = q.w + ":" + q.x + ":" + q.y + ":" + q.z;
+				data = Encoding.ASCII.GetBytes(s2);
+				break;
 
 				default:
 					throw new Exception("Unsupported data type.");

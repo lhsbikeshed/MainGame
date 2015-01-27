@@ -49,6 +49,7 @@ namespace UnityOSC
 		private const char DOUBLE  = 'd';
 		private const char STRING  = 's';
 		private const char BYTE    = 'b';
+		private const char VECTOR  = 'v';	
 		private const char DEFAULT = ',';
 		
 		private string _typeTag;
@@ -192,6 +193,12 @@ namespace UnityOSC
 					typeTag = BYTE;
 					break;
 
+				case "Vector3" :
+					typeTag = STRING;
+					break;
+			case "Quaternion" : 
+				typeTag = STRING;
+				break;
 				default:
 					throw new Exception("Unsupported data type." + type.Name);
 			}

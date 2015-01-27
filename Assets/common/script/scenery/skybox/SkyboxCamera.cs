@@ -4,7 +4,7 @@ using System;
 
 public class SkyboxCamera:MonoBehaviour{
 	
-	public Transform mainCamera;
+
 	public Transform theShip;
 	public float translateScale;
 	
@@ -15,7 +15,9 @@ public class SkyboxCamera:MonoBehaviour{
 	
 	
 	float preRenderFogLevel = 0.0f;
-	
+
+	Transform shipCamera;
+
 	public void Awake() {
 		mapController = GameObject.Find("SceneScripts").GetComponent<MapController>();
 		GameObject.Find("SceneScripts").GetComponent<GenericScene>().skyboxCameraActive = true;
@@ -24,12 +26,12 @@ public class SkyboxCamera:MonoBehaviour{
 		//theShip.Find("camera").GetComponent.<Camera>().clearFlags = CameraClearFlags.Depth;
 		//theShip.Find("cameraP").GetComponent.<Camera>().clearFlags = CameraClearFlags.Depth;
 		theShip.GetComponentInChildren<ShipCamera>().setSkyboxState (true);
-		mainCamera = theShip.Find("camera").transform;
+		shipCamera = GameObject.Find ("camera.0").transform;
 	}
 	
 	//rotate and position the camera as the main camera moves
 	public void Update() {
-		transform.rotation = mainCamera.rotation;
+		transform.rotation = shipCamera.rotation;
 		Vector3 basePos = new Vector3((float)mapController.sectorPos[0], (float)mapController.sectorPos[1], (float)mapController.sectorPos[2]) * mapController.cellSize;
 		
 		transform.position = (basePos + theShip.position) * translateScale;

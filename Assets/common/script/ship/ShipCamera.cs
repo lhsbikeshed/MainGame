@@ -29,7 +29,14 @@ public class ShipCamera:MonoBehaviour{
 	bool timedShaking = false;
 
 	float currentFov = 85f;
-	
+
+
+	public static ShipCamera instance;
+
+	public void Awake() {
+		instance = this;
+	}
+
 	public void Start() {
 		
 		//if(ratio > 1){

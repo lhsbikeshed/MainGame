@@ -111,8 +111,7 @@ public class OSCSystem:MonoBehaviour{
 			targettingSystem.sendOSCUpdates();
 			
 			//do scene specific updates		
-			currentScene.SendOSCMessage();
-			
+			currentScene.SendOSCMessage();			
 		}
 		
 		

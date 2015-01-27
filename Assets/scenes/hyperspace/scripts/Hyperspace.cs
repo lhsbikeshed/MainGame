@@ -59,7 +59,7 @@ public class Hyperspace: GenericScene {
 		theShip.GetComponentInChildren<ShipCamera>().setSkyboxState (false);
 		jumpSystem = theShip.GetComponent<JumpSystem>();
 		
-		jumpSystem.setJumpEffectState(false);
+		theShip.GetComponentInChildren<JumpEffects>().setJumpEffectState(false);
 		jumpSystem.inGate = false;
 		theShip.GetComponentInChildren<Camera>().backgroundColor = new Color(0.0f,0.0f,0.0f);
 		
@@ -127,7 +127,7 @@ public class Hyperspace: GenericScene {
 			warpParticles.startColor = new Color(255.0f,0.0f,0.0f);
 			//change animations
 			//send an osc message /warp/failed {time to failure}
-			theShip.GetComponent<JumpSystem>().setJumpEffectState(true);
+			theShip.GetComponentInChildren<JumpEffects>().setJumpEffectState(true);
 			if(failure){
 				
 				//broadcast that we failed the jump
