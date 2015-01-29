@@ -104,8 +104,10 @@ public class DistanceSpeaker:MonoBehaviour{
 		} else if (figures == 1){
 			speaking = true;
 			int s = Mathf.FloorToInt(distance);
-			AudioSource.PlayClipAtPoint(sounds[s], transform.position);
-			yield return new WaitForSeconds(sounds[s].length);
+			if(s >=0 && s < 10){
+				AudioSource.PlayClipAtPoint(sounds[s], transform.position);
+				yield return new WaitForSeconds(sounds[s].length);
+			}
 			if(metersSuffix){
 				AudioSource.PlayClipAtPoint(sounds[12], transform.position);
 				yield return new WaitForSeconds(sounds[12].length);

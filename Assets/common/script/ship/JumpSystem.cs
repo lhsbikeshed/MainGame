@@ -76,7 +76,8 @@ public class JumpSystem: BaseSubsystem
 		soundSource.clip = openSound;
 		soundSource.Play();
 		AudioSource.PlayClipAtPoint(initialisedSound, transform.position);
-	
+		jumpEffects.setJumpEffectState(true);
+
 	}
 	
 	public void openSoundStart(){
@@ -173,12 +174,11 @@ public class JumpSystem: BaseSubsystem
 		}
 		if(timeSinceJumpStart > 2){	//turn on effects at 2 seconds
 			
-				jumpEffects.setJumpEffectState(true);
 			shipCamera.setFovs(85 + ((Time.fixedTime - jumpStartTime - 2) / 3.0f ) * 30);
 		}
 			
 		//JUMP!
-		if (timeSinceJumpStart  > 5){	//jump at 7 seconds
+		if (timeSinceJumpStart  > 7	){	//jump at 7 seconds
 			
 			resetAfterJump();
 			GameObject sceneScript  = GameObject.Find("SceneScripts");

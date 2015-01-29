@@ -20,6 +20,8 @@ public class LightningEffects : MonoBehaviour {
 
 	bool flashing = false;
 
+	public bool running = true;
+
 
 	float nextFlashTime = 1.0f;
 	float flashDuration = 1.0f;
@@ -27,6 +29,20 @@ public class LightningEffects : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		lineRenderer = GetComponent<LineRenderer>();
+		stopEffect();
+	}
+
+	public void stopEffect(){
+
+		running = false;
+		if(lineRenderer != null){
+			lineRenderer.enabled = false;
+		}
+	}
+
+	public void startEffect(){
+		running = true;
+		lineRenderer.enabled = true;
 	}
 
 
@@ -60,42 +76,43 @@ public class LightningEffects : MonoBehaviour {
 	
 	
 	void FixedUpdate () {
+			if(running){
+			nextFlashTime -= Time.fixedDeltaTime;
+			if(nextFlashTime <= 0.0f){
+				flashing = true;
 
-		nextFlashTime -= Time.fixedDeltaTime;
-		if(nextFlashTime <= 0.0f){
-			flashing = true;
-
-			flashDuration = Random.Range (0.1f, maxFlashDuration);
-			nextFlashTime = flashDuration + Random.Range(0.5f, flashRate);
-			strikeAtRandom();
-		}
-
-		if(flashing){
-			flashDuration -= Time.fixedDeltaTime;
-			if(flashDuration <= 0.0f){
-
-
-				flashing = false;
-				lineRenderer.enabled = false;
+				flashDuration = Random.Range (0.1f, maxFlashDuration);
+				nextFlashTime = flashDuration + Random.Range(0.5f, flashRate);
+				strikeAtRandom();
 			}
-			if(lastPosSwitch + 0.1f < Time.fixedTime){
-				
-				for( int i = 0; i < 10; i++){
-					if(targetStrike != null){
-						randomPts[i] = Vector3.Slerp(Vector3.zero, targetStrike.position, i / 10.0f);
-						if(i < 9){
+
+			if(flashing){
+				flashDuration -= Time.fixedDeltaTime;
+				if(flashDuration <= 0.0f){
+
+
+					flashing = false;
+					lineRenderer.enabled = false;
+				}
+				if(lastPosSwitch + 0.1f < Time.fixedTime){
+					
+					for( int i = 0; i < 10; i++){
+						if(targetStrike != null){
+							randomPts[i] = Vector3.Slerp(Vector3.zero, targetStrike.position, i / 10.0f);
+							if(i < 9){
+								randomPts[i] += Random.onUnitSphere * wobbliness;
+							}
+						} else {
 							randomPts[i] += Random.onUnitSphere * wobbliness;
 						}
-					} else {
-						randomPts[i] += Random.onUnitSphere * wobbliness;
+						lineRenderer.SetPosition(i, randomPts[i]);
 					}
-					lineRenderer.SetPosition(i, randomPts[i]);
+
+					lastPosSwitch = Time.fixedTime;	
 				}
 
-				lastPosSwitch = Time.fixedTime;	
+
 			}
-
-
 		}
 
 		

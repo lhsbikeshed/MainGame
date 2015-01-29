@@ -132,17 +132,17 @@ public class Hyperspace: GenericScene {
 				
 				//broadcast that we failed the jump
 				OSCMessage msg = new OSCMessage("/scene/warp/failjump");		
-				msg.Append<int>( 10 ); // 10 seconds until exit fail			
+				msg.Append<int>( 7 ); // 10 seconds until exit fail			
 				OSCHandler.Instance.SendMessageToAll(msg);
 				//see if there is a planet in the scene and fire it off
 				
 				
 			} else{
 				OSCMessage msg2 = new OSCMessage("/scene/warp/exitjump");		
-				msg2.Append<int>( 10 ); // 10 seconds until exit fail
+				msg2.Append<int>( 7 ); // 10 seconds until exit fail
 				OSCHandler.Instance.SendMessageToAll(msg2);
 			}
-			yield return new WaitForSeconds(10.0f);
+			yield return new WaitForSeconds(7.0f);
 			
 			theShip.rigidbody.freezeRotation = false;
 			theShip.rigidbody.constraints = RigidbodyConstraints.None;

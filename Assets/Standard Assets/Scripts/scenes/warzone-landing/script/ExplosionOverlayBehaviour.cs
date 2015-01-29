@@ -32,8 +32,11 @@ public class ExplosionOverlayBehaviour : MonoBehaviour {
 	
 	
 	private int mode = 0;
+
+	public static ExplosionOverlayBehaviour instance;
 	
 	void  Start (){
+		instance = this;
 		setupObject();
 		
 		
