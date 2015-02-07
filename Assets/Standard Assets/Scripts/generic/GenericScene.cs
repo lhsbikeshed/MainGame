@@ -3,10 +3,13 @@ using System.Collections;
 using UnityOSC;
 
 
+/* base class for scene related things */
 public class GenericScene : MonoBehaviour {
 
 		
 	public bool skyboxCameraActive = false; //does this scene use a skybox camera?
+	public bool sceneIsJumpInterruption = false;	//is this scene midway through a jump sequence? If so then turn this on. The jump plotting
+													//display will then show display an override screen instead of text entry
 
 
 	protected char[] separator = {'/'};

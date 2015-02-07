@@ -26,7 +26,7 @@ public class DynamicShitField:MonoBehaviour{
 	
 	public void Start() {
 		ship = GameObject.Find("TheShip").transform;
-		cameraObject = ship.Find("camera");
+		cameraObject = ship.Find("camera.0");
 		//create a shitload of objects around us first
 		objectList = new System.Collections.Generic.List<UnityEngine.Transform>(maxNumber);
 		for(int a = 0; a < maxNumber; a++){

@@ -40,6 +40,7 @@ public class CometTunnelScene: GenericScene , CodeAuthSystem.AuthCodeListener {
 	
 	
 	public override void Start() {
+		sceneIsJumpInterruption = true; //lock out the jump plotting computer from text entry
 		skyboxCameraActive = true;
 		theShip = GameObject.Find("TheShip").transform;
 		skyboxCamera = GameObject.Find("skyboxCamera").transform;

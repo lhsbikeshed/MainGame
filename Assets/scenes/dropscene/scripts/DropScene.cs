@@ -64,6 +64,8 @@ public class DropScene: GenericScene {
 	bool puzzleComplete = false;
 	
 	public override void Start() {
+
+		sceneIsJumpInterruption = true;
 		//get references
 		planet = GameObject.Find("planet").transform;
 		skyCam = GameObject.Find("skyboxCamera").transform;

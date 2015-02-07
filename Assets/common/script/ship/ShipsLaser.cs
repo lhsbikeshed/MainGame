@@ -21,7 +21,10 @@ public class ShipsLaser:MonoBehaviour{
 	Transform target;
 	Transform theShip;
 	public int weaponsPower = 2;
-	
+
+	public Transform[] turretPoints;
+	public Transform currentTurretPoint;	
+
 	public void Start() {
 		laserRenderer = GetComponent<LineRenderer>();
 		laserTexture = laserRenderer.material;
@@ -69,6 +72,22 @@ public class ShipsLaser:MonoBehaviour{
 					state = 1;
 					fireTime = Time.fixedTime;	
 					target = targettedObject;
+					//figure out which turret to use
+					float minAngle = 2;
+					Transform bestTurret = turretPoints[0];
+					foreach (Transform t in turretPoints){
+						Vector3 turretDirection = transform.TransformDirection(t.forward);
+						Vector3 targetDirection = (t.position - targettedObject.position).normalized;
+
+						float angle = Vector3.Dot (turretDirection, targetDirection);
+						Debug.Log ("an: " + angle);
+						if(angle > 0 && angle < minAngle){
+							minAngle = angle;
+							bestTurret = t;
+						}
+					}
+					currentTurretPoint = bestTurret;
+
 				}
 				
 			}
@@ -100,7 +119,7 @@ public class ShipsLaser:MonoBehaviour{
 		if(state == 1){
 			
 			
-			laserRenderer.SetPosition(0, transform.position);
+			laserRenderer.SetPosition(0, currentTurretPoint.position);
 			laserRenderer.SetPosition(1, target.position);
 			var tmp_cs1 = laserTexture.mainTextureOffset;
             tmp_cs1.x -= 0.05f;

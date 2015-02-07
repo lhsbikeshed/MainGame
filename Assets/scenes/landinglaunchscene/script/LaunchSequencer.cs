@@ -15,6 +15,7 @@ public class LaunchSequencer:MonoBehaviour{
 	public float intitialPause = 5.0f;
 	
 	public bool canBeUsed = false;
+	public GameObject objectToActivate;
 	
 	
 	Vector3 startPos;
@@ -42,6 +43,9 @@ public class LaunchSequencer:MonoBehaviour{
 			OSCMessage m = new OSCMessage("/scene/launchland/grabberState");
 			m.Append<int>(1);
 			OSCHandler.Instance.SendMessageToAll(m);
+			if(objectToActivate){
+				objectToActivate.SetActive(true);
+			}
 		}
 		
 	}
@@ -53,6 +57,9 @@ public class LaunchSequencer:MonoBehaviour{
 			OSCMessage m = new OSCMessage("/scene/launchland/grabberState");
 			m.Append<int>(0);
 			OSCHandler.Instance.SendMessageToAll(m);
+			if(objectToActivate){
+				objectToActivate.SetActive(false);
+			}
 		}
 		
 	}

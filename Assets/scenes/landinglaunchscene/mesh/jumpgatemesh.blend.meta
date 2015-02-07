@@ -1,7 +1,46 @@
 fileFormatVersion: 2
 guid: 6f888a04955b12d4fb3554c0db54bdb8
 ModelImporter:
+  serializedVersion: 16
   fileIDToRecycleName:
+    100000: Plane_004
+    100002: Plane_005
+    100004: Cone
+    100006: Cone_001
+    100008: //RootNode
+    100010: Ring
+    100016: Plane_003
+    100018: Plane_002
+    100020: Ring_002
+    100022: Ring_001
+    400000: Plane_004
+    400002: Plane_005
+    400004: Cone
+    400006: Cone_001
+    400008: //RootNode
+    400010: Ring
+    400016: Plane_003
+    400018: Plane_002
+    400020: Ring_002
+    400022: Ring_001
+    2300000: Plane_004
+    2300002: Plane_005
+    2300004: Cone
+    2300006: Cone_001
+    2300008: Ring
+    2300014: Plane_003
+    2300016: Plane_002
+    2300018: Ring_002
+    2300020: Ring_001
+    3300000: Plane_004
+    3300002: Plane_005
+    3300004: Cone
+    3300006: Cone_001
+    3300008: Ring
+    3300014: Plane_003
+    3300016: Plane_002
+    3300018: Ring_002
+    3300020: Ring_001
     4300000: Cone_001
     4300002: Cone
     4300004: Plane_005
@@ -13,32 +52,44 @@ ModelImporter:
     4300016: Ring_001
     4300018: Ring_002
     4300020: Ring
-    7400000: Default Take //// untitled
-    7400002: Default Take //// jumpgatemesh
-  serializedVersion: 10
+    6400002: Plane_002
+    6400004: Ring_002
+    6400006: Ring_001
+    6400008: Cone_001
+    6400010: Plane_004
+    6400014: Plane_005
+    6400016: Plane_003
+    6400018: Cone
+    6400020: Ring
+    7400002: Default Take
+    11100000: //RootNode
   materials:
     importMaterials: 1
     materialName: 0
     materialSearch: 1
   animations:
-    generateAnimations: 3
+    legacyGenerateAnimations: 3
     bakeSimulation: 0
-    splitAnimations: 1
+    optimizeGameObjects: 0
     animationCompression: 1
     animationRotationError: .5
     animationPositionError: .5
     animationScaleError: .5
     animationWrapMode: 2
+    extraExposedTransformPaths: []
     clipAnimations: []
+    isReadable: 1
   meshes:
     lODScreenPercentages: []
     globalScale: 1
     meshCompression: 0
     addColliders: 1
+    importBlendShapes: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMesh: 0
+    optimizeMeshForGPU: 1
+    weldVertices: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
@@ -48,158 +99,20 @@ ModelImporter:
     splitTangentsAcrossUV: 1
     normalImportMode: 0
     tangentImportMode: 1
-  textMetaNamesToFileIDs:
-    //RootNode:
-      data:
-        first: 1
-        second: a8860100
-      data:
-        first: 4
-        second: 881a0600
-      data:
-        first: 111
-        second: 605fa900
-    Cone:
-      data:
-        first: 1
-        second: a4860100
-      data:
-        first: 4
-        second: 841a0600
-      data:
-        first: 23
-        second: 64182300
-      data:
-        first: 33
-        second: a45a3200
-      data:
-        first: 64
-        second: 12a86100
-    Cone_001:
-      data:
-        first: 1
-        second: a6860100
-      data:
-        first: 4
-        second: 861a0600
-      data:
-        first: 23
-        second: 66182300
-      data:
-        first: 33
-        second: a65a3200
-      data:
-        first: 64
-        second: 08a86100
-    Plane_002:
-      data:
-        first: 1
-        second: b2860100
-      data:
-        first: 4
-        second: 921a0600
-      data:
-        first: 23
-        second: 70182300
-      data:
-        first: 33
-        second: b05a3200
-      data:
-        first: 64
-        second: 02a86100
-    Plane_003:
-      data:
-        first: 1
-        second: b0860100
-      data:
-        first: 4
-        second: 901a0600
-      data:
-        first: 23
-        second: 6e182300
-      data:
-        first: 33
-        second: ae5a3200
-      data:
-        first: 64
-        second: 10a86100
-    Plane_004:
-      data:
-        first: 1
-        second: a0860100
-      data:
-        first: 4
-        second: 801a0600
-      data:
-        first: 23
-        second: 60182300
-      data:
-        first: 33
-        second: a05a3200
-      data:
-        first: 64
-        second: 0aa86100
-    Plane_005:
-      data:
-        first: 1
-        second: a2860100
-      data:
-        first: 4
-        second: 821a0600
-      data:
-        first: 23
-        second: 62182300
-      data:
-        first: 33
-        second: a25a3200
-      data:
-        first: 64
-        second: 0ea86100
-    Ring:
-      data:
-        first: 1
-        second: aa860100
-      data:
-        first: 4
-        second: 8a1a0600
-      data:
-        first: 23
-        second: 68182300
-      data:
-        first: 33
-        second: a85a3200
-      data:
-        first: 64
-        second: 14a86100
-    Ring_001:
-      data:
-        first: 1
-        second: b6860100
-      data:
-        first: 4
-        second: 961a0600
-      data:
-        first: 23
-        second: 74182300
-      data:
-        first: 33
-        second: b45a3200
-      data:
-        first: 64
-        second: 06a86100
-    Ring_002:
-      data:
-        first: 1
-        second: b4860100
-      data:
-        first: 4
-        second: 941a0600
-      data:
-        first: 23
-        second: 72182300
-      data:
-        first: 33
-        second: b25a3200
-      data:
-        first: 64
-        second: 04a86100
+  importAnimation: 0
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 1
+  additionalBone: 0
+  userData: 

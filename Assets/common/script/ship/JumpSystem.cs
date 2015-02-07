@@ -359,6 +359,10 @@ public class JumpSystem: BaseSubsystem
 			UnityEngine.Debug.Log("Cleared jump route");
 			jumpDest = -1;
 			updateJumpStatus();
+		} else if (operation == "getRoute"){
+			OSCMessage msg = new OSCMessage("/system/jumpSystem/currentRoute");
+			msg.Append(jumpDest);
+			OSCHandler.Instance.SendMessageToAll(msg);
 		}
 			
 			
