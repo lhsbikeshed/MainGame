@@ -99,14 +99,13 @@ public class DockChamberScript:MonoBehaviour{
 	public void closeDoor(){
 		if (dockingDoor != null){ 
 			dockingDoor.closeDoor();
-			if(PersistentScene.networkReady == true){
-				networkView.RPC ("closeDoor", RPCMode.Others);
-			}
+
 		}
 	}
 	
 	public void OnTriggerEnter(Collider other){
-			if(other.attachedRigidbody != null){
+		Debug.Log ("Bay entered by " + other.name);
+		if(other.name != "shipDetailBounds" && other.attachedRigidbody != null){
 			if(other.attachedRigidbody.transform.name == "TheShip"){
 				inBay = true;
 				theShip.GetComponent<PropulsionSystem>().inBay = true;
@@ -116,9 +115,7 @@ public class DockChamberScript:MonoBehaviour{
 				UnityEngine.Debug.Log("Enter : Disabled collider");
 				if(theShip.parent == null){	//and were in contact with the docking bay
 					theShip.parent = transform;
-					if(PersistentScene.networkReady == true){
-						networkView.RPC ("Enter", RPCMode.Others);
-					}
+
 				}
 			} else {
 				other.attachedRigidbody.transform.parent = transform;
@@ -128,8 +125,9 @@ public class DockChamberScript:MonoBehaviour{
 	}
 	
 	public void OnTriggerExit(Collider other){
-		
-		if(other.attachedRigidbody.transform.name == "TheShip"){
+		if(other.name != "shipDetailBounds") return;
+
+		if(other.attachedRigidbody.transform.name == "TheShip" ){
 			inBay = false;
 			theShip.GetComponent<PropulsionSystem>().inBay = false;
 			ignoringCollisions = false;
@@ -138,20 +136,13 @@ public class DockChamberScript:MonoBehaviour{
 			UnityEngine.Debug.Log("leave : enable collider");
 			theShip.parent = null;
 			
-			if(PersistentScene.networkReady == true){
-				networkView.RPC ("Exit", RPCMode.Others);
-			}
+
 		} else {
 			other.attachedRigidbody.transform.parent = null;
 		}
 		
 	}
-	
-	[RPC]
-	public void Enter(){
-	}
-	[RPC]
-	public void Exit(){}
+
 	
 	
 	public void Update() {

@@ -172,7 +172,7 @@ public class JumpSystem: BaseSubsystem
 			int ti = 5 - Mathf.FloorToInt(timeSinceJumpStart);
 			StartCoroutine(GetComponent<DistanceSpeaker>().SpeakDistance((float)ti, 1, false));
 		}
-		if(timeSinceJumpStart > 2){	//turn on effects at 2 seconds
+		if(timeSinceJumpStart > 2){	//turn on effects at 2 seconds	
 			
 			shipCamera.setFovs(85 + ((Time.fixedTime - jumpStartTime - 2) / 3.0f ) * 30);
 		}
