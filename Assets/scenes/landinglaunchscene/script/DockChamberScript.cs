@@ -125,7 +125,7 @@ public class DockChamberScript:MonoBehaviour{
 	}
 	
 	public void OnTriggerExit(Collider other){
-		if(other.name != "shipDetailBounds") return;
+		if(other.name == "shipDetailBounds") return;
 
 		if(other.attachedRigidbody.transform.name == "TheShip" ){
 			inBay = false;

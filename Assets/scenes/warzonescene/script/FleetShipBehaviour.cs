@@ -130,13 +130,13 @@ public class FleetShipBehaviour:MonoBehaviour{
 		} else {
 			
 			transform.position = Vector3.Lerp(transform.position, jumpDestination, 0.6f);
-			float zStretch = dist / 2.0f;
-			zStretch = Mathf.Clamp(1.0f + zStretch, 1.0f, 2f);
-			zStretch = 3.0f - zStretch;
-			Vector3 size = transform.localScale;
-			size.z *= zStretch;
+			//float zStretch = dist / 2.0f;
+			//zStretch = Mathf.Clamp(1.0f + zStretch, 1.0f, 2f);
+			//zStretch = 3.0f - zStretch;
+			//Vector3 size = transform.localScale;
+			//size.z *= zStretch;
 			
-			transform.localScale = size;
+			//transform.localScale = size;
 		}
 		
 	}
