@@ -43,7 +43,7 @@ public class Hyperspace: GenericScene {
 	OSCSystem oscSender;
 	JumpSystem jumpSystem;
 	
-	int destinationScene = -1;
+	string destinationScene = "";
 	
 	public override void Start() {
 		if(theShip == null){
@@ -73,13 +73,13 @@ public class Hyperspace: GenericScene {
 		  
 		  
 		destinationScene = ps.hyperspaceDestination;
-		if(destinationScene == 2){
+		if(destinationScene == "drop"){
 		
 				
 			//instantiate the planet fall prefab
 			Transform t = (UnityEngine.Transform)Instantiate(planetFallPrefab, Vector3.zero, Quaternion.identity);
 			t.GetComponent<PlanetFallEvent>().triggerTime = maxTimeInScene - 5.0f;
-		} else if (destinationScene == 7 ){
+		} else if (destinationScene == "comet-tunnel" ){
 			//instantiate the planet fall prefab
 			Transform t2 = (UnityEngine.Transform)Instantiate(cometPrefab, Vector3.zero, Quaternion.identity);
 			t2.GetComponent<CometEvent>().triggerTime = maxTimeInScene - 8.0f;
@@ -156,7 +156,7 @@ public class Hyperspace: GenericScene {
 			OSCHandler.Instance.RevertClientScreen("PilotStation", "hyperspace");
 			OSCHandler.Instance.RevertClientScreen("TacticalStation", "hyperspace");
 			OSCHandler.Instance.RevertClientScreen("EngineerStation", "hyperspace");
-			
+			//TODO change to string scene name
 			Application.LoadLevel(ps.hyperspaceDestination);
 		}
 		
@@ -181,7 +181,7 @@ public class Hyperspace: GenericScene {
 		msg.Append<float>(0.0f);		
 		msg.Append<float>(getTimeRemaining());		
 		msg.Append<int>(ps.forcedHyperspaceFail == true ? 1 : 0);
-		msg.Append<int>(jumpSystem.jumpDest);
+		msg.Append<string>(jumpSystem.jumpDest);
 		OSCHandler.Instance.SendMessageToAll( msg);	
 	}
 	

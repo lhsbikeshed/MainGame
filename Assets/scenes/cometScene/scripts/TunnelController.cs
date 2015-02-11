@@ -54,7 +54,7 @@ public void Start() {
 	public void OnTriggerEnter(Collider col){
 		if(col.gameObject.name == "TheShip"){
 			UnityEngine.Debug.Log ("exitted tunnel");
-			GameObject.Find("SceneScripts").GetComponent<CometScene>().tunnelComplete();
+			GameObject.Find("SceneScripts").GetComponent<CometTunnelScene>().tunnelComplete();
 			moverPrefab.parent = null;
 		}
 	}

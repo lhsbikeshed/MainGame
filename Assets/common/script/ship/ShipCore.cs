@@ -287,7 +287,7 @@ public class ShipCore:MonoBehaviour{
 	   		UnityEngine.Debug.Log("Found exit node.." + exitPoint.transform.position);
 	   		
 	   	} else {
-	   		if(Application.loadedLevel!=0){
+	   		if(Application.loadedLevel != 0){
 	   			transform.position = new Vector3(0.0f,0.0f,0.0f);
 	   		}
 	   	}

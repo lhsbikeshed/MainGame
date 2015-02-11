@@ -25,7 +25,7 @@ public class JumpSystem: BaseSubsystem
 	public bool canJump;		//are we allowed to jump? Used by Jump Node
 	public bool inGate;		//are we in a gate
 	public bool inTunnelGate; //are we in a tunnel gate?
-	public int jumpDest;	//where we jump to after the hyperspace scene is finished
+	public string  jumpDest;	//where we jump to after the hyperspace scene is finished
 	
 	public bool jumping;			//are we currently accelerating for a jump?
 	float jumpStartTime;		//time we started the jump, jump sequence lasts 7 seconds
@@ -186,7 +186,7 @@ public class JumpSystem: BaseSubsystem
 				sceneScript.GetComponent<GenericScene>().LeaveScene();
 			}
 			
-			Application.LoadLevel(1);			
+			Application.LoadLevel("hyper1");			
 			UnityEngine.Debug.Log("JUMP!");
 			
 			
@@ -208,7 +208,7 @@ public class JumpSystem: BaseSubsystem
 		
 	   	if(didWeWarpIn){
 			resetAfterJump();
-			jumpDest = -1; //players will have to plot again to escape
+			jumpDest = ""; //players will have to plot again to escape
 			jumpEffects.setJumpEffectState(false);
 			didWeWarpIn = false;
 			shipCamera.setFovs(180.0f);
@@ -223,7 +223,7 @@ public class JumpSystem: BaseSubsystem
 
 		
 		OSCMessage msg = new OSCMessage("/ship/jumpStatus");	
-		if(inGate && canJump && jumpDest >= 0){		
+		if(inGate && canJump && jumpDest != ""){		
 			msg.Append<int>(1);		
 		} else {
 			msg.Append<int>(0);
@@ -254,7 +254,7 @@ public class JumpSystem: BaseSubsystem
 			jumpFail = true;
 			noJumpReason += "> Retract Weapons Bays\r\n";
 		}
-		if(jumpDest == -1){
+		if(jumpDest == ""){
 			jumpFail = true;
 			noJumpReason += "> No Route Set\r\n";
 		}
@@ -348,7 +348,7 @@ public class JumpSystem: BaseSubsystem
 		} else if (operation ==  "startJump"){
 			startJump();
 		} else if (operation == "setRoute"){
-			int r = (int)message.Data[0];
+			string r = (string)message.Data[0];	//TODO
 			UnityEngine.Debug.Log("Set jump route : " + r);
 			jumpDest = r;
 			PersistentScene ps = GameObject.Find("PersistentScripts").GetComponent<PersistentScene>();
@@ -357,7 +357,7 @@ public class JumpSystem: BaseSubsystem
 			updateJumpStatus();
 		} else if (operation == "clearRoute"){
 			UnityEngine.Debug.Log("Cleared jump route");
-			jumpDest = -1;
+			jumpDest = "";
 			updateJumpStatus();
 		} else if (operation == "getRoute"){
 			OSCMessage msg = new OSCMessage("/system/jumpSystem/currentRoute");

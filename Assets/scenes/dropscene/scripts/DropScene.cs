@@ -279,8 +279,8 @@ public class DropScene: GenericScene {
 		
 		//fix possible jump route overwrites
 		//if the players manage to reset the route then force it to the one we had when starting the scene
-		if(puzzleComplete && jumpSystem.jumpDest < 0){
-			jumpSystem.jumpDest = 3;	//force to warzone scene
+		if(puzzleComplete && jumpSystem.jumpDest == ""){
+			jumpSystem.jumpDest = "warzone-landing";	//force to warzone scene
 		
 			jumpSystem.canJump = true;
 			jumpSystem.inGate = true;
@@ -358,41 +358,38 @@ public class DropScene: GenericScene {
 			case "droppanelrepaired":
 				//drop scene equipment has been repaired, so turn on propulsion and jump, set jump coords
 				//to next scene and set ship to allow jump
-				if(Application.loadedLevel == 2){
-					if((int)message.Data[0] == 1){		//panel hardware was repaired but not auth
-						OSCMessage s = new OSCMessage("/scene/drop/panelRepaired");
-						
-						OSCHandler.Instance.SendMessageToAll(s);
+				
+				if((int)message.Data[0] == 1){		//panel hardware was repaired but not auth
+					OSCMessage s = new OSCMessage("/scene/drop/panelRepaired");
 					
-					} else if ((int)message.Data[0] == 2){
-						theShip.GetComponent<JumpSystem>().enableSystem();
-						theShip.GetComponent<PropulsionSystem>().enableSystem();
-						PersistentScene ps = GameObject.Find("PersistentScripts").GetComponent<PersistentScene>();
-						ps.hyperspaceDestination = 3;
-						ps.forcedHyperspaceFail = false;	
-						theShip.GetComponent<JumpSystem>().jumpDest = 1;
-		
-						theShip.GetComponent<JumpSystem>().canJump = true;
-						theShip.GetComponent<JumpSystem>().inGate = true;
-						theShip.GetComponent<JumpSystem>().jumpDest = 3;
-						OSCMessage s1 = new OSCMessage("/ship/jumpStatus");
-						s1.Append<int>(1);
-						OSCHandler.Instance.SendMessageToAll(s1);
-						
-						puzzleComplete = true;
-						
-					}
+					OSCHandler.Instance.SendMessageToAll(s);
+				
+				} else if ((int)message.Data[0] == 2){
+					theShip.GetComponent<JumpSystem>().enableSystem();
+					theShip.GetComponent<PropulsionSystem>().enableSystem();
+					PersistentScene ps = GameObject.Find("PersistentScripts").GetComponent<PersistentScene>();
+					ps.hyperspaceDestination = "warzone-landing";
+					ps.forcedHyperspaceFail = false;	
+					
+	
+					theShip.GetComponent<JumpSystem>().canJump = true;
+					theShip.GetComponent<JumpSystem>().inGate = true;
+					theShip.GetComponent<JumpSystem>().jumpDest = "warzone-landing";
+					OSCMessage s1 = new OSCMessage("/ship/jumpStatus");
+					s1.Append<int>(1);
+					OSCHandler.Instance.SendMessageToAll(s1);
+					
+					puzzleComplete = true;
 					
 				}
-					
+				
 				break;
-				
-				
-		}	
-		
-	
+		}
 	}
-	
+			
+			
+
+
 	public override void LeaveScene(){
 		OSCHandler.Instance.RevertClientScreen("PilotStation", "drop");			
 		OSCHandler.Instance.RevertClientScreen("TacticalStation", "drop");		

@@ -121,13 +121,13 @@ public class CometTunnelScene: GenericScene , CodeAuthSystem.AuthCodeListener {
 			theShip.GetComponent<JumpSystem>().enableSystem();
 			theShip.GetComponent<PropulsionSystem>().enableSystem();
 			PersistentScene ps = GameObject.Find("PersistentScripts").GetComponent<PersistentScene>();
-			ps.hyperspaceDestination = 3;
+			ps.hyperspaceDestination = "warzone-landing";
 			ps.forcedHyperspaceFail = false;	
 			
 			
 			theShip.GetComponent<JumpSystem>().canJump = true;
 			theShip.GetComponent<JumpSystem>().inGate = true;
-			theShip.GetComponent<JumpSystem>().jumpDest = 3;	//set dest to warzone scene
+			theShip.GetComponent<JumpSystem>().jumpDest = "warzone-landing";	//set dest to warzone scene
 			//i dont think this class should be responsible for this
 			OSCMessage s1 = new OSCMessage("/ship/jumpStatus");
 			s1.Append<int>(1);

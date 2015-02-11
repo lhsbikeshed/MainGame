@@ -37,7 +37,7 @@ public class OSCSystem:MonoBehaviour{
 	
 	//last update packet send
 	float lastShipUpdate;
-	
+	bool firstResetSent = false;
 	
 	
 	//fucking unityscript
@@ -51,15 +51,22 @@ public class OSCSystem:MonoBehaviour{
 	}
 	
 	public void Awake(){
+
 		DontDestroyOnLoad(this);
 		OSCHandler.Instance.Init(); //init OSC
 		OSCMessage msg = new OSCMessage("/scene/change");
-		msg.Append<int>(Application.loadedLevel);
+		msg.Append<string>(Application.loadedLevelName);
 		OSCHandler.Instance.SendMessageToAll(msg);
-		//since this is only ever called at the start of the game
-		//send a reset signal to all consoles
-		msg = new OSCMessage("/game/reset");
-		//OSCHandler.Instance.SendMessageToAll(msg);
+
+		if(!firstResetSent){
+			firstResetSent = true;
+			//since this is only ever called at the start of the game
+			//send a reset signal to all consoles
+			msg = new OSCMessage("/game/reset");
+			OSCHandler.Instance.SendMessageToAll(msg);
+			firstResetSent = true;
+		}
+		//now init all of the refs etc
 		init();
 	}
 	
@@ -161,7 +168,7 @@ public class OSCSystem:MonoBehaviour{
 	 */
 	 
 	public void sendShipStats(){
-		if(Application.loadedLevel != 5){
+		if(Application.loadedLevelName != "deadscene"){
 			OSCMessage msg = new OSCMessage("/ship/stats");
 			
 			float oxLevel = miscSystem.oxygenLevel;
@@ -191,8 +198,8 @@ public class OSCSystem:MonoBehaviour{
 	
 	}
 	
-	
-	public void jumpToScene(int id){
+	//TODO change this to a string name of est scene
+	public void jumpToScene(string id){
 		UnityEngine.Debug.Log("Forcing ship to scene: " + id);
 		
 		if(currentScene != null){
@@ -284,7 +291,7 @@ public class OSCSystem:MonoBehaviour{
 			
 			case "takeMeTo":
 				//force the ship to hyperspace to given scene id
-				int sceneId = (int)message.Data[0];
+				string sceneId = (string)message.Data[0];
 				jumpToScene(sceneId);
 				break;
 			case "reset":
@@ -294,7 +301,7 @@ public class OSCSystem:MonoBehaviour{
 					Destroy(GameObject.Find("PersistentScripts"));
 					Destroy(GameObject.Find("TheShip"));
 					Destroy(GameObject.Find("DynamicCamera"));
-					Application.LoadLevel(0);
+					Application.LoadLevel("launch");
 					//FIXME destroy the persistent things
 					
 				//}
@@ -312,7 +319,7 @@ public class OSCSystem:MonoBehaviour{
 			case "Hello":
 				OSCMessage m = new OSCMessage("/scene/change");
 				string station = msgAddress[3];
-				m.Append<int>( Application.loadedLevel);
+				m.Append<string>( Application.loadedLevelName);
 				
 				OSCHandler.Instance.SendMessageToClient(station, m);
 				

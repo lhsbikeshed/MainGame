@@ -8,7 +8,8 @@ public class PersistentScene:MonoBehaviour{
 	public static bool networkReady = false;
 	/* global things that persist between scenese
 	*/
-	public int hyperspaceDestination; //destination for our hyperspace exit
+	//TODO change this to a string value naming the scene
+	public string hyperspaceDestination; //destination for our hyperspace exit
 	public bool forcedHyperspaceFail; //do we force a failure?
 	public bool useNetwork = true;
 	public string deathReason = "";
@@ -49,7 +50,7 @@ public class PersistentScene:MonoBehaviour{
 	}
 	public void gameWin(){
 		survivedTheGame = true;
-		Application.LoadLevel(5);
+		Application.LoadLevel("deadscene");
 	}
 	
 	/* we died, do the global OHYOUBEDEAD things */
@@ -58,7 +59,7 @@ public class PersistentScene:MonoBehaviour{
 		msg.Append<String>(reasonText);
 		OSCHandler.Instance.SendMessageToAll(msg);
 		deathReason = reasonText;
-		Application.LoadLevel(5);
+		Application.LoadLevel("deadscene");
 	
 	}
 }
