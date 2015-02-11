@@ -95,7 +95,7 @@ public class OSCSystem:MonoBehaviour{
 		print ("level started");
 		//send scene change to all stations
 		OSCMessage msg = new OSCMessage("/scene/change");
-		msg.Append<int>(level);
+		msg.Append<string>(Application.loadedLevelName);
 		OSCHandler.Instance.SendMessageToAll( msg);
 		//redo all the object refs
 		init();
@@ -296,12 +296,22 @@ public class OSCSystem:MonoBehaviour{
 				break;
 			case "reset":
 				//if(Application.loadedLevel == 5){
+					OSCHandler.Instance.ClearScreenStackTo("EngineerStation", "power");
+					OSCHandler.Instance.ClearScreenStackTo("TacticalStation", "weapons");
+			
+					OSCHandler.Instance.ClearScreenStackTo("PilotStation", "radar");
+
 					OSCHandler.Instance.dieFuckerDie();
+					
 					Destroy(GameObject.Find("OSCHandler"));
 					Destroy(GameObject.Find("PersistentScripts"));
+					Destroy(GameObject.Find("skyboxCamera"));
+
+					Destroy(GameObject.Find("SceneScripts"));
 					Destroy(GameObject.Find("TheShip"));
 					Destroy(GameObject.Find("DynamicCamera"));
-					Application.LoadLevel("launch");
+					Application.LoadLevel("preload");
+					
 					//FIXME destroy the persistent things
 					
 				//}

@@ -105,6 +105,7 @@ public class ShipsLaser:MonoBehaviour{
 			UnityEngine.Debug.Log("npc fire");
 			TargettableObject tscript = targettedObject.GetComponent<TargettableObject>();
 			tscript.ApplyDamage(DamageTypes.DAMAGE_LASER, 1.0f);
+			currentTurretPoint = transform;
 		}
 	}
 	

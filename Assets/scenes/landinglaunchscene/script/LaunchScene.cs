@@ -6,6 +6,8 @@ using UnityOSC;
 [System.Serializable]
 public class LaunchScene: GenericScene {
 
+	public LaunchScene.SceneMode sceneMode;
+
 	public float test2;
 	public bool missileSpawning = false;
 	public GameObject missileObj;
@@ -29,6 +31,13 @@ public class LaunchScene: GenericScene {
 		dockChamber = GameObject.Find("DockChamber").GetComponent<DockChamberScript>();
 		theShip = GameObject.Find("TheShip").transform;
 		//theShip.GetComponentInChildren.<ShipCamera>().setSkyboxState (false);
+		if(sceneMode == SceneMode.MODE_LAUNCH){
+			//put the ship in the dock
+			GameObject launchPos = GameObject.Find("LaunchPos");
+			theShip.transform.position = launchPos.transform.position;
+			theShip.transform.rotation = launchPos.transform.rotation;
+
+		}
 	}
 	
 	public override void Update() {
@@ -215,6 +224,10 @@ public class LaunchScene: GenericScene {
 		OSCHandler.Instance.ChangeClientScreen("TacticalStation", "weapons");		//give the tactical a weapons screen
 		OSCHandler.Instance.ChangeClientScreen("EngineerStation", "power");			//give the engineer power man console
 	
+	}
+
+	public enum SceneMode {
+		MODE_LAUNCH, MODE_LAND
 	}
 
 }

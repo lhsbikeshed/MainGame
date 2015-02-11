@@ -21,7 +21,7 @@ public class BaseSubsystem: MonoBehaviour
 	protected GameObject theShip;	//reference to the ship
 	protected Reactor reactor;
 	
-	protected OSCSystem oscSender;
+	//protected OSCSystem oscSender;
 	
 	protected List<SystemRequirement> requirementList;
 	
@@ -32,7 +32,7 @@ public class BaseSubsystem: MonoBehaviour
 	public virtual void Start() {
 		theShip = GameObject.Find("TheShip");
 		reactor = theShip.GetComponent<Reactor>();
-		oscSender = GameObject.Find("PersistentScripts").GetComponent<OSCSystem>();
+	//	oscSender = GameObject.Find("PersistentScripts").GetComponent<OSCSystem>();
 	
 	}
 	

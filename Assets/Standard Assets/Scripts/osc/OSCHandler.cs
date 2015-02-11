@@ -310,6 +310,12 @@ public class OSCHandler : MonoBehaviour
 		}
 
 	}
+	/* clear the screen heap and put the given one at the top
+	 */
+	public void ClearScreenStackTo(String station, String screenName){
+		clientScreens[station].Clear();
+		clientScreens[station].Add (new ScreenItem(screenName, false));
+	}
 
 	public void ChangeClientScreen(String station, String screenName){
 		ChangeClientScreen(station, screenName, false);
