@@ -16,15 +16,13 @@ public class DoorScript: MonoBehaviour{
 	public bool airlockEffect = true;
 	public AudioClip shutterClip;
 	float changeTime;
-	AirlockEffectBehaviour effectObject;
+	public AirlockEffectBehaviour effectObject;
 	Vector3 localStartPosition;
 	public bool test = false;
 	
 	public void Start() {
 		state = DoorState.CLOSED;
-		if(airlockEffect){
-			effectObject = GameObject.Find("AirlockEffects").GetComponent<AirlockEffectBehaviour>();
-		}
+
 		//effectObject.stop();
 		localStartPosition = transform.localPosition;
 	}

@@ -21,13 +21,19 @@ public class DockChamberScript:MonoBehaviour{
 	
 	public void Start() {
 		theShip = GameObject.Find("TheShip").transform;
+		if(stationCollider == null){
+			stationCollider = transform.parent.GetComponent<MeshCollider>();
+		}
 		gravitySource = gameObject.AddComponent<AudioSource>();
 		gravitySource.clip = gravitySound;
 		gravitySource.Stop();
 		gravitySource.loop = true;
 		gravitySource.rolloffMode = AudioRolloffMode.Linear;
 		gravitySource.maxDistance = 300.0f;
-		
+		if(dockingDoor == null){
+			GameObject g = GameObject.Find ("BayDoor");
+			dockingDoor = g.GetComponent<DoorScript>();
+		}
 	}
 	
 	public void setGravity(bool st){
@@ -79,8 +85,7 @@ public class DockChamberScript:MonoBehaviour{
 		//}
 	
 	}
-	
-	[RPC]
+
 	public void openDoor(){
 		
 		if (dockingDoor != null){ 
@@ -95,7 +100,6 @@ public class DockChamberScript:MonoBehaviour{
 	
 	}
 	
-	[RPC]
 	public void closeDoor(){
 		if (dockingDoor != null){ 
 			dockingDoor.closeDoor();

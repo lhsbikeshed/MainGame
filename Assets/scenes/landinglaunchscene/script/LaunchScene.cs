@@ -15,7 +15,7 @@ public class LaunchScene: GenericScene {
 	public float missileSpawnTime = 1.0f;
 	
 	public CameraPoint camPoint;
-	
+	public Transform landingChamber;
 	DockChamberScript dockChamber;
 	public ClampAnimator clamp;
 	public ClampAnimator playerClamp;
@@ -28,16 +28,63 @@ public class LaunchScene: GenericScene {
 	public bool test = false;
 	
 	public override void Start() {
-		dockChamber = GameObject.Find("DockChamber").GetComponent<DockChamberScript>();
+
 		theShip = GameObject.Find("TheShip").transform;
+		//configure the scene for launch or landing based on us hyperspacing in
+		if(JumpSystem.Instance.didWeWarpIn == true){
+			sceneMode = SceneMode.MODE_LAND;
+		}
+
+
 		//theShip.GetComponentInChildren.<ShipCamera>().setSkyboxState (false);
 		if(sceneMode == SceneMode.MODE_LAUNCH){
 			//put the ship in the dock
 			GameObject launchPos = GameObject.Find("LaunchPos");
 			theShip.transform.position = launchPos.transform.position;
 			theShip.transform.rotation = launchPos.transform.rotation;
+			dockChamber = GameObject.Find("DockChamber").GetComponent<DockChamberScript>();
 
+		} else {
+			configureForLanding();
 		}
+
+		theShip.GetComponentInChildren<ShipCamera>().setSkyboxState (false);
+	}
+
+	void configureForLanding(){
+		Debug.Log ("landing mode..");
+		GameObject exitPoint = GameObject.Find("JumpExit");
+		if(exitPoint != null){
+			theShip.transform.position = exitPoint.transform.position;
+			theShip.transform.rotation = exitPoint.transform.rotation;
+			float speed = 0.0f;
+			speed = theShip.rigidbody.velocity.magnitude;
+			theShip.rigidbody.velocity = (exitPoint.transform.rotation * Vector3.forward) * speed;
+			
+			UnityEngine.Debug.Log("Found exit node.." + exitPoint.transform.position);
+			
+		} 
+		GameObject oldDock = GameObject.Find ("DockChamber");
+		Vector3 pos = oldDock.transform.position;
+		Quaternion rot = oldDock.transform.localRotation;
+		Vector3 scale = oldDock.transform.localScale;
+		Transform oldParent = oldDock.transform.parent;
+
+
+		Destroy (oldDock);
+		Transform g = (Transform)Instantiate(landingChamber, pos, rot);
+		g.parent = oldParent;
+		g.position = pos;
+		g.localScale = scale;
+		g.localRotation = rot;
+		dockChamber = g.GetComponent<DockChamberScript>();
+		dockChamber.openDoor();
+
+		//start the station rotating
+		GameObject.Find("STATIOn").GetComponent<Station>().rotating = true;
+
+		//clear crap we dont need
+		Destroy(GameObject.Find("npcvan"));
 	}
 	
 	public override void Update() {
@@ -98,14 +145,16 @@ public class LaunchScene: GenericScene {
 	}
 	
 	public void beginLaunch(){
-		GameObject.Find("NPCInternalDoor").GetComponent<DoorScript>().openDoor();
-		StartCoroutine(GameObject.Find("NPCShipMover").GetComponent<LaunchSequencer>().begin());
-		
-		GameObject.Find("InternalDoor").GetComponent<DoorScript>().openDoor();
-		StartCoroutine(GameObject.Find("ShipMover").GetComponent<LaunchSequencer>().begin());
-		
-		if(camPoint != null){
-			camPoint.OnTriggerEnter(theShip.collider);
+		if(sceneMode == SceneMode.MODE_LAUNCH){
+			GameObject.Find("NPCInternalDoor").GetComponent<DoorScript>().openDoor();
+			StartCoroutine(GameObject.Find("NPCShipMover").GetComponent<LaunchSequencer>().begin());
+			
+			GameObject.Find("InternalDoor").GetComponent<DoorScript>().openDoor();
+			StartCoroutine(GameObject.Find("ShipMover").GetComponent<LaunchSequencer>().begin());
+			
+			if(camPoint != null){
+				camPoint.OnTriggerEnter(theShip.collider);
+			}
 		}
 	}
 	
@@ -150,11 +199,13 @@ public class LaunchScene: GenericScene {
 				
 			case "dockingBay":			//-----open docking bay hal -----
 				//var dockingChamber = GameObject.Find("DockChamber").GetComponent.<DockChamberScript>();
-				if (dockChamber == null){ return; }
-				
+				//if (dockChamber == null){ return; }
+				Debug.Log ("door");
 				if ((int)message.Data[0]  == 1){		
 					dockChamber.openDoor();
-					GameObject.Find("STATIOn").GetComponent<Station>().rotating = true;
+					if(sceneMode == SceneMode.MODE_LAUNCH){
+						GameObject.Find("STATIOn").GetComponent<Station>().rotating = true;
+					}
 				} else { 
 					dockChamber.closeDoor();
 				}
@@ -184,7 +235,24 @@ public class LaunchScene: GenericScene {
 			case "releaseClamp":
 				StartCoroutine(releaseDockingClamp());
 				break;
-		}
+
+			case "startDock":
+				GameObject.Find("InternalDoor").GetComponent<DoorScript>().openDoor();
+				StartCoroutine(GameObject.Find("ShipMover").GetComponent<LaunchSequencer>().begin());
+				break;
+
+			case "dockingCompState":
+				GameObject g = GameObject.Find("DockingComp");
+				if(g != null){
+					int s = (int)message.Data[0];
+					if(s == 0){
+						g.GetComponent<DockingComputer>().TurnOff();
+					} else {
+						g.GetComponent<DockingComputer>().TurnOn();
+					}
+				}
+				break;
+			}
 	
 	
 	}
