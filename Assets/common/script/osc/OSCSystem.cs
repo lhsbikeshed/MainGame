@@ -51,18 +51,16 @@ public class OSCSystem:MonoBehaviour{
 	}
 	
 	public void Awake(){
-
+		Debug.Log("OscSystem awake!");
 		DontDestroyOnLoad(this);
 		OSCHandler.Instance.Init(); //init OSC
-		OSCMessage msg = new OSCMessage("/scene/change");
-		msg.Append<string>(Application.loadedLevelName);
-		OSCHandler.Instance.SendMessageToAll(msg);
+			
 
 		if(!firstResetSent){
 			firstResetSent = true;
 			//since this is only ever called at the start of the game
 			//send a reset signal to all consoles
-			msg = new OSCMessage("/game/reset");
+			OSCMessage msg = new OSCMessage("/game/reset");
 			OSCHandler.Instance.SendMessageToAll(msg);
 			firstResetSent = true;
 		}
@@ -87,6 +85,10 @@ public class OSCSystem:MonoBehaviour{
 			//get a list of all radar visible objects
 			targettingSystem.updateTrackingList();
 		}
+		OSCMessage msg = new OSCMessage("/scene/change");
+		msg.Append<string>(Application.loadedLevelName);
+		msg.Append<string>(currentScene.mapNodeId);
+		OSCHandler.Instance.SendMessageToAll( msg);
 	}
 	
 	
@@ -94,9 +96,7 @@ public class OSCSystem:MonoBehaviour{
 	public void OnLevelWasLoaded(int level) {
 		print ("level started");
 		//send scene change to all stations
-		OSCMessage msg = new OSCMessage("/scene/change");
-		msg.Append<string>(Application.loadedLevelName);
-		OSCHandler.Instance.SendMessageToAll( msg);
+
 		//redo all the object refs
 		init();
 	
@@ -330,6 +330,7 @@ public class OSCSystem:MonoBehaviour{
 				OSCMessage m = new OSCMessage("/scene/change");
 				string station = msgAddress[3];
 				m.Append<string>( Application.loadedLevelName);
+				m.Append<string>(currentScene.mapNodeId);
 				
 				OSCHandler.Instance.SendMessageToClient(station, m);
 				

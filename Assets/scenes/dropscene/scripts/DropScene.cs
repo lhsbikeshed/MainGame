@@ -138,6 +138,8 @@ public class DropScene: GenericScene {
 		//set up turbulence stuff
 		lastTurbulence = Time.fixedTime + 3.0f;
 		nextTurbulence = UnityEngine.Random.Range(5.0f, 15.0f);
+
+		JumpSystem.Instance.addRequirement(new SystemRequirement("LOCKED", "Jump System Damaged - repatch power"));
 		
 	}
 	
@@ -279,19 +281,19 @@ public class DropScene: GenericScene {
 		
 		//fix possible jump route overwrites
 		//if the players manage to reset the route then force it to the one we had when starting the scene
-		if(puzzleComplete && jumpSystem.jumpDest == ""){
-			jumpSystem.jumpDest = "warzone-landing";	//force to warzone scene
-		
-			jumpSystem.canJump = true;
-			jumpSystem.inGate = true;
-			
-			jumpSystem.updateJumpStatus();
-			
-			OSCMessage s1 = new OSCMessage("/ship/jumpStatus");
-			s1.Append<int>(jumpRoute);
-			OSCHandler.Instance.SendMessageToAll(s1);
-			
-		}
+//		if(puzzleComplete && jumpSystem.jumpDest == ""){
+//			//jumpSystem.jumpDest = "warzone-landing";	//force to warzone scene
+//		
+//			//jumpSystem.canJump = true;
+//			jumpSystem.inGate = true;
+//			JumpSystem.Instance.removeRequirement("LOCKED");
+//			jumpSystem.updateJumpStatus();
+//			
+////			OSCMessage s1 = new OSCMessage("/ship/jumpStatus");
+////			s1.Append<int>(jumpRoute);
+////			OSCHandler.Instance.SendMessageToAll(s1);
+//			
+//		}
 						
 	}
 	public void hitPlanet(){
@@ -328,7 +330,18 @@ public class DropScene: GenericScene {
 			
 		}
 	}
-	
+	void puzzleCompleted(){
+		theShip.GetComponent<PropulsionSystem>().enableSystem();		
+		
+		//theShip.GetComponent<JumpSystem>().canJump = true;
+		jumpSystem.inGate = true;
+		JumpSystem.Instance.removeRequirement("LOCKED");
+		jumpSystem.updateJumpStatus();
+		OSCHandler.Instance.RevertClientScreen("TacticalStation", "drop");		
+		OSCHandler.Instance.RevertClientScreen("EngineerStation", "drop");		
+		
+		puzzleComplete = true;
+	}
 	
 	public override void Update() {
 		if(weAreDying && Time.fixedTime - deathTime > 14.7f){
@@ -365,21 +378,8 @@ public class DropScene: GenericScene {
 					OSCHandler.Instance.SendMessageToAll(s);
 				
 				} else if ((int)message.Data[0] == 2){
-					theShip.GetComponent<JumpSystem>().enableSystem();
-					theShip.GetComponent<PropulsionSystem>().enableSystem();
-					PersistentScene ps = GameObject.Find("PersistentScripts").GetComponent<PersistentScene>();
-					ps.hyperspaceDestination = "warzone-landing";
-					ps.forcedHyperspaceFail = false;	
-					
 	
-					theShip.GetComponent<JumpSystem>().canJump = true;
-					theShip.GetComponent<JumpSystem>().inGate = true;
-					theShip.GetComponent<JumpSystem>().jumpDest = "warzone-landing";
-					OSCMessage s1 = new OSCMessage("/ship/jumpStatus");
-					s1.Append<int>(1);
-					OSCHandler.Instance.SendMessageToAll(s1);
-					
-					puzzleComplete = true;
+					puzzleCompleted();
 					
 				}
 				

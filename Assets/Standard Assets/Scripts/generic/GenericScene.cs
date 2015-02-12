@@ -11,6 +11,7 @@ public class GenericScene : MonoBehaviour {
 	public bool sceneIsJumpInterruption = false;	//is this scene midway through a jump sequence? If so then turn this on. The jump plotting
 													//display will then show display an override screen instead of text entry
 
+	public string mapNodeId = "";	//id number of this location on the paper map next to tactical
 
 	protected char[] separator = {'/'};
 

@@ -363,8 +363,13 @@ public class JumpSystem: BaseSubsystem
 			OSCMessage msg = new OSCMessage("/system/jumpSystem/currentRoute");
 			msg.Append(jumpDest);
 			OSCHandler.Instance.SendMessageToAll(msg);
+		} else if (operation == "whereAmI"){
+			GenericScene g = GameObject.Find ("SceneScripts").GetComponent<GenericScene>();
+			OSCMessage msg = new OSCMessage("/ship/state/currentLocationId");
+			msg.Append(g.mapNodeId);
+
+			OSCHandler.Instance.SendMessageToAll(msg);
 		}
-			
 			
 	}
 }

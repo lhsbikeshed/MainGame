@@ -60,6 +60,10 @@ public class WarzoneLandingScene: GenericScene {
 		theShip.rigidbody.drag = 0.7f;
 		shipSystem = theShip.GetComponent<ShipCore>();
 		sceneStartTime = Time.fixedTime;
+		//tell the clients we are now on the return leg of the journey, it prevents the jump plotter from triggering events
+		OSCMessage msg = new OSCMessage("/ship/state/setReturnJourney");
+		msg.Append(1);
+		OSCHandler.Instance.SendMessageToAll(msg);
 		
 		OSCHandler.Instance.ChangeClientScreen("PilotStation", "restrictedArea", true);			
 		OSCHandler.Instance.ChangeClientScreen("TacticalStation", "restrictedArea", true);		
