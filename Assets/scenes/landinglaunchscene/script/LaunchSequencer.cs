@@ -37,7 +37,7 @@ public class LaunchSequencer:MonoBehaviour{
 	}
 	
 	public void OnTriggerEnter(Collider c){
-		if(c.name == objectToMove.name && canBeUsed == false){
+		if(objectToMove != null && c.name == objectToMove.name && canBeUsed == false){
 		
 			canBeUsed = true;
 			OSCMessage m = new OSCMessage("/scene/launchland/grabberState");

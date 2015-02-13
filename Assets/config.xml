@@ -6,7 +6,7 @@
 	<client name="PilotStation">10.0.0.10:12002</client>
 	<client name="ModStation">127.0.0.1:12005</client>
 	<client name="Tablet">10.0.0.12:12005</client>
-	<client name="Tablet2">192.168.0.10:12005</client>
+	<client name="Tablet2">172.16.1.10:12005</client>
 	<client name="CommsStation">10.0.0.3:12003</client>
 	<client name="cam">10.0.0.50:12010</client>
 

@@ -199,6 +199,8 @@ public class JumpSystem: BaseSubsystem
 		if (shipCamera.getFov() <= 85.0f){
 			shipCamera.setFovs(85.0f);
 			restoreFov = false;
+			didWeWarpIn = false;
+
 		}
 		
 	}
@@ -210,7 +212,6 @@ public class JumpSystem: BaseSubsystem
 			resetAfterJump();
 			jumpDest = ""; //players will have to plot again to escape
 			jumpEffects.setJumpEffectState(false);
-			didWeWarpIn = false;
 			shipCamera.setFovs(180.0f);
 		}
 	}   

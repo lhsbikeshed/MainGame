@@ -198,7 +198,7 @@ public class OSCSystem:MonoBehaviour{
 	
 	}
 	
-	//TODO change this to a string name of est scene
+	//fake warp the ship to the given scene
 	public void jumpToScene(string id){
 		UnityEngine.Debug.Log("Forcing ship to scene: " + id);
 		
