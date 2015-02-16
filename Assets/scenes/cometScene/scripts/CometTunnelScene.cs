@@ -120,7 +120,7 @@ public class CometTunnelScene: GenericScene , CodeAuthSystem.AuthCodeListener {
 
 			theShip.GetComponent<PropulsionSystem>().enableSystem();
 
-			theShip.GetComponent<JumpSystem>().forceFlatSpace(true);
+			theShip.GetComponent<JumpSystem>().setFlatSpace(true);
 			
 			//tell the players the gravity well has been cleared
 			OSCHandler.Instance.DisplayBannerAtClient("EngineerStation", "SUCCESS", "Gravity well cleared\r\nEngage hyperspace system to resume course", 4000);

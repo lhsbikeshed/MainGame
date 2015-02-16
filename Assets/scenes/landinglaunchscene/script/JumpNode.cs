@@ -30,7 +30,7 @@ public class JumpNode:MonoBehaviour{
 	public void OnTriggerEnter(Collider other) {
 		if(gateEnabled){
 			if (other.gameObject == theShip){
-				theShip.GetComponent<JumpSystem>().forceFlatSpace(true);
+				theShip.GetComponent<JumpSystem>().setFlatSpace(true);
 				
 
 				PersistentScene ps = GameObject.Find("PersistentScripts").GetComponent<PersistentScene>();
@@ -87,7 +87,7 @@ public class JumpNode:MonoBehaviour{
 	public void OnTriggerExit(Collider other) {
 		
 		if (other.gameObject == theShip){
-			theShip.GetComponent<JumpSystem>().forceFlatSpace(false);
+			theShip.GetComponent<JumpSystem>().setFlatSpace(false);
 			
 		} 
 	}

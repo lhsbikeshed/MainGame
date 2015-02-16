@@ -287,8 +287,11 @@ public class LaunchScene: GenericScene {
 	
 	
 	public override void configureClientScreens(){
-	
-		OSCHandler.Instance.ChangeClientScreen("PilotStation", "docking");			//give the pilot a dockign comp
+		if(sceneMode == SceneMode.MODE_LAUNCH){
+			OSCHandler.Instance.ChangeClientScreen("PilotStation", "docking");			//give the pilot a dockign comp
+		} else {
+			OSCHandler.Instance.ChangeClientScreen("PilotStation", "radar");	
+		}
 		OSCHandler.Instance.ChangeClientScreen("TacticalStation", "weapons");		//give the tactical a weapons screen
 		OSCHandler.Instance.ChangeClientScreen("EngineerStation", "power");			//give the engineer power man console
 	

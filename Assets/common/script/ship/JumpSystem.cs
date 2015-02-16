@@ -61,7 +61,7 @@ public class JumpSystem: BaseSubsystem
 			restoreFov = true;
 			shipCamera.setFovs(180.0f);
 		}
-		forceFlatSpace(false);	//we arent in a gate or somewhere we can jump
+		setFlatSpace(false);	//we arent in a gate or somewhere we can jump
 		jumpBlocked = false;
 	}
 	
@@ -71,9 +71,9 @@ public class JumpSystem: BaseSubsystem
 
 
 	//force the ship to be in an area of flat spacetime
-	public void forceFlatSpace(bool state){
+	public void setFlatSpace(bool state){
 
-		if(state == false){
+		if(state == true){
 			removeRequirement("FLATSPACE");
 		} else {
 			addRequirement(new SystemRequirement("FLATSPACE", "not in area of smooth spacetime"));
@@ -267,6 +267,9 @@ public class JumpSystem: BaseSubsystem
 		if(canBeUsed() ==  false){
 			result = false;
 		}
+		if(jumpChargePercent < 1f){
+			result = false;
+		}
 		return result;
 	}
 
@@ -282,6 +285,9 @@ public class JumpSystem: BaseSubsystem
 		// other requirements are handled by the requirements system stuff. landing gear and gravity well so far.
 		if(canBeUsed() ==  false){
 			noJumpReason += getRequirementString();
+		}
+		if(jumpChargePercent < 1f){
+			noJumpReason += "> Jump System Not Charged\r\n";
 		}
 		return noJumpReason;
 	}
