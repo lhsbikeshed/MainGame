@@ -334,7 +334,7 @@ public class DropScene: GenericScene {
 		theShip.GetComponent<PropulsionSystem>().enableSystem();		
 		
 		//theShip.GetComponent<JumpSystem>().canJump = true;
-		jumpSystem.inGate = true;
+		JumpSystem.Instance.removeRequirement("FLATSPACE");
 		JumpSystem.Instance.removeRequirement("LOCKED");
 		jumpSystem.updateJumpStatus();
 		OSCHandler.Instance.RevertClientScreen("TacticalStation", "drop");		

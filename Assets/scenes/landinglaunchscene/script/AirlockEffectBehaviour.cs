@@ -36,8 +36,9 @@ public class AirlockEffectBehaviour:MonoBehaviour{
 		foreach(BlinkenFlareBehaviour l in lights){
 			l.blinking = true;
 		}
-		audioEffects[1].Play();
-		
+		if(audioEffects.Length > 0){
+			audioEffects[1].Play();
+		}
 	}
 	
 	public void stop(){

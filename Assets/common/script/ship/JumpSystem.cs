@@ -22,8 +22,7 @@ public class JumpSystem: BaseSubsystem
 	//JUMP STUFF
 
 	public bool didWeWarpIn;	//did we jump into this scene?
-	public bool canJump;		//are we allowed to jump? Used by Jump Node
-	public bool inGate;		//are we in a gate
+	//public bool canJump;		//are we allowed to jump? Used by Jump Node
 	public bool inTunnelGate; //are we in a tunnel gate?
 	public string  jumpDest;	//where we jump to after the hyperspace scene is finished
 	
@@ -62,12 +61,24 @@ public class JumpSystem: BaseSubsystem
 			restoreFov = true;
 			shipCamera.setFovs(180.0f);
 		}
-		
+		forceFlatSpace(false);	//we arent in a gate or somewhere we can jump
 		jumpBlocked = false;
 	}
 	
 	
 	public override void repair(float amount){
+	}
+
+
+	//force the ship to be in an area of flat spacetime
+	public void forceFlatSpace(bool state){
+
+		if(state == false){
+			removeRequirement("FLATSPACE");
+		} else {
+			addRequirement(new SystemRequirement("FLATSPACE", "not in area of smooth spacetime"));
+		}
+		updateJumpStatus();
 	}
 	
 	public void go(){
@@ -112,12 +123,12 @@ public class JumpSystem: BaseSubsystem
 	
 	public override void disableSystem(){
 		if(systemEnabled){
-			canJump = false;
+			//canJump = false;
 			systemEnabled = false;
 			//0jumpChargePercent = 0.0;
 			//soundSource.Stop();
 			discharging = true;
-			canJump = false;
+			//canJump = false;
 			updateJumpStatus();
 			GetComponent<PropulsionSystem>().hyperspaceModifier = false;
 		}
@@ -131,11 +142,11 @@ public class JumpSystem: BaseSubsystem
 				jumpChargePercent += (chargeRate * damage * powerState) / 100.0f;
 				if(jumpChargePercent >= 1.0f){
 					jumpChargePercent = 1.0f;
-					canJump = true;
+					//canJump = true;
 					updateJumpStatus();
 
 				} else {
-					canJump = false;
+					//canJump = false;
 					updateJumpStatus();
 				}
 				soundSource.pitch = jumpChargePercent;
@@ -196,7 +207,7 @@ public class JumpSystem: BaseSubsystem
 	//restore fov after a jump - not used until i split the guilayer and game into seperate cameras
 	if (restoreFov){
 		shipCamera.setFovs( Mathf.Lerp(shipCamera.getFov(),85.0f,Time.deltaTime * 5.0f) );
-		if (shipCamera.getFov() <= 85.0f){
+		if (shipCamera.getFov() <= 85.1f){
 			shipCamera.setFovs(85.0f);
 			restoreFov = false;
 			didWeWarpIn = false;
@@ -210,6 +221,7 @@ public class JumpSystem: BaseSubsystem
 		
 	   	if(didWeWarpIn){
 			resetAfterJump();
+
 			jumpDest = ""; //players will have to plot again to escape
 			jumpEffects.setJumpEffectState(false);
 			shipCamera.setFovs(180.0f);
@@ -224,7 +236,7 @@ public class JumpSystem: BaseSubsystem
 
 		
 		OSCMessage msg = new OSCMessage("/ship/jumpStatus");	
-		if(inGate && canJump && jumpDest != ""){		
+		if(canShipJump() && jumpDest != ""){		
 			msg.Append<int>(1);		
 		} else {
 			msg.Append<int>(0);
@@ -243,28 +255,45 @@ public class JumpSystem: BaseSubsystem
 		theShip.GetComponent<PropulsionSystem>().rotationDisabled  = true;
 	}
 
+	public bool canShipJump(){
+		bool result = true;
+		if(TargettingSystem.instance.weaponState != WeaponState.WEAPON_STOWED){
+			result = false;
+		}
+		if(jumpDest == ""){
+			result = false;
+		}
+		// other requirements are handled by the requirements system stuff. landing gear and gravity well so far.
+		if(canBeUsed() ==  false){
+			result = false;
+		}
+		return result;
+	}
+
+	public string getFailureReason(){
+		string noJumpReason = "Cannot jump\r\n";
+
+		if(TargettingSystem.instance.weaponState != WeaponState.WEAPON_STOWED){
+			noJumpReason += "> Retract Weapons Bays\r\n";
+		}
+		if(jumpDest == ""){
+			noJumpReason += "> No Route Set\r\n";
+		}
+		// other requirements are handled by the requirements system stuff. landing gear and gravity well so far.
+		if(canBeUsed() ==  false){
+			noJumpReason += getRequirementString();
+		}
+		return noJumpReason;
+	}
 	/* Begin a jump sequence
 	 * only works if we are inside a gate ring, the jump system reports its charged
 	 * and we arent currently jumping (prevents idiots from spamming the jump button 
 	*/
 	public void startJump(){	//TODO replace these with systemrequirements
-		string noJumpReason = "Cannot jump\r\n";
-		bool jumpFail = false;
-		
-		if(TargettingSystem.instance.weaponState != WeaponState.WEAPON_STOWED){
-			jumpFail = true;
-			noJumpReason += "> Retract Weapons Bays\r\n";
-		}
-		if(jumpDest == ""){
-			jumpFail = true;
-			noJumpReason += "> No Route Set\r\n";
-		}
-		// other requirements are handled by the requirements system stuff. landing gear and gravity well so far.
-		if(canBeUsed() ==  false){
-			jumpFail = true;
-			noJumpReason += getRequirementString();
-		}
-		if(jumpFail){
+		bool shipCanJump = canShipJump();
+
+		if(!shipCanJump){
+			string noJumpReason = getFailureReason();
 			//give the players the bad news
 			OSCHandler.Instance.DisplayBannerAtClient("TacticalStation", "Jump Error", noJumpReason, 3000);
 			OSCHandler.Instance.DisplayBannerAtClient("EngineerStation", "Jump Error", noJumpReason, 3000);
@@ -272,7 +301,7 @@ public class JumpSystem: BaseSubsystem
 		}
 		
 		
-		if(inGate && canJump && !jumping && jumpFail == false){
+		if(shipCanJump && !jumping){
 			
 			go();
 			jumpStartTime = Time.fixedTime;

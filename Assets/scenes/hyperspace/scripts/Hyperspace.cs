@@ -60,7 +60,7 @@ public class Hyperspace: GenericScene {
 		jumpSystem = theShip.GetComponent<JumpSystem>();
 		
 		theShip.GetComponentInChildren<JumpEffects>().setJumpEffectState(false);
-		jumpSystem.inGate = false;
+		jumpSystem.addRequirement(new SystemRequirement("FLATSPACE", "not in area of flat spacetime"));
 		theShip.GetComponentInChildren<Camera>().backgroundColor = new Color(0.0f,0.0f,0.0f);
 		
 		ps = GameObject.Find("PersistentScripts").GetComponent<PersistentScene>();

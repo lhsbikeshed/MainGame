@@ -30,10 +30,9 @@ public class JumpNode:MonoBehaviour{
 	public void OnTriggerEnter(Collider other) {
 		if(gateEnabled){
 			if (other.gameObject == theShip){
-				theShip.GetComponent<JumpSystem>().inGate = true;
+				theShip.GetComponent<JumpSystem>().forceFlatSpace(true);
 				
-				theShip.GetComponent<JumpSystem>().updateJumpStatus();
-				
+
 				PersistentScene ps = GameObject.Find("PersistentScripts").GetComponent<PersistentScene>();
 				
 				ps.forcedHyperspaceFail = forcedFail;
@@ -88,8 +87,7 @@ public class JumpNode:MonoBehaviour{
 	public void OnTriggerExit(Collider other) {
 		
 		if (other.gameObject == theShip){
-			theShip.GetComponent<JumpSystem>().inGate = false;
-		    theShip.GetComponent<JumpSystem>().updateJumpStatus();
+			theShip.GetComponent<JumpSystem>().forceFlatSpace(false);
 			
 		} 
 	}
