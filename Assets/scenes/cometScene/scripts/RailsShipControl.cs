@@ -4,13 +4,22 @@ using System;
 
 public class RailsShipControl:MonoBehaviour{
 	
-	public Vector3 stickPos;
+	public Vector3 stickPos;	//joystick position from pilots console
 	public Vector3 angleClampMin;
 	public Vector3 angleClampMax;
 	public float xVelocityLimit = 10.0f;
 	public float yVelocityLimit = 10.0f;
-	
+
 	public float moveScale = 0.7f;
+	//do we restrict movement to a plane?
+	public bool restrictMovement = true;
+	//do we force the ship to rotate to our forward?
+	public bool restrictRotation = true;
+
+	Vector3 bitsOffset;
+	Transform bits;
+
+	public Transform movementDirection;
 	
 	float rotX;
 	float rotY;
@@ -30,6 +39,22 @@ public class RailsShipControl:MonoBehaviour{
 		theShip.rigidbody.constraints = RigidbodyConstraints.FreezePosition;
 		initialShipRotation = theShip.localEulerAngles;
 		PropulsionSystem.instance.enableSystem();
+
+		if(movementDirection == null){
+			GameObject go=  new GameObject();
+			go.name = "MovementDirection";
+			go.transform.parent = transform;
+			movementDirection = go.transform;
+		}
+
+		bits = transform.Find ("Bits");
+		bitsOffset = bits.localPosition;
+	}
+
+	public void setDirection(Quaternion direction){
+		movementDirection.rotation = direction;
+
+
 	}
 	
 	public void OnDestroy(){
@@ -39,54 +64,43 @@ public class RailsShipControl:MonoBehaviour{
 	}
 	
 	public void FixedUpdate() {
-		newMove();
-	
+		if(restrictMovement) newMove();
+		if(restrictRotation) doTorque();
+
+		bits.position = transform.position + movementDirection.TransformDirection(bitsOffset);
+		bits.LookAt(transform.position);
+	}
+
+	private void doTorque(){
+		Vector3 predictedFwd = Quaternion.AngleAxis(
+			theShip.rigidbody.angularVelocity.magnitude * Mathf.Rad2Deg * stability / speed,
+			theShip.rigidbody.angularVelocity
+			) * -theShip.transform.forward;
+		
+		Vector3 torqueVector = Vector3.Cross(predictedFwd, movementDirection.forward);
+		theShip.rigidbody.AddTorque(torqueVector * speed * speed);
 	}
 	
 	public void newMove(){
 		stickPos = PropulsionSystem.instance.joyPos;
 		//read the current rotation of the ship and project it onto our xy plane
+
+
+
 		Vector3 shipRot = theShip.TransformDirection(Vector3.forward);
-		Vector3 xVal = Vector3.Project(shipRot, transform.right);
-		Vector3 yVal = Vector3.Project(shipRot, transform.up);
+		Vector3 xVal = Vector3.Project(shipRot, movementDirection.right);
+		Vector3 yVal = Vector3.Project(shipRot, movementDirection.up);
 		
 		transform.position += new Vector3(xVal.x, yVal.y, 0.0f) * moveScale;
-		
-		Vector3 predictedFwd = Quaternion.AngleAxis(
-	         theShip.rigidbody.angularVelocity.magnitude * Mathf.Rad2Deg * stability / speed,
-	         theShip.rigidbody.angularVelocity
-	     ) * -theShip.transform.forward;
-	 
-	     Vector3 torqueVector = Vector3.Cross(predictedFwd, Vector3.forward);
-	     theShip.rigidbody.AddTorque(torqueVector * speed * speed);
-	     
-		
-		
-		
+
+
 	}
-	
-	public void oldMove(){
-		stickPos = PropulsionSystem.instance.joyPos;
-		rotX += stickPos.x * 1.0f;
-		rotY += stickPos.y * 1.0f;
-		rotZ += stickPos.z;
-		
-		rotX = Mathf.LerpAngle(rotX, 0.0f, 0.01f);	
-		rotY = Mathf.LerpAngle(rotY, 0.0f, 0.01f);
-		
-		
-		
-	    rotY = Mathf.Clamp (rotY, angleClampMin.y, angleClampMax.y);
-		rotX = Mathf.Clamp (rotX, angleClampMin.x, angleClampMax.x);
-		Vector3 newRot = new Vector3(rotY, rotX, rotZ);
-		            
-	    theShip.localEulerAngles =  initialShipRotation + newRot;
-	    
-	    Vector3 newPos = new Vector3(newRot.y, -newRot.x, 0.0f) * 0.01f;
-	    newPos = theShip.TransformDirection(newPos);
-	    newPos.z = 0.0f;
-	    newPos.x = Mathf.Clamp(newPos.x, -xVelocityLimit, xVelocityLimit);
-	    newPos.y = Mathf.Clamp(newPos.y, -yVelocityLimit, yVelocityLimit);
-	    transform.position += newPos;
+
+
+	public void OnDrawGizmos(){
+		if(movementDirection != null){
+			Gizmos.DrawLine(transform.position, transform.position + movementDirection.TransformDirection (-Vector3.forward*10));
+		}
 	}
+
 }
