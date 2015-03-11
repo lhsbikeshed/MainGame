@@ -15,7 +15,7 @@ public class AlignWithVelocity:MonoBehaviour{
 	}
 	
 	public void Update() {
-		transform.position = target.transform.position + (target.rigidbody.velocity.normalized * distance);
+		transform.position = target.transform.position + (target.GetComponent<Rigidbody>().velocity.normalized * distance);
 		
 		transform.LookAt(target);
 		transform.rotation *= Quaternion.Euler(180.0f,0.0f,0.0f);

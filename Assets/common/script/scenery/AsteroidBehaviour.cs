@@ -27,7 +27,7 @@ public class AsteroidBehaviour: DynamicFieldObjectBehaviour{
 		
 	}
 	public override void resetTo(Vector3 newpos){
-		rigidbody.isKinematic = true;
+		GetComponent<Rigidbody>().isKinematic = true;
 		alphaLevel = 0.0f;
 		meshRenderer.material.color =  new Color(1.0f,1.0f,1.0f,alphaLevel);
 		transform.position = newpos;

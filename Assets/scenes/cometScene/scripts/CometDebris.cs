@@ -17,7 +17,7 @@ public class CometDebris : GeneralTrackableTarget{
 		base.Start();
 		theShip = GameObject.Find("TheShip").transform;
 		
-		rigidbody.angularVelocity = UnityEngine.Random.onUnitSphere * 0.1f;
+		GetComponent<Rigidbody>().angularVelocity = UnityEngine.Random.onUnitSphere * 0.1f;
 		alph = 0.0f;
 		
 		mat = GetComponentInChildren<Renderer>().material;

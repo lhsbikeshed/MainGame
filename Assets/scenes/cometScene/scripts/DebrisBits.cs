@@ -14,7 +14,7 @@ public class DebrisBits:MonoBehaviour{
 	}
 	
 	public void FixedUpdate() {
-	 	Vector3 vel = theShip.rigidbody.velocity;
+	 	Vector3 vel = theShip.GetComponent<Rigidbody>().velocity;
 	 	
 		Quaternion q = Quaternion.Euler(vel.y * scaleFactor, -vel.x * scaleFactor,0.0f);
 		transform.localRotation = Quaternion.RotateTowards(transform.localRotation, startRot * q,10f);

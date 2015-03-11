@@ -58,8 +58,8 @@ public class LaunchScene: GenericScene {
 			theShip.transform.position = exitPoint.transform.position;
 			theShip.transform.rotation = exitPoint.transform.rotation;
 			float speed = 0.0f;
-			speed = theShip.rigidbody.velocity.magnitude;
-			theShip.rigidbody.velocity = (exitPoint.transform.rotation * Vector3.forward) * speed;
+			speed = theShip.GetComponent<Rigidbody>().velocity.magnitude;
+			theShip.GetComponent<Rigidbody>().velocity = (exitPoint.transform.rotation * Vector3.forward) * speed;
 			
 			UnityEngine.Debug.Log("Found exit node.." + exitPoint.transform.position);
 			
@@ -136,9 +136,9 @@ public class LaunchScene: GenericScene {
 		clamp.trigger();
 
 		yield return new WaitForSeconds(3.5f);
-		otherShip.transform.rigidbody.constraints = RigidbodyConstraints.None;
-		otherShip.rigidbody.AddRelativeForce(Vector3.down * 30.0f, ForceMode.Impulse);
-		otherShip.rigidbody.AddRelativeTorque(Vector3.forward * UnityEngine.Random.Range(-10.0f, 10.0f), ForceMode.Impulse);
+		otherShip.transform.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+		otherShip.GetComponent<Rigidbody>().AddRelativeForce(Vector3.down * 30.0f, ForceMode.Impulse);
+		otherShip.GetComponent<Rigidbody>().AddRelativeTorque(Vector3.forward * UnityEngine.Random.Range(-10.0f, 10.0f), ForceMode.Impulse);
 		otherShip.SetAutopilotRoute(autopilotRoutes[0]);
 		otherShip.StartFlight();
 		
@@ -153,7 +153,7 @@ public class LaunchScene: GenericScene {
 			StartCoroutine(GameObject.Find("ShipMover").GetComponent<LaunchSequencer>().begin());
 			
 			if(camPoint != null){
-				camPoint.OnTriggerEnter(theShip.collider);
+				camPoint.OnTriggerEnter(theShip.GetComponent<Collider>());
 			}
 		}
 	}

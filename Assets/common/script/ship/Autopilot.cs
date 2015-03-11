@@ -84,7 +84,7 @@ public class Autopilot:MonoBehaviour{
 			velocity = Mathf.Clamp(dist,0.0f,maxVelocity);
 			velocity *= Mathf.Abs(Vector3.Dot((theShip.transform.position - nextWaypoint.transform.position).normalized, theShip.transform.TransformDirection(Vector3.forward)));
 			
-			theShip.rigidbody.AddRelativeForce(Vector3.forward * velocity, ForceMode.Acceleration);
+			theShip.GetComponent<Rigidbody>().AddRelativeForce(Vector3.forward * velocity, ForceMode.Acceleration);
 			
 			Quaternion rotation = Quaternion.LookRotation(nextWaypoint.transform.position - theShip.transform.position, nextWaypoint.transform.TransformDirection(Vector3.up));
 			//rotation.eulerAngles.z = 0;

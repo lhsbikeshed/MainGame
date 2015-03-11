@@ -46,7 +46,7 @@ public class UndercarriageBehaviour:MonoBehaviour{
 	//true for collide, false for not
 	public void updateFootColliders(bool st){
 		foreach(UnityEngine.Transform g in colliders){
-			g.collider.isTrigger = !st;
+			g.GetComponent<Collider>().isTrigger = !st;
 		}
 	}
 	

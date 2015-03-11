@@ -71,7 +71,7 @@ public class IncomingMissile: TargettableObject {
 			statValues[0] = health;
 			statValues[1] = lifeTime;
 			//scale velocity based on how fast ship is going, otherwise its too damned hard
-			velocity = 40 + (targetTransform.rigidbody.velocity.magnitude * 0.8f) + randVel;
+			velocity = 40 + (targetTransform.GetComponent<Rigidbody>().velocity.magnitude * 0.8f) + randVel;
 			velocity *= Mathf.Abs(Vector3.Dot((transform.position - targetTransform.position).normalized, transform.TransformDirection(Vector3.forward)));
 			
 			transform.Translate(Vector3.forward * velocity * Time.deltaTime);
@@ -127,11 +127,11 @@ public class IncomingMissile: TargettableObject {
 	}
 	
 	public void OnTriggerEnter(Collider c){
-		if(c.collider.name == "TheShip" ){
+		if(c.GetComponent<Collider>().name == "TheShip" ){
 			if(!isDummy){
 				StartCoroutine(c.gameObject.GetComponent<ShipCore>().damageShip((float)UnityEngine.Random.Range(8,12), "Exploded by missile"));
 			}
-			c.rigidbody.rigidbody.AddExplosionForce(200.0f, transform.position, 100.0f,0.0f,ForceMode.Impulse);
+			c.GetComponent<Rigidbody>().GetComponent<Rigidbody>().AddExplosionForce(200.0f, transform.position, 100.0f,0.0f,ForceMode.Impulse);
 			StartCoroutine(explode());
 		}
 		

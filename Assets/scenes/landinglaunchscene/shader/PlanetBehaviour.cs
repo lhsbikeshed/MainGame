@@ -16,7 +16,7 @@ public class PlanetBehaviour : MonoBehaviour {
 		//the unity editor coords and scale are out by a factor of 100
 		//transform.position *= 1.0f / UniverseController._instance.universeScale;
 		//transform.localScale *= 1.0f / UniverseController._instance.universeScale;
-		mat = renderer.material;
+		mat = GetComponent<Renderer>().material;
 		lightSource = GameObject.Find ("Directional light").transform;
 		skyboxCamera = GameObject.Find("skyboxCamera").transform;
 	

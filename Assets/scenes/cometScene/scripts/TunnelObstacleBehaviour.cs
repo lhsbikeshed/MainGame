@@ -36,17 +36,17 @@ public class TunnelObstacleBehaviour: GeneralTrackableTarget {
 	public void doExplosion(Vector3 source){
 		trashed = true;
 		foreach(Transform t in childParts){
-			t.rigidbody.constraints = RigidbodyConstraints.None;
-			t.rigidbody.AddExplosionForce(5000f, source, 500f);
+			t.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+			t.GetComponent<Rigidbody>().AddExplosionForce(9000f, source, 700f);
 			
 		}
 	}
 
-	public void OnTriggerEnter(Collider col){
+	public void OnCollisionEnter(Collision col){
 //		Debug.Log(col.gameObject.name);
 		
-		if(col.gameObject.name == "TheShip"){
-			doExplosion(col.rigidbody.transform.position);
+		if(col.gameObject.name == "TheShip" && trashed == false){
+			doExplosion(col.gameObject.GetComponent<Rigidbody>().transform.position);
 		}
 
 	}

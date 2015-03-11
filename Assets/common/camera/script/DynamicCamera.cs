@@ -91,13 +91,13 @@ public class DynamicCamera:MonoBehaviour{
 			sbNew.layer = 9;
 			skyboxCamera = sbNew.GetComponent<Camera>();
 			skyboxCamera.cullingMask = 1 << LayerMask.NameToLayer("skybox") ;
-			skyboxCamera.fieldOfView = camera.fieldOfView;
-			skyboxCamera.depth = camera.depth;
+			skyboxCamera.fieldOfView = GetComponent<Camera>().fieldOfView;
+			skyboxCamera.depth = GetComponent<Camera>().depth;
 			skyboxCamera.farClipPlane = 5500.0f;
-			camera.depth += 1.0f;
-			camera.clearFlags = CameraClearFlags.Depth;
-			camera.cullingMask = camera.cullingMask & ~(1 << LayerMask.NameToLayer("skybox"));
-			skyboxCamera.rect = camera.rect;
+			GetComponent<Camera>().depth += 1.0f;
+			GetComponent<Camera>().clearFlags = CameraClearFlags.Depth;
+			GetComponent<Camera>().cullingMask = GetComponent<Camera>().cullingMask & ~(1 << LayerMask.NameToLayer("skybox"));
+			skyboxCamera.rect = GetComponent<Camera>().rect;
 			skyboxCamera.clearFlags = CameraClearFlags.Skybox;
 			depthSkyboxObject = sbNew.transform;
 			//remember ref for mapcontroller for camera scaling
@@ -108,22 +108,22 @@ public class DynamicCamera:MonoBehaviour{
             tmp_cs1.x = 0.5f;
             tmp_cs1.height = 1.0f;
             skyboxCamera.rect = tmp_cs1;
-			var tmp_cs2 = sourceSkyboxObject.camera.rect;
+			var tmp_cs2 = sourceSkyboxObject.GetComponent<Camera>().rect;
             tmp_cs2.width = 0.5f;
             tmp_cs2.x = 0.0f;
-            sourceSkyboxObject.camera.rect = tmp_cs2;
+            sourceSkyboxObject.GetComponent<Camera>().rect = tmp_cs2;
 			
-			var tmp_cs3 = camera.rect;
+			var tmp_cs3 = GetComponent<Camera>().rect;
             tmp_cs3.x = 0.5f;
             tmp_cs3.width = 0.5f;
             tmp_cs3.height = 1.0f;
-            camera.rect = tmp_cs3;
+            GetComponent<Camera>().rect = tmp_cs3;
 			if(theShip != null){
 				resetToShip();
 			}
 		} else {
-			camera.clearFlags = CameraClearFlags.Skybox;
-			camera.depth = -1.0f;
+			GetComponent<Camera>().clearFlags = CameraClearFlags.Skybox;
+			GetComponent<Camera>().depth = -1.0f;
 		}
 	
 			
@@ -167,7 +167,7 @@ public class DynamicCamera:MonoBehaviour{
 		transform.localPosition = Vector3.zero;
 		transform.localRotation = Quaternion.identity;
 		transform.LookAt(theShip);
-		camera.fieldOfView = 60.0f;
+		GetComponent<Camera>().fieldOfView = 60.0f;
 		lookAtShip = true;
 		canCabinCamBeUsed = true;
 	}

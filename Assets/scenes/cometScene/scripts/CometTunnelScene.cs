@@ -176,7 +176,7 @@ public class CometTunnelScene: GenericScene , CodeAuthSystem.AuthCodeListener {
 		//turn off the propulsion system but allow translation
 		theShip.GetComponent<PropulsionSystem>().disableSystem();
 		theShip.GetComponent<PropulsionSystem>().translationDisabled = false;	
-		theShip.rigidbody.drag = 0.5f;	
+		theShip.GetComponent<Rigidbody>().drag = 0.5f;	
 		//turn off jumpSystem	
 		theShip.GetComponent<JumpSystem>().disableSystem();
 		//play a failure sound effect of some sort

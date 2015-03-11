@@ -79,9 +79,11 @@ public class PropulsionSystem: BaseSubsystem
 	}
 	
 	public override void disableSystem(){
+
+
 		systemEnabled = false;
 		
-		theShip.rigidbody.drag = 0.0f;
+		theShip.GetComponent<Rigidbody>().drag = 0.0f;
 		propulsionModifier = 0.0f;
 		throttleDisabled = true;
 		rotationDisabled = true;
@@ -90,10 +92,12 @@ public class PropulsionSystem: BaseSubsystem
 	}
 	
 	public override void enableSystem(){
+		if(reactor.systemEnabled == false) return;
+
 		afterburnerCooling = false;
 		
 		systemEnabled = true;
-		theShip.rigidbody.drag = 0.5f;
+		theShip.GetComponent<Rigidbody>().drag = 0.5f;
 		throttleDisabled = false;
 		rotationDisabled = false;
 		translationDisabled = false;
@@ -151,7 +155,7 @@ public class PropulsionSystem: BaseSubsystem
 		 
 		
 	 	if (rotationDisabled  == false){				//FIX ME
-			rigidbody.AddRelativeTorque(new Vector3(ry,rz,rx));	   	    
+			GetComponent<Rigidbody>().AddRelativeTorque(new Vector3(ry,rz,rx));	   	    
 			//rigidbody.velocity = AddPos * (Time.deltaTime * throttle);
 		}
 		if(throttleDisabled == false){
@@ -165,15 +169,15 @@ public class PropulsionSystem: BaseSubsystem
 				}
 			} 
 			if(!thrustReverser){
-				rigidbody.AddForce (transform.TransformDirection(Vector3.forward * thrust * 2));
+				GetComponent<Rigidbody>().AddForce (transform.TransformDirection(Vector3.forward * thrust * 2));
 			} else {
-				rigidbody.AddForce (transform.TransformDirection(Vector3.forward * thrust * -0.5f));
+				GetComponent<Rigidbody>().AddForce (transform.TransformDirection(Vector3.forward * thrust * -0.5f));
 			}
 			
 			rocketSFXSource.volume = scaledThrottle;
 		}
 		if(translationDisabled == false){
-			rigidbody.AddRelativeForce(new Vector3(tx,ty,0.0f));
+			GetComponent<Rigidbody>().AddRelativeForce(new Vector3(tx,ty,0.0f));
 		}
 	    	
 		
@@ -188,6 +192,8 @@ public class PropulsionSystem: BaseSubsystem
 	}
 	
 	public void setThrustReverserState(bool state){
+		if(reactor.systemEnabled == false) return;
+
 		if(thrustReverser != state){
 		
 			thrustReverser = state;
@@ -202,7 +208,8 @@ public class PropulsionSystem: BaseSubsystem
 	}
 	
 	public void startAfterburner(){
-		if(!systemEnabled ) return;
+		//if reactor is off or the jump system is charging then do nothing
+		if(!systemEnabled || JumpSystem.Instance.systemEnabled == true) return;
 		
 		OSCMessage m = null;
 		if(afterburnerCooling || thrustReverser){		//no afterburner if the reverser is deployed or the ab is cooling

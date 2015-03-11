@@ -9,16 +9,16 @@ public class OrbiterTest : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		rigidbody.velocity	= transform.TransformDirection(initialSpeed);
+		GetComponent<Rigidbody>().velocity	= transform.TransformDirection(initialSpeed);
 	}
 	
 	// Update is called once per frame
 	void FixedUpdate () {
 		Vector3 dir = orbitCentre.position - transform.position;
 		float magSq = dir.sqrMagnitude;
-		float force = (rigidbody.mass + orbitCentre.rigidbody.mass) / magSq;
+		float force = (GetComponent<Rigidbody>().mass + orbitCentre.GetComponent<Rigidbody>().mass) / magSq;
 		force *= forceFalloff;
-		rigidbody.AddForce(dir * force);
+		GetComponent<Rigidbody>().AddForce(dir * force);
 
 
 

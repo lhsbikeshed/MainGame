@@ -18,24 +18,24 @@ public class SpaceParticles : MonoBehaviour, CellChangeListener{
 	}
 	
 	void FixedUpdate () {
-		transform.position = target.transform.position + (target.rigidbody.velocity.normalized * distance);
+		transform.position = target.transform.position + (target.GetComponent<Rigidbody>().velocity.normalized * distance);
 	
 		transform.LookAt(target);
 		transform.rotation *= Quaternion.Euler(180,0,0);
 	
-		if(target.rigidbody.velocity.magnitude < 10.0f){
-			particleSystem.enableEmission = false;
+		if(target.GetComponent<Rigidbody>().velocity.magnitude < 10.0f){
+			GetComponent<ParticleSystem>().enableEmission = false;
 		} else {
-			particleSystem.enableEmission = true;
+			GetComponent<ParticleSystem>().enableEmission = true;
 		}
 	}
 
 	/* toggle the effect on and off */
 	public void SetState(bool state){
 		if(state == false){
-			particleSystem.enableEmission = false;
+			GetComponent<ParticleSystem>().enableEmission = false;
 		} else {
-			particleSystem.enableEmission = true;
+			GetComponent<ParticleSystem>().enableEmission = true;
 		}
 	}
 	
@@ -43,8 +43,8 @@ public class SpaceParticles : MonoBehaviour, CellChangeListener{
 		//we changed map cells causing the ship to reset its world pos
 		//particles need moving back relative to the ship or they jitter
 		//Debug.Log (offset);
-		ParticleSystem.Particle[] particles = new ParticleSystem.Particle[particleSystem.particleCount+1];;
- 		int pCount = particleSystem.GetParticles(particles);
+		ParticleSystem.Particle[] particles = new ParticleSystem.Particle[GetComponent<ParticleSystem>().particleCount+1];;
+ 		int pCount = GetComponent<ParticleSystem>().GetParticles(particles);
 	    // Do changes
 	    for (int i = 0; i < pCount; i++)
 	    {
@@ -52,6 +52,6 @@ public class SpaceParticles : MonoBehaviour, CellChangeListener{
 	    }
 	 
 	    // Reassign back to emitter
-	    particleSystem.SetParticles(particles, pCount);
+	    GetComponent<ParticleSystem>().SetParticles(particles, pCount);
 	}
 }

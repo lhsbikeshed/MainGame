@@ -48,8 +48,8 @@ public class DynamicShitField:MonoBehaviour{
 	
 	public void setAllVelocities(Vector3 v){
 		foreach(Transform o in objectList){
-			if(o.rigidbody.isKinematic == false){
-				o.rigidbody.velocity = v;
+			if(o.GetComponent<Rigidbody>().isKinematic == false){
+				o.GetComponent<Rigidbody>().velocity = v;
 			}
 		}
 	}
@@ -96,7 +96,7 @@ public class DynamicShitField:MonoBehaviour{
 		
 		maxDist = maxDistFront; //ship.camera.farClipPlane;
 		newBasePos = ship.transform.position;//+ (Vector3.Normalize(ship.rigidbody.velocity ) * (maxDist));
-		fov = cameraObject.camera.fieldOfView;
+		fov = cameraObject.GetComponent<Camera>().fieldOfView;
 			
 		//look for objects that are far away, move to direction of motion + random wiggle
 		for(int i = 0; i < objectList.Count; i++){
@@ -130,7 +130,7 @@ public class DynamicShitField:MonoBehaviour{
 			
 			maxDist = maxDistFront; //ship.camera.farClipPlane;
 			newBasePos = ship.transform.position;//+ (Vector3.Normalize(ship.rigidbody.velocity ) * (maxDist));
-			fov = cameraObject.camera.fieldOfView / 2.3f;
+			fov = cameraObject.GetComponent<Camera>().fieldOfView / 2.3f;
 			//pick a random item and make it a bastard
 			int rand = UnityEngine.Random.Range(0, maxNumber);
 			rpos = (ship.transform.rotation * Quaternion.Euler(UnityEngine.Random.Range(-fov,fov), UnityEngine.Random.Range(-fov,fov), 0.0f)) * new Vector3(0.0f, 0.0f,UnityEngine.Random.Range(maxDistFront, maxDistFront + 300));

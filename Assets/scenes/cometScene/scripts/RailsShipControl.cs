@@ -36,7 +36,7 @@ public class RailsShipControl:MonoBehaviour{
 	public void Start() {
 		theShip = GameObject.Find("TheShip").transform;
 		theShip.parent = transform;
-		theShip.rigidbody.constraints = RigidbodyConstraints.FreezePosition;
+		theShip.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezePosition;
 		initialShipRotation = theShip.localEulerAngles;
 		PropulsionSystem.instance.enableSystem();
 
@@ -59,7 +59,7 @@ public class RailsShipControl:MonoBehaviour{
 	
 	public void OnDestroy(){
 		theShip.parent = null;
-		theShip.rigidbody.constraints = RigidbodyConstraints.None;
+		theShip.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
 	
 	}
 	
@@ -73,12 +73,12 @@ public class RailsShipControl:MonoBehaviour{
 
 	private void doTorque(){
 		Vector3 predictedFwd = Quaternion.AngleAxis(
-			theShip.rigidbody.angularVelocity.magnitude * Mathf.Rad2Deg * stability / speed,
-			theShip.rigidbody.angularVelocity
+			theShip.GetComponent<Rigidbody>().angularVelocity.magnitude * Mathf.Rad2Deg * stability / speed,
+			theShip.GetComponent<Rigidbody>().angularVelocity
 			) * -theShip.transform.forward;
 		
 		Vector3 torqueVector = Vector3.Cross(predictedFwd, movementDirection.forward);
-		theShip.rigidbody.AddTorque(torqueVector * speed * speed);
+		theShip.GetComponent<Rigidbody>().AddTorque(torqueVector * speed * speed);
 	}
 	
 	public void newMove(){

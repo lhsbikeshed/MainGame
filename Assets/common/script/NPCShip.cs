@@ -53,10 +53,12 @@ public class NPCShip:MonoBehaviour{
 		
 	public void SetAutopilotRoute(GameObject container){
 		SequenceWaypoint[] wl = container.GetComponentsInChildren<SequenceWaypoint>();
+		//sort the list based on name
 		waypointList.Clear();
 		foreach(SequenceWaypoint w in wl){
 			waypointList.Add(w);
 		}
+		waypointList.Sort();
 		
 	}
 	
@@ -123,7 +125,7 @@ public class NPCShip:MonoBehaviour{
 			float dist = Mathf.Abs( (nextWaypoint.transform.position - transform.position).magnitude) ;
 			velocity = Mathf.Clamp(dist,0.0f,maxVelocity);
 			velocity *= Mathf.Abs(Vector3.Dot((transform.position - nextWaypoint.transform.position).normalized, transform.TransformDirection(Vector3.forward)));
-			rigidbody.AddRelativeForce(Vector3.forward * velocity, ForceMode.Acceleration);
+			GetComponent<Rigidbody>().AddRelativeForce(Vector3.forward * velocity, ForceMode.Acceleration);
 			Quaternion rotation = Quaternion.LookRotation(nextWaypoint.transform.position - transform.position, nextWaypoint.transform.TransformDirection(Vector3.up));
 			//rotation.eulerAngles.z = 0;
 			transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * rotationDamping);
@@ -150,7 +152,7 @@ public class NPCShip:MonoBehaviour{
 				
 			}
 		} else if (jumping){
-			rigidbody.AddRelativeForce(Vector3.forward * 500, ForceMode.Acceleration);
+			GetComponent<Rigidbody>().AddRelativeForce(Vector3.forward * 500, ForceMode.Acceleration);
 		}
 	}
 }

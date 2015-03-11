@@ -70,9 +70,9 @@ public class JumpNode:MonoBehaviour{
 			if(t.name.Contains("Plane")){
 				t.parent = null;
 				t.gameObject.AddComponent<Rigidbody>();
-				t.rigidbody.useGravity = false;
-				t.rigidbody.AddForce( (transform.position - t.position).normalized * -10, ForceMode.Impulse);
-				t.rigidbody.AddTorque(new Vector3(0.0f,40.0f,0.0f), ForceMode.Impulse);
+				t.GetComponent<Rigidbody>().useGravity = false;
+				t.GetComponent<Rigidbody>().AddForce( (transform.position - t.position).normalized * -10, ForceMode.Impulse);
+				t.GetComponent<Rigidbody>().AddTorque(new Vector3(0.0f,40.0f,0.0f), ForceMode.Impulse);
 				
 				
 			}

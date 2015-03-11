@@ -176,7 +176,7 @@ public class JumpSystem: BaseSubsystem
 		}
 	
 	
-		rigidbody.AddForce (transform.TransformDirection(Vector3.forward * 15000));
+		GetComponent<Rigidbody>().AddForce (transform.TransformDirection(Vector3.forward * 15000));
 		
 		float timeSinceJumpStart = Time.fixedTime - jumpStartTime;
 		if(Mathf.FloorToInt (timeSinceJumpStart - Time.fixedDeltaTime ) != Mathf.FloorToInt (timeSinceJumpStart)){
@@ -251,13 +251,13 @@ public class JumpSystem: BaseSubsystem
 		jumpStartTime = Time.fixedTime;
 		theShip.GetComponent<ShipCore>().setControlLock(true);
 		jumping = true;
-		rigidbody.drag = 0.05f;
+		GetComponent<Rigidbody>().drag = 0.05f;
 		theShip.GetComponent<PropulsionSystem>().rotationDisabled  = true;
 	}
 
 	public bool canShipJump(){
 		bool result = true;
-		if(TargettingSystem.instance.weaponState != WeaponState.WEAPON_STOWED){
+		if(TargettingSystem.instance != null && TargettingSystem.instance.weaponState != WeaponState.WEAPON_STOWED){
 			result = false;
 		}
 		if(jumpDest == ""){
@@ -276,7 +276,7 @@ public class JumpSystem: BaseSubsystem
 	public string getFailureReason(){
 		string noJumpReason = "Cannot jump\r\n";
 
-		if(TargettingSystem.instance.weaponState != WeaponState.WEAPON_STOWED){
+		if(TargettingSystem.instance.weaponState != null && TargettingSystem.instance.weaponState != WeaponState.WEAPON_STOWED){
 			noJumpReason += "> Retract Weapons Bays\r\n";
 		}
 		if(jumpDest == ""){
@@ -313,7 +313,7 @@ public class JumpSystem: BaseSubsystem
 			jumpStartTime = Time.fixedTime;
 			theShip.GetComponent<ShipCore>().setControlLock(true);
 			jumping = true;
-			rigidbody.drag = 0.05f;
+			GetComponent<Rigidbody>().drag = 0.05f;
 			theShip.GetComponent<PropulsionSystem>().rotationDisabled  = true;
 			
 			//test switching the consoles to hyperspace early
@@ -338,7 +338,7 @@ public class JumpSystem: BaseSubsystem
 		theShip.GetComponent<PropulsionSystem>().rotationDisabled  = false;
 		theShip.GetComponent<ShipCore>().setControlLock(false);
 		jumping = false;
-		rigidbody.drag = 1.0f;
+		GetComponent<Rigidbody>().drag = 1.0f;
 		restoreFov = true;
 		jumpEffects.setJumpEffectState(false);
 		OSCHandler.Instance.RevertClientScreen("PilotStation", "hyperspace");
@@ -350,7 +350,7 @@ public class JumpSystem: BaseSubsystem
 	/* tidy up all of the jump effects
 	*/
 	public void resetAfterJump(){
-		rigidbody.drag = 1.0f;
+		GetComponent<Rigidbody>().drag = 1.0f;
 		theShip.GetComponent<ShipCore>().setControlLock(false);
 		theShip.GetComponent<PropulsionSystem>().rotationDisabled  = false;
 		jumping = false;

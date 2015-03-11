@@ -99,8 +99,8 @@ public class DropScene: GenericScene {
 		// ship enters scene with fucked engines, add gravity and disable buggered systems.
 		//add some drag otherwise we ping off into space
 		GameObject.Find("Bits").active = false;
-		theShip.rigidbody.useGravity = true;
-		theShip.rigidbody.drag = 0.0f;
+		theShip.GetComponent<Rigidbody>().useGravity = true;
+		theShip.GetComponent<Rigidbody>().drag = 0.0f;
 		
 		//turn off the propulsion system but allow rotations
 		theShip.GetComponent<PropulsionSystem>().disableSystem();
@@ -111,7 +111,7 @@ public class DropScene: GenericScene {
 		//theShip.rigidbody.drag = 0.5f;
 	
 		//add a little forward speed to the drop and add a roll rotation to show we came out of warp badly
-		theShip.rigidbody.velocity = theShip.transform.rotation * Vector3.forward * 100;
+		theShip.GetComponent<Rigidbody>().velocity = theShip.transform.rotation * Vector3.forward * 100;
 		
 		
 		theShip.GetComponent<MiscSystem>().setExternalLight(false);	//ext light kills the planet shader
@@ -152,10 +152,10 @@ public class DropScene: GenericScene {
 	
 	public void FixedUpdate(){
 		//disable drag for now, not physically accurate but fuck it
-		theShip.rigidbody.drag = 0.0f;
+		theShip.GetComponent<Rigidbody>().drag = 0.0f;
 		//kick the ship slightly as we fail the exit
 		if(initialKick){
-			theShip.rigidbody.AddRelativeTorque(new Vector3(0.0f,0.0f,50.0f), ForceMode.Impulse);
+			theShip.GetComponent<Rigidbody>().AddRelativeTorque(new Vector3(0.0f,0.0f,50.0f), ForceMode.Impulse);
 			initialKick = false;
 		}
 		
@@ -166,12 +166,12 @@ public class DropScene: GenericScene {
 			Vector3 ranVec = UnityEngine.Random.onUnitSphere;
 			ranVec.z = 0.0f;
 			ranVec *= UnityEngine.Random.Range(300.0f, 650.0f);
-			theShip.rigidbody.AddRelativeTorque(ranVec, ForceMode.Impulse);
+			theShip.GetComponent<Rigidbody>().AddRelativeTorque(ranVec, ForceMode.Impulse);
 		}
 		
 		
 		//slowly rotate the ship toward the fireball
-		theShip.rigidbody.AddTorque(Vector3.Cross(theShip.transform.forward, theShip.rigidbody.velocity.normalized) * airForce, ForceMode.Force);
+		theShip.GetComponent<Rigidbody>().AddTorque(Vector3.Cross(theShip.transform.forward, theShip.GetComponent<Rigidbody>().velocity.normalized) * airForce, ForceMode.Force);
 		
 		//check if the altitude has crossed a 1000/100 barrier and speak it out
 		prevFrameAltitude = altitude;
@@ -231,7 +231,7 @@ public class DropScene: GenericScene {
 			
 			for(int i = 0 ; i < 6; i++){
 				if(heating){
-					float amt = Vector3.Dot(theShip.transform.rotation * hullDirections[i], theShip.rigidbody.velocity.normalized);
+					float amt = Vector3.Dot(theShip.transform.rotation * hullDirections[i], theShip.GetComponent<Rigidbody>().velocity.normalized);
 					hulltemperature[i] += amt / 10.0f;
 					if(hulltemperature[i] < 10){
 						hulltemperature[i] = 10.0f;
@@ -299,7 +299,7 @@ public class DropScene: GenericScene {
 	public void hitPlanet(){
 		//silence all sounds, play a humongous crash and kill the players. Black out screen
 		if(weAreDying == false){
-			theShip.rigidbody.constraints = RigidbodyConstraints.FreezeAll;	//freeze ship in place
+			theShip.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;	//freeze ship in place
 		
 			deathTime = Time.fixedTime;
 			weAreDying = true;

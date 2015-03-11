@@ -156,7 +156,7 @@ public class CabinEffects:MonoBehaviour{
 		int ra = UnityEngine.Random.Range(0, sparkClips.Length);
 		
 		AudioSource source = PlayClipAt((AudioClip)sparkClips[ra], theShip.position);
-		source.pan = -1.0f;
+		source.panStereo = -1.0f;
 	 	OSCMessage msg = new OSCMessage("/ship/effect/flapStrobe");			
 		OSCHandler.Instance.SendMessageToAll(msg);
 	}

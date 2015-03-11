@@ -250,20 +250,20 @@ public class EnemyShipBehaviour: TargettableObject {
 				StartCoroutine(scanDone (false));
 				
 			}
-			if(theShip.rigidbody.angularVelocity.magnitude > 1.0f){				//if the ship rotates too much then attack
+			if(theShip.GetComponent<Rigidbody>().angularVelocity.magnitude > 1.0f){				//if the ship rotates too much then attack
 				StartCoroutine(scanDone(false));
 				
 			}
 			
 		} else if (currentAIState == AIState.HULL_DEATH){
 			throttle = 0.0f;
-			rigidbody.AddTorque(UnityEngine.Random.onUnitSphere * 10.0f, ForceMode.Impulse);
+			GetComponent<Rigidbody>().AddTorque(UnityEngine.Random.onUnitSphere * 10.0f, ForceMode.Impulse);
 		}
 		
 		
 		
 		
-		rigidbody.AddForce( transform.TransformDirection(Vector3.forward) * 10 * throttle, ForceMode.Acceleration);
+		GetComponent<Rigidbody>().AddForce( transform.TransformDirection(Vector3.forward) * 10 * throttle, ForceMode.Acceleration);
 		
 	}
 	
@@ -274,7 +274,7 @@ public class EnemyShipBehaviour: TargettableObject {
 	
 	public void SetScannerAlpha(float a){
 		foreach(Renderer t in scannerMaterials){
-			t.renderer.material.SetColor("_Color", new Color(1.0f, 1.0f, 1.0f, a));
+			t.GetComponent<Renderer>().material.SetColor("_Color", new Color(1.0f, 1.0f, 1.0f, a));
 		}
 	}
 	

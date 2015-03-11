@@ -57,7 +57,7 @@ public class DockChamberScript:MonoBehaviour{
 	
 	public void FixedUpdate(){
 		if(gravityOn && theShip.parent == transform){
-			theShip.rigidbody.AddForce( transform.rotation * Vector3.up * -300, ForceMode.Force);
+			theShip.GetComponent<Rigidbody>().AddForce( transform.rotation * Vector3.up * -300, ForceMode.Force);
 		}
 		if(dockingDoor.state != DoorScript.DoorState.CLOSED){	//leak some atmosphere if the door isnt closed
 			oxLevel -= 0.005f;
@@ -93,7 +93,7 @@ public class DockChamberScript:MonoBehaviour{
 	
 			dockingDoor.openDoor();
 			if(PersistentScene.networkReady == true){
-				networkView.RPC ("openDoor", RPCMode.Others);
+				GetComponent<NetworkView>().RPC ("openDoor", RPCMode.Others);
 			}
 		}
 		
@@ -115,7 +115,7 @@ public class DockChamberScript:MonoBehaviour{
 				theShip.GetComponent<PropulsionSystem>().inBay = true;
 				ignoringCollisions = true;
 				
-				stationCollider.isTrigger = true;
+				stationCollider.enabled = false;
 				UnityEngine.Debug.Log("Enter : Disabled collider");
 				if(theShip.parent == null){	//and were in contact with the docking bay
 					theShip.parent = transform;
@@ -136,7 +136,7 @@ public class DockChamberScript:MonoBehaviour{
 			theShip.GetComponent<PropulsionSystem>().inBay = false;
 			ignoringCollisions = false;
 			
-			stationCollider.isTrigger = false;
+			stationCollider.enabled = true;
 			UnityEngine.Debug.Log("leave : enable collider");
 			theShip.parent = null;
 			

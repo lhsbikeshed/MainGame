@@ -190,9 +190,9 @@ public class OSCSystem:MonoBehaviour{
 			msg.Append<float>(playerShip.transform.rotation.y);
 			msg.Append<float>(playerShip.transform.rotation.z);
 			
-			msg.Append<float>(playerShip.rigidbody.velocity.x);
-			msg.Append<float>(playerShip.rigidbody.velocity.y);
-			msg.Append<float>(playerShip.rigidbody.velocity.z);
+			msg.Append<float>(playerShip.GetComponent<Rigidbody>().velocity.x);
+			msg.Append<float>(playerShip.GetComponent<Rigidbody>().velocity.y);
+			msg.Append<float>(playerShip.GetComponent<Rigidbody>().velocity.z);
 			OSCHandler.Instance.SendMessageToAll(msg);
 		}
 	
@@ -207,11 +207,11 @@ public class OSCSystem:MonoBehaviour{
 		}
 		
 		GameObject theShip = GameObject.Find("TheShip");
-		theShip.rigidbody.freezeRotation = false;
-		theShip.rigidbody.constraints = RigidbodyConstraints.None;
+		theShip.GetComponent<Rigidbody>().freezeRotation = false;
+		theShip.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
 		theShip.GetComponent<JumpSystem>().didWeWarpIn = true;
 		theShip.GetComponent<MiscSystem>().consuming = true; //reenable air consumption
-		theShip.rigidbody.angularDrag = 0.5f;
+		theShip.GetComponent<Rigidbody>().angularDrag = 0.5f;
 	 	theShip.GetComponent<PropulsionSystem>().throttleDisabled = false;
 	
 		theShip.transform.parent = null;

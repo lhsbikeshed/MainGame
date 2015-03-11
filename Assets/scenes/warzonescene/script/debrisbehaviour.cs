@@ -15,7 +15,7 @@ public class debrisbehaviour: DynamicFieldObjectBehaviour{
 	public override void Start() {
 		startVelocity = UnityEngine.Random.onUnitSphere * 0.1f;
 		randomRotationSpeed = UnityEngine.Random.onUnitSphere * 4.35f; //Quaternion.Euler(Random.value * 0.05, Random.value * 0.05, Random.value * 0.05);
-		transform.rigidbody.velocity = UnityEngine.Random.onUnitSphere * randomSpeed;
+		transform.GetComponent<Rigidbody>().velocity = UnityEngine.Random.onUnitSphere * randomSpeed;
 	}
 	
 	public void OnCollisionEnter(Collision c){
@@ -61,9 +61,9 @@ public class debrisbehaviour: DynamicFieldObjectBehaviour{
 				 Transform theShip = GameObject.Find("TheShip").transform;
 				 Vector3 tgtPos = GameObject.Find("TheShip").transform.position;
 				 float tgtDistance = (tgtPos - transform.position).magnitude;
-				 Vector3 leadTarget = tgtPos + tgtDistance * theShip.rigidbody.velocity.normalized * theShip.rigidbody.velocity.magnitude / (bastardVelocity * 10.0f);
+				 Vector3 leadTarget = tgtPos + tgtDistance * theShip.GetComponent<Rigidbody>().velocity.normalized * theShip.GetComponent<Rigidbody>().velocity.magnitude / (bastardVelocity * 10.0f);
 				 // transform.rotation = Quaternion.LookRotation(leadTarget, transform.up);
-				 transform.rigidbody.velocity = ( leadTarget - transform.position).normalized * (bastardVelocity * 10.0f);
+				 transform.GetComponent<Rigidbody>().velocity = ( leadTarget - transform.position).normalized * (bastardVelocity * 10.0f);
 				 UnityEngine.Debug.DrawLine(tgtPos, leadTarget, new Color(255.0f,0.0f,0.0f));
 		} else {
 			
@@ -72,14 +72,14 @@ public class debrisbehaviour: DynamicFieldObjectBehaviour{
 				GameObject.Find("TheShip").GetComponent<TargettingSystem>().updateTrackingList();
 
 			}
-			transform.rigidbody.velocity = startVelocity + UnityEngine.Random.onUnitSphere * randomSpeed;
+			transform.GetComponent<Rigidbody>().velocity = startVelocity + UnityEngine.Random.onUnitSphere * randomSpeed;
 		}
-		transform.rigidbody.angularVelocity = Vector3.zero;
+		transform.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
 		
 	}
 	
 	public override void Update() {
-		transform.Rotate(randomRotationSpeed * Time.deltaTime);
+	//	transform.Rotate(randomRotationSpeed * Time.deltaTime);
 		
 	
 	}

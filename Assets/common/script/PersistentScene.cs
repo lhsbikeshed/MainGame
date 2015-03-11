@@ -41,7 +41,7 @@ public class PersistentScene:MonoBehaviour{
 		if(useNetwork == false){
 			networkReady = false;
 		}
-		Screen.showCursor = false;
+		Cursor.visible = false;
 	
 	}
 	

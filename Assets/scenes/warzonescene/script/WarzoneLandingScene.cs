@@ -54,10 +54,10 @@ public class WarzoneLandingScene: GenericScene {
 	
 		//startScene();
 		theShip = GameObject.Find("TheShip").transform;
-		theShip.rigidbody.useGravity = false;
+		theShip.GetComponent<Rigidbody>().useGravity = false;
 				theShip.GetComponentInChildren<ShipCamera>().setSkyboxState (true);
  
-		theShip.rigidbody.drag = 0.7f;
+		theShip.GetComponent<Rigidbody>().drag = 0.7f;
 		shipSystem = theShip.GetComponent<ShipCore>();
 		sceneStartTime = Time.fixedTime;
 		//tell the clients we are now on the return leg of the journey, it prevents the jump plotter from triggering events
@@ -154,7 +154,7 @@ public class WarzoneLandingScene: GenericScene {
 		OSCHandler.Instance.SendMessageToAll(msg);
 		
 		yield return new WaitForSeconds(3.8f);
-		theShip.rigidbody.AddExplosionForce(100.0f, theShip.transform.position + UnityEngine.Random.onUnitSphere * 10.0f, 30.0f, 0.0f);
+		theShip.GetComponent<Rigidbody>().AddExplosionForce(100.0f, theShip.transform.position + UnityEngine.Random.onUnitSphere * 10.0f, 30.0f, 0.0f);
 		StartCoroutine(theShip.GetComponent<ShipCore>().damageShip(1000.0f, "Destroyed by shockwave"));
 	}
 	

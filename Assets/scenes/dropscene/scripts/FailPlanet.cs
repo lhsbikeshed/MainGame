@@ -16,8 +16,8 @@ public class FailPlanet:MonoBehaviour{
 	}
 	
 	public void Update() {
-		renderer.material.SetVector("_ViewPos", (Vector4)theShip.position);
-		renderer.material.SetVector("_SunPos", (Vector4)lightPos.position);
+		GetComponent<Renderer>().material.SetVector("_ViewPos", (Vector4)theShip.position);
+		GetComponent<Renderer>().material.SetVector("_SunPos", (Vector4)lightPos.position);
 	
 		
 	}

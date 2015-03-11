@@ -51,10 +51,10 @@ public class Hyperspace: GenericScene {
 		}
 		
 		
-		theShip.rigidbody.velocity = new Vector3(0.0f,0.0f,0.0f);
+		theShip.GetComponent<Rigidbody>().velocity = new Vector3(0.0f,0.0f,0.0f);
 		sceneEntryTime = Time.fixedTime;
-		theShip.rigidbody.freezeRotation = true;
-		theShip.rigidbody.constraints = RigidbodyConstraints.FreezeAll;
+		theShip.GetComponent<Rigidbody>().freezeRotation = true;
+		theShip.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
 		//reset the camera in case we came from a dynamic skybox scene
 		theShip.GetComponentInChildren<ShipCamera>().setSkyboxState (false);
 		jumpSystem = theShip.GetComponent<JumpSystem>();
@@ -144,11 +144,11 @@ public class Hyperspace: GenericScene {
 			}
 			yield return new WaitForSeconds(7.0f);
 			
-			theShip.rigidbody.freezeRotation = false;
-			theShip.rigidbody.constraints = RigidbodyConstraints.None;
+			theShip.GetComponent<Rigidbody>().freezeRotation = false;
+			theShip.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
 			theShip.GetComponent<JumpSystem>().didWeWarpIn = true;
 			theShip.GetComponent<MiscSystem>().consuming = true; //reenable air consumption
-			theShip.rigidbody.angularDrag = 0.5f;
+			theShip.GetComponent<Rigidbody>().angularDrag = 0.5f;
 		 	theShip.GetComponent<PropulsionSystem>().throttleDisabled = false;
 
 			theShip.transform.parent = null;
