@@ -13,7 +13,6 @@ public class DoorTrigger:MonoBehaviour{
 	public void OnTriggerExit(Collider collider){
 		if(collider.name == "TheShip"){
 			dockChamber.closeDoor();
-			GameObject.Find("AmbientLight").GetComponent<Light>().enabled = true;
 		}
 		
 	}
