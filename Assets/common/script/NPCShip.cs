@@ -96,10 +96,7 @@ public class NPCShip:MonoBehaviour{
 	}
 	
 	public void OnTriggerEnter(Collider c){
-		TargettableObject target  = c.GetComponent<TargettableObject>();
-		if(target != null && shipsLaser.getState() == 0 && target.damageable == true){
-			shipsLaser.npcFireAtTarget(c.transform);
-		}
+
 	}
 	
 	

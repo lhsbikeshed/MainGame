@@ -60,8 +60,9 @@ public class DropScene: GenericScene {
 	
 	//ship refs
 	JumpSystem jumpSystem;
-	int jumpRoute  = -1;
+
 	bool puzzleComplete = false;
+
 	
 	public override void Start() {
 
@@ -78,7 +79,7 @@ public class DropScene: GenericScene {
 		jumpSystem = theShip.GetComponent<JumpSystem>();
 		//we store this so that the players cant accidentally override it. if they do then we force it back
 		//on the console. The ship will then emergency jump down the right route
-		jumpRoute = 3;	//always jump to warzone after this scene
+
 		
 		hulltemperature = new float[6];
 		hullDirections = new Vector3[6];
@@ -278,22 +279,7 @@ public class DropScene: GenericScene {
 			//OH FUCK
 			hitPlanet();
 		}
-		
-		//fix possible jump route overwrites
-		//if the players manage to reset the route then force it to the one we had when starting the scene
-//		if(puzzleComplete && jumpSystem.jumpDest == ""){
-//			//jumpSystem.jumpDest = "warzone-landing";	//force to warzone scene
-//		
-//			//jumpSystem.canJump = true;
-//			jumpSystem.inGate = true;
-//			JumpSystem.Instance.removeRequirement("LOCKED");
-//			jumpSystem.updateJumpStatus();
-//			
-////			OSCMessage s1 = new OSCMessage("/ship/jumpStatus");
-////			s1.Append<int>(jumpRoute);
-////			OSCHandler.Instance.SendMessageToAll(s1);
-//			
-//		}
+	
 						
 	}
 	public void hitPlanet(){
@@ -304,9 +290,8 @@ public class DropScene: GenericScene {
 			deathTime = Time.fixedTime;
 			weAreDying = true;
 			fireBallSound.volume = 0.0f;
-			//var ps : PersistentScene = GameObject.Find("PersistentScripts").GetComponent.<PersistentScene>();
-			//ps.shipDead("Crashed into planet");
-			StartCoroutine(theShip.GetComponent<ShipCore>().damageShip(1000.0f, "Smeared across surface of a dust planet"));
+
+			StartCoroutine(theShip.GetComponent<ShipCore>().damageShip(1000.0f, "Smeared across surface of Mars"));
 		}
 	}
 		
@@ -338,7 +323,9 @@ public class DropScene: GenericScene {
 		JumpSystem.Instance.removeRequirement("LOCKED");
 		jumpSystem.updateJumpStatus();
 		OSCHandler.Instance.RevertClientScreen("TacticalStation", "drop");		
-		OSCHandler.Instance.RevertClientScreen("EngineerStation", "drop");		
+		OSCHandler.Instance.RevertClientScreen("EngineerStation", "drop");	
+
+		OSCHandler.Instance.ChangeClientScreen("TacticalStation", "plotting");
 		
 		puzzleComplete = true;
 	}
@@ -419,7 +406,16 @@ public class DropScene: GenericScene {
 	public override void configureClientScreens(){
 	
 		OSCHandler.Instance.ChangeClientScreen("PilotStation", "drop", true);			
-		OSCHandler.Instance.ChangeClientScreen("TacticalStation", "drop", true);		
+		OSCHandler.Instance.ChangeClientScreen("TacticalStation", "drop", true);	
+		OSCMessage msg = new OSCMessage("/system/jump/JumpFucked");
+		if(puzzleComplete){
+
+			msg.Append(0);
+
+		} else {
+			msg.Append(1);
+		}
+		OSCHandler.Instance.SendMessageToAll(msg);
 		OSCHandler.Instance.ChangeClientScreen("EngineerStation", "drop", true);			
 	
 	}

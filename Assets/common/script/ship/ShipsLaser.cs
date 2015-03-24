@@ -4,19 +4,14 @@ using UnityOSC;
 
 
 public class ShipsLaser:MonoBehaviour{
-	public AudioClip chargeEffect;
-	public AudioClip loopEffect;
-	public AudioClip endEffect;
+	//public AudioClip chargeEffect;
+	//public AudioClip loopEffect;
+	//public AudioClip endEffect;
 	
 	//var missilePrefab : Transform;
 	public float fireDuration;
 	
 	float fireTime;
-	AudioSource soundSource ;
-	Light haloLight;
-	LineRenderer laserRenderer;
-	Material laserTexture;
-	
 	int state; // 0 = off, 1 = firing
 	Transform target;
 	Transform theShip;
@@ -26,13 +21,9 @@ public class ShipsLaser:MonoBehaviour{
 	public Transform currentTurretPoint;	
 
 	public void Start() {
-		laserRenderer = GetComponent<LineRenderer>();
-		laserTexture = laserRenderer.material;
+
 		theShip = transform.parent;
-		
-		laserRenderer.enabled = false;
-		soundSource = gameObject.AddComponent<AudioSource>();
-		soundSource.volume = 0.2f;
+
 	}
 	
 	//fire at a target taking distance etc into account
@@ -66,7 +57,7 @@ public class ShipsLaser:MonoBehaviour{
 					float damage = (1.0f - Mathf.Clamp((int)(targetRange / maxBeamRange), 0,1)) * (  weaponsPower  / 3.0f) * tscript.baseDamage;
 					
 					
-					tscript.ApplyDamage(DamageTypes.DAMAGE_LASER, damage);
+					//tscript.ApplyDamage(DamageTypes.DAMAGE_LASER, damage);
 				
 				
 					state = 1;
@@ -75,18 +66,23 @@ public class ShipsLaser:MonoBehaviour{
 					//figure out which turret to use
 					float minAngle = 2;
 					Transform bestTurret = turretPoints[0];
+
 					foreach (Transform t in turretPoints){
 						Vector3 turretDirection = transform.TransformDirection(t.forward);
-						Vector3 targetDirection = (t.position - targettedObject.position).normalized;
+						Vector3 targetDirection = (targettedObject.position - t.position ).normalized;
 
 						float angle = Vector3.Dot (turretDirection, targetDirection);
-						Debug.Log ("an: " + angle);
+						Debug.Log ("an: " + t.name + " - "  + angle);
 						if(angle > 0 && angle < minAngle){
 							minAngle = angle;
 							bestTurret = t;
 						}
 					}
 					currentTurretPoint = bestTurret;
+
+					bestTurret.GetComponentInChildren<ParticleSystem>().Stop();
+					bestTurret.GetComponentInChildren<ParticleSystem>().Play();
+					bestTurret.GetComponentInChildren<AudioSource>().Play();
 
 				}
 				
@@ -113,30 +109,25 @@ public class ShipsLaser:MonoBehaviour{
 		return state;
 	}
 	
-	public void Update() {
+	public void FixedUpdate() {
 		if(target == null){
 			state = 0;
 		}
 		if(state == 1){
-			
-			
-			laserRenderer.SetPosition(0, currentTurretPoint.position);
-			laserRenderer.SetPosition(1, target.position);
-			var tmp_cs1 = laserTexture.mainTextureOffset;
-            tmp_cs1.x -= 0.05f;
-            laserTexture.mainTextureOffset = tmp_cs1;
-			if(laserRenderer.enabled == false){
-				laserRenderer.enabled = true;
-				soundSource.clip = loopEffect;
-				soundSource.Play();
-			}
-			
+			TargettableObject tscript = target.GetComponent<TargettableObject>();
+			float dist = (target.position - transform.position).magnitude;
+			float distModifier = 1.0f - Mathf.Clamp((int)(dist / (float)(1000 + weaponsPower * 300)), 0,1);
+			float damage = distModifier* (  weaponsPower  / 12.0f) * tscript.baseDamage;
+
+			//TODO do damage calcs better
+			tscript.ApplyDamage(DamageTypes.DAMAGE_LASER, damage / 15f);
+
+			currentTurretPoint.Find("GunParticles").transform.LookAt(target.transform);
+
 			if(fireTime + fireDuration < Time.fixedTime){
 				state = 0;
-				soundSource.Stop();
-				soundSource.clip = endEffect;
-				soundSource.Play();
-				laserRenderer.enabled = false;
+
+			
 			}
 		} 
 	

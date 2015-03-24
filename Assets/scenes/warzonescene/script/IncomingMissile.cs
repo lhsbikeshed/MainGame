@@ -89,7 +89,7 @@ public class IncomingMissile: TargettableObject {
 		if( dist > maxDistance ){
 			StartCoroutine(explode());
 		} 
-		
+		statValues[0] = health;
 		
 	
 	}
