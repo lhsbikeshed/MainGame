@@ -131,6 +131,10 @@ public class JumpSystem: BaseSubsystem
 			//canJump = false;
 			updateJumpStatus();
 			GetComponent<PropulsionSystem>().hyperspaceModifier = false;
+			if(jumping){
+				jumpAbort();	//cancel the current sequence if someone turns the jump sys off while jumping
+								//thanks to tgreer for this one
+			}
 		}
 	}
 	
