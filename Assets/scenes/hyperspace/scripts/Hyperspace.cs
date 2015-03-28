@@ -33,6 +33,9 @@ public class Hyperspace: GenericScene {
 	public float maxTimeInScene; //how long before we naturally exit the stream
 	float sceneEntryTime = -10.0f;
 	bool exiting = false;		//is the exit sequence in progress. Prevents double exits (this has happened :/ )
+	public float tunnelStability = 0.5f;
+	float lerpStability = 0.5f;
+	float damageTimer = 1.0f;	//how often we damage the ship when the warp field is collapsed
 
 	//asset refs
 	public AudioClip[] failSfx ; 	//list of sound effects for failures
@@ -101,8 +104,21 @@ public class Hyperspace: GenericScene {
 			UnityEngine.Debug.Log("EXITING " + Time.fixedTime + " "  + (sceneEntryTime + maxTimeInScene));
 			StartCoroutine(startExit(showFailAtClient));	//TODO i dont think we need the ps.forcedhyperspacefail field anymore. Force exits are part of map nodes now
 			
+		} 
+
+		//change the size of the warp field based on how stable it is (0.0 - 1.0f);
+		lerpStability = Mathf.Lerp (lerpStability, tunnelStability, 0.5f);
+		float size = UsefulShit.map (lerpStability, 0.0f, 1.0f, 5f, 15f);
+
+		warpParticles.transform.localScale = Vector3.one * size;
+		//now damage the ship if the warp field has collapsed on the ship
+		if (tunnelStability <= 0.1f) {
+			damageTimer -= 0.01f;
+			if (damageTimer <= 0.0f) {
+					damageTimer = 1f;
+					StartCoroutine (theShip.GetComponent<ShipCore> ().damageShip ((float)UnityEngine.Random.Range (3, 10), "Crushed by a collapsing hyperspace bubble"));
+			}
 		}
-		
 
 	}
 	
@@ -177,6 +193,7 @@ public class Hyperspace: GenericScene {
 			hadAFail();			
 			break;	
 		case "tunnelStability":
+			tunnelStability = (float)msg.Data[0];
 			break;
 		}	
 	}
