@@ -35,10 +35,7 @@ public class JumpNode:MonoBehaviour{
 
 				PersistentScene ps = GameObject.Find("PersistentScripts").GetComponent<PersistentScene>();
 				
-				ps.forcedHyperspaceFail = forcedFail;
-				
-				
-				
+
 			} 
 		}
 	}

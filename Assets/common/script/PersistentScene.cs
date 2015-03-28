@@ -10,7 +10,6 @@ public class PersistentScene:MonoBehaviour{
 	*/
 	//TODO change this to a string value naming the scene
 	public string hyperspaceDestination; //destination for our hyperspace exit
-	public bool forcedHyperspaceFail; //do we force a failure?
 	public bool useNetwork = true;
 	public string deathReason = "";
 	public bool survivedTheGame = false;
