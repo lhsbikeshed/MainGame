@@ -123,10 +123,10 @@ public class Hyperspace: GenericScene {
 					StartCoroutine (theShip.GetComponent<ShipCore> ().damageShip ((float)UnityEngine.Random.Range (3, 10), "Crushed by a collapsing hyperspace bubble"));
 			}
 		}
-		//float shakeAmount = UsefulShit.map (
-		theShip.transform.position = shipStartPos + UnityEngine.Random.onUnitSphere * 0.3f;
+		float shakeAmount = UsefulShit.map (tunnelStability, 0 , 1.0f, 0.4f, 0.01f);
+		theShip.transform.position = shipStartPos + UnityEngine.Random.onUnitSphere * shakeAmount;
 
-
+		theShip.transform.rotation *= Quaternion.Euler(0,0,0.4f);
 	}
 	
 	public float getTimeRemaining(){
