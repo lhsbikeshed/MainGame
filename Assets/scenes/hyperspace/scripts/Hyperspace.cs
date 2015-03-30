@@ -135,7 +135,7 @@ public class Hyperspace: GenericScene {
 
 		//slowly reduce maxtimeinscene
 		timeRemaining -= UsefulShit.map (tunnelStability, 0.0f, 1.0f, 0.05f, 1f) * Time.fixedDeltaTime;
-		if(timeRemaining  < eventObject.triggerDelay){
+		if(eventObject != null && timeRemaining  < eventObject.triggerDelay){
 			StartCoroutine(eventObject.startSequence());
 		}
 
