@@ -43,12 +43,16 @@ public class Hyperspace: GenericScene {
 	PersistentScene ps;	//global crap
 	OSCSystem oscSender;
 	JumpSystem jumpSystem;
+
+	Vector3 shipStartPos;
 	
 
 	public override void Start() {
 		if(theShip == null){
 			theShip = GameObject.Find("TheShip");
+
 		}
+		shipStartPos = theShip.transform.position;
 		sceneEntryTime = Time.fixedTime;
 
 		
@@ -102,6 +106,8 @@ public class Hyperspace: GenericScene {
 			StartCoroutine(startExit(showFailAtClient));	//TODO i dont think we need the ps.forcedhyperspacefail field anymore. Force exits are part of map nodes now
 			
 		}
+		//float shakeAmount = UsefulShit.map (
+		theShip.transform.position = shipStartPos + UnityEngine.Random.onUnitSphere * 0.3f;
 		
 
 	}
