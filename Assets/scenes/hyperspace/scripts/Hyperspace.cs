@@ -30,7 +30,7 @@ public class Hyperspace: GenericScene {
 	//jump parameters
 	string destinationScene = "";	//where are we going?
 	bool showFailAtClient = false; // during the exit process should we show a failure message on the clients screen?
-	public float maxTimeInScene; //how long before we naturally exit the stream
+	public float timeRemaining; //how long before we naturally exit the stream
 	float sceneEntryTime = -10.0f;
 	bool exiting = false;		//is the exit sequence in progress. Prevents double exits (this has happened :/ )
 	public float tunnelStability = 0.5f;
@@ -47,7 +47,11 @@ public class Hyperspace: GenericScene {
 	OSCSystem oscSender;
 	JumpSystem jumpSystem;
 
+	Transform eventObject;	//an object that is triggered in this scene
+
 	Vector3 shipStartPos;
+
+
 	
 
 	public override void Start() {
@@ -90,22 +94,25 @@ public class Hyperspace: GenericScene {
 		if(destinationScene == "drop"){				
 			//instantiate the planet fall prefab
 			Transform t = (UnityEngine.Transform)Instantiate(planetFallPrefab, Vector3.zero, Quaternion.identity);
-			t.GetComponent<PlanetFallEvent>().triggerTime = maxTimeInScene - 5.0f;
+			t.GetComponent<HyperSpaceEvent>().triggerTime = timeRemaining - 5.0f;
 			showFailAtClient = true;
+			eventObject = t;
 		} else if (destinationScene == "comet-tunnel" ){
 			//instantiate the planet fall prefab
 			Transform t2 = (UnityEngine.Transform)Instantiate(cometPrefab, Vector3.zero, Quaternion.identity);
-			t2.GetComponent<CometEvent>().triggerTime = maxTimeInScene - 8.0f;
+			t2.GetComponent<HyperSpaceEvent>().triggerTime = timeRemaining - 8.0f;
 			showFailAtClient = true;
+			eventObject = t2;
+
+			//TODO this is broken
 		}
 		
 	}
 	
 	public void FixedUpdate() {		
 		//have we gone over the alloted time for this scene? If so start the exit process
-		if(Time.fixedTime > sceneEntryTime + maxTimeInScene && !exiting){
-			
-			UnityEngine.Debug.Log("EXITING " + Time.fixedTime + " "  + (sceneEntryTime + maxTimeInScene));
+		if(timeRemaining < 0.0f && !exiting){
+			UnityEngine.Debug.Log("EXITING " + Time.fixedTime + " "  + (sceneEntryTime + timeRemaining));
 			StartCoroutine(startExit(showFailAtClient));	//TODO i dont think we need the ps.forcedhyperspacefail field anymore. Force exits are part of map nodes now
 			
 		} 
@@ -126,11 +133,14 @@ public class Hyperspace: GenericScene {
 		float shakeAmount = UsefulShit.map (tunnelStability, 0 , 1.0f, 0.4f, 0.01f);
 		theShip.transform.position = shipStartPos + UnityEngine.Random.onUnitSphere * shakeAmount;
 
-		theShip.transform.rotation *= Quaternion.Euler(0,0,0.4f);
+		//theShip.transform.rotation *= Quaternion.Euler(0,0,0.4f);
+
+		//slowly reduce maxtimeinscene
+		timeRemaining -= UsefulShit.map (tunnelStability, 0.0f, 1.0f, 0.05f, 1f) * Time.fixedDeltaTime;
 	}
 	
 	public float getTimeRemaining(){
-		return (sceneEntryTime + maxTimeInScene) - Time.fixedTime;
+		return timeRemaining;
 	}
 
 	//TODO: dont think we need this

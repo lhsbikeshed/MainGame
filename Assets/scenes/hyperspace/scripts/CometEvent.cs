@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 
 
-public class CometEvent:MonoBehaviour{
+public class CometEvent:HyperSpaceEvent{
 	
 	public AudioClip gravityFailSfx;	//sound to play during failed exit
 	
@@ -11,7 +11,7 @@ public class CometEvent:MonoBehaviour{
 	bool running = false;
 	
 	float startTime = 0.0f;
-	public float triggerTime = 11.0f;
+	//public float triggerTime = 11.0f;
 	public Transform cometPrefab;
 	
 	public void Start() {
@@ -22,7 +22,7 @@ public class CometEvent:MonoBehaviour{
 		startTime = Time.fixedTime;
 	}
 	
-	public IEnumerator startSequence(){
+	public override IEnumerator startSequence(){
 		
 		
 		
