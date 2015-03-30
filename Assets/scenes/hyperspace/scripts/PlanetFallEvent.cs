@@ -23,15 +23,17 @@ public class PlanetFallEvent:HyperSpaceEvent{
 
 
 	public override IEnumerator startSequence(){
-		theShip.transform.parent = rotatorObject;
-		
-		GameObject.Find("warp bits").transform.parent = rotatorObject;
-		
-		
-		
-		AudioSource.PlayClipAtPoint(gravityFailSfx, transform.position);
-		fallingTowardPlanet = true;
-		yield return new WaitForSeconds(0);
+		if(!fallingTowardPlanet){
+			theShip.transform.parent = rotatorObject;
+			
+			GameObject.Find("warp bits").transform.parent = rotatorObject;
+			
+			
+			
+			AudioSource.PlayClipAtPoint(gravityFailSfx, transform.position);
+			fallingTowardPlanet = true;
+			yield return new WaitForSeconds(0);
+		}
 	}
 	
 	public void FixedUpdate() {
@@ -39,9 +41,7 @@ public class PlanetFallEvent:HyperSpaceEvent{
 			
 			rotatorObject.rotation = Quaternion.Euler(0.1f, 0.0f, 0.0f) * rotatorObject.rotation;
 		}
-		if(Time.fixedTime - startTime > triggerTime && !fallingTowardPlanet){
-			startSequence();
-		}
+
 		
 	}
 

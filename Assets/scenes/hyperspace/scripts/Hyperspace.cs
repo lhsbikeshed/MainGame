@@ -47,7 +47,7 @@ public class Hyperspace: GenericScene {
 	OSCSystem oscSender;
 	JumpSystem jumpSystem;
 
-	Transform eventObject;	//an object that is triggered in this scene
+	HyperSpaceEvent eventObject;	//an object that is triggered in this scene
 
 	Vector3 shipStartPos;
 
@@ -94,15 +94,13 @@ public class Hyperspace: GenericScene {
 		if(destinationScene == "drop"){				
 			//instantiate the planet fall prefab
 			Transform t = (UnityEngine.Transform)Instantiate(planetFallPrefab, Vector3.zero, Quaternion.identity);
-			t.GetComponent<HyperSpaceEvent>().triggerTime = timeRemaining - 5.0f;
 			showFailAtClient = true;
-			eventObject = t;
+			eventObject = t.GetComponent<HyperSpaceEvent>();
 		} else if (destinationScene == "comet-tunnel" ){
 			//instantiate the planet fall prefab
 			Transform t2 = (UnityEngine.Transform)Instantiate(cometPrefab, Vector3.zero, Quaternion.identity);
-			t2.GetComponent<HyperSpaceEvent>().triggerTime = timeRemaining - 8.0f;
 			showFailAtClient = true;
-			eventObject = t2;
+			eventObject = t2.GetComponent<HyperSpaceEvent>();
 
 			//TODO this is broken
 		}
@@ -137,6 +135,10 @@ public class Hyperspace: GenericScene {
 
 		//slowly reduce maxtimeinscene
 		timeRemaining -= UsefulShit.map (tunnelStability, 0.0f, 1.0f, 0.05f, 1f) * Time.fixedDeltaTime;
+		if(timeRemaining  < eventObject.triggerDelay){
+			StartCoroutine(eventObject.startSequence());
+		}
+
 	}
 	
 	public float getTimeRemaining(){
