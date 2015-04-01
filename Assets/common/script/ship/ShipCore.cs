@@ -411,8 +411,10 @@ public class ShipCore:MonoBehaviour{
 		
 		
 		if(docked){
-			shipCamera.shaking = true;
-			shipCamera.shakeAmount = propulsion.scaledThrottle / 1.0f * 0.05f;
+			if(propulsion.systemEnabled){
+				shipCamera.shaking = true;
+				shipCamera.shakeAmount = propulsion.scaledThrottle / 1.0f * 0.05f;
+			}
 		} else {
 			shipCamera.shaking = false;
 		}
