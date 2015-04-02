@@ -77,6 +77,19 @@ ModelImporter:
     4300022: FuelPod_001
     4300024: FuelPod_002
     4300026: RingGlass
+    6400000: DockingBay2
+    6400002: FuelHolder
+    6400004: FuelHolder_001
+    6400006: FuelPod
+    6400008: FuelPod_001
+    6400010: FuelPod_002
+    6400012: FuelPod_003
+    6400014: FuelPod_004
+    6400016: FuelPod_005
+    6400018: FuelPod_006
+    6400020: FuelPod_007
+    6400022: landingpad
+    6400024: Node_001
     7400000: Default Take
     9500000: //RootNode
   materials:
@@ -100,7 +113,7 @@ ModelImporter:
     lODScreenPercentages: []
     globalScale: 10
     meshCompression: 0
-    addColliders: 0
+    addColliders: 1
     importBlendShapes: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
@@ -132,7 +145,7 @@ ModelImporter:
     feetSpacing: 0
     rootMotionBoneName: 
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 2
+  animationType: 0
   additionalBone: 0
   userData: 
   assetBundleName: 
