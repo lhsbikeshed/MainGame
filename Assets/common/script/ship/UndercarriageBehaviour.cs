@@ -28,11 +28,11 @@ public class UndercarriageBehaviour:MonoBehaviour{
 	public static int TRANSIT_DOWN = 2;
 	public static int TRANSIT_UP = 3;
 	
-	
+	public static UndercarriageBehaviour Instance;
 	
 	
 	public void Start() {
-		
+		Instance = this;
 		
 		
 		contactsThisFrame = new bool[colliders.Length];

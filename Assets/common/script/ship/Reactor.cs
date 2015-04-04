@@ -4,26 +4,41 @@ using UnityOSC;
 using System.Collections;
 
 /* reactor generates energy
- * also its the control class for all subsystems
+ * power ship on/off
+ * track fuel usage
+ * 
  */
+
+public delegate void ReactorStateChange(bool newState);
+
+
 [System.Serializable]
 public class Reactor: MonoBehaviour{
-	
+
+	//delegates
+	public event ReactorStateChange reactorStateChange;
+
 	public float generationRate = 1.0f;		//rate at which we generate energy
 	public float currentEnergy = 500.0f;
 	public float maxEnergy = 2000.0f;
 	public float damage = 1.0f;				//percentage fuckedness
-	public bool brokenBoot = false;		//is the next bootup broken?
-	
+
+	//=------- fuel handling ------------
+	public int[] fuelTankLevel = {1000,1000,1000}; //0 for main, 1 and 2 as aux
+	public static readonly int FUEL_FUCKED = 2;
+	public static readonly int FUEL_CONNECTED = 1;
+	public static readonly int FUEL_DISCONNECTED = 0;	
+	public int fuelLineConnectionState = FUEL_DISCONNECTED;
+
+
+	//------------ reactor state--------
 	public bool systemEnabled;
-	public bool runningQuiet = false;
+
 	public AudioClip spoolSound;
 	public AudioClip stopSound;
 	public AudioClip runningSound;
 	public AudioClip failSound;
-	public AudioClip[] startupSounds;
-	public AudioClip firstTimeSound;
-	
+
 	public AudioClip[] warningClips;
 	
 	bool firstStart = true;
@@ -42,15 +57,6 @@ public class Reactor: MonoBehaviour{
 	 public bool overloading;
 	int lastSecondCounter = 0;
 	
-	char[] separator = new char[]{'/'};
-	
-	
-	public bool waitingForFuelLeak = false;
-	public bool fuelLeaking = false;
-	public float fuelLeakHealth = 1.0f;
-	
-	
-	
 	
 	/*
 	* Reactor produces energy for subsystems
@@ -63,8 +69,49 @@ public class Reactor: MonoBehaviour{
 			OSCMessage msg = new OSCMessage("/system/reactor/stateUpdate");		
 			msg.Append<int>( 0 );			
 			OSCHandler.Instance.SendMessageToAll(msg);
+			reactorStateChange(false);
+		}
+		OSCMessage msg2 = new OSCMessage("/ship/state/setFuelConnectionState");
+		msg2.Append(FUEL_DISCONNECTED);
+		OSCHandler.Instance.SendMessageToClient("EngineerStation", msg2);
+	}
+
+	//------------ fuel handling --------
+	void setFuelConnectionState (int v)
+	{
+		fuelLineConnectionState = v;
+		
+	}
+	/* called from a landing pad when the ship has docked to it */
+	public void dockStateChange(bool state){
+		if (state) {
+			OSCHandler.Instance.ChangeClientScreen ("EngineerStation", "refuelDisplay");
+			//TODO send a docking port offset to make the game harder depending on accuracy of
+			//the pilot
+			OSCMessage msg = new OSCMessage("/screen/refuelDisplay/resetParams");
+			OSCHandler.Instance.SendMessageToClient("EngineerStation", msg);
+		} else {
+			
+			//check to see if the fuel line is connected.
+			if(fuelLineConnectionState == FUEL_CONNECTED){
+				OSCMessage msg = new OSCMessage("/ship/state/setFuelConnectionState");
+				msg.Append(FUEL_FUCKED);
+				OSCHandler.Instance.SendMessageToClient("EngineerStation", msg);
+				fuelLineConnectionState = FUEL_FUCKED;
+				
+				//wait a few seconds then switch to power
+				StartCoroutine(changeScreenAfterABit());
+			} else {
+				OSCHandler.Instance.ChangeClientScreen ("EngineerStation", "power");
+			}
 		}
 	}
+	IEnumerator changeScreenAfterABit(){
+		yield return new WaitForSeconds(4);
+		OSCHandler.Instance.ChangeClientScreen ("EngineerStation", "power");
+	}
+
+	//------------- reactor overloading ---------------
 	
 	public bool isOverloading() {
 		return overloading;
@@ -204,6 +251,7 @@ public class Reactor: MonoBehaviour{
 			msg.Append<int>( 1 );			
 			msg.Append<String>( " "); //
 			OSCHandler.Instance.SendMessageToAll(msg);
+			reactorStateChange(true);
 		}
 	}
 	
@@ -220,6 +268,7 @@ public class Reactor: MonoBehaviour{
 			msg.Append<String>( " " );			
 			OSCHandler.Instance.SendMessageToAll(msg);
 			setSubsystemState(false);
+			reactorStateChange(false);
 			
 		}
 	}
@@ -258,67 +307,19 @@ public class Reactor: MonoBehaviour{
 		}
 		
 	}
-	//fuel leak handling
-	
-	public void setLeakFlagState(bool state){
-		if(fuelLeaking == true && state == false){
-			//fuel is leaking and we GM cancelled it
-			
-			waitingForFuelLeak = false;
-			fuelLeaking	= false;
-			//send a banner message to the players to say the leak stopped
-			OSCHandler.Instance.DisplayBannerAtClient("EngineerStation", "Repair complete", "Fuel leak stabilised", 4000);
-			return;
-		}
-		//otherwise set the flag state
-		waitingForFuelLeak = state;
-		
-			
-	}
-	
-	/* ran out of fuel, shut the ship down, wait a few moments and then end the game */
-	public IEnumerator outOfFuel(){
-		OSCHandler.Instance.DisplayBannerAtClient("EngineerStation", "CRITICAL", "FUEL TANKS EMPTY", 4000);
-		yield return new WaitForSeconds(4.0f);
-		StartCoroutine(reactorFailure());
-		yield return new WaitForSeconds(5.0f);
-		
-		GameObject.Find("PersistentScripts").GetComponent<PersistentScene>().shipDead("Ran out of fuel");
-	}
+
+
 	
 	public void damageReactor(){
-		if(waitingForFuelLeak){
-			
-			fuelLeaking = true;
-			waitingForFuelLeak = false;
-			
-			//send out banner message
-			OSCHandler.Instance.DisplayBannerAtClient("EngineerStation", "WARNING", "FUEL LEAK DETECTED", 4000);
-			//tell the engineer station to start leaking fuel
-			OSCMessage msg = new OSCMessage("/system/fuelLeakState");
-			msg.Append(1);
-			OSCHandler.Instance.SendMessageToClient("EngineerStation", msg);
-			
-			
-		}
+
 	}
 	
 	public void repairReactor(float amt){
-		if(fuelLeaking){
-			fuelLeakHealth -= amt;
-			if(fuelLeakHealth < 0.0f){
-				fuelLeaking = false;
-				OSCHandler.Instance.DisplayBannerAtClient("EngineerStation", "Repair complete", "Fuel leak stabilised", 4000);
-				//tell the engineer station to start leaking fuel
-				OSCMessage msg = new OSCMessage("/system/fuelLeakState");
-				msg.Append(0);
-				OSCHandler.Instance.SendMessageToClient("EngineerStation", msg);
-			}
-		}
+
 	}
 	
 	public void processOSCMessage(OSCMessage message){
-		string[] msgAddress = message.Address.Split(separator);
+		string[] msgAddress = message.Address.Split('/');
 		// [1] = System, 2 = Subsystem name, 3 = operation
 		string system = msgAddress[2];
 		string operation = msgAddress[3];
@@ -343,12 +344,9 @@ public class Reactor: MonoBehaviour{
 			reactorOverload();
 		} else if (operation == "overloadinterrupt"){
 			interruptOverload();
-		} else if (operation == "setFuelLeakFlag"){
-			bool state = (int)message.Data[0] == 1 ? true : false;
-			setLeakFlagState(state);
-		} else if (operation == "outOfFuel"){
-			StartCoroutine(outOfFuel());
-				
+		} else if (operation == "setFuelConnectionState") {
+			int v = (int)message.Data[0];
+			setFuelConnectionState(v);
 			
 		}
 	}
