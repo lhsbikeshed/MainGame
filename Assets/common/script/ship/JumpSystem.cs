@@ -25,6 +25,7 @@ public class JumpSystem: BaseSubsystem
 	//public bool canJump;		//are we allowed to jump? Used by Jump Node
 	public bool inTunnelGate; //are we in a tunnel gate?
 	public string  jumpDest;	//where we jump to after the hyperspace scene is finished
+	public int jumpLength = 0;
 	
 	public bool jumping;			//are we currently accelerating for a jump?
 	float jumpStartTime;		//time we started the jump, jump sequence lasts 7 seconds
@@ -274,6 +275,9 @@ public class JumpSystem: BaseSubsystem
 		if(jumpChargePercent < 1f){
 			result = false;
 		}
+		if (Reactor.instance != null && jumpLength * 400f > Reactor.instance.fuelTankLevel [0]) {
+			result = false;
+		}
 		return result;
 	}
 
@@ -292,6 +296,10 @@ public class JumpSystem: BaseSubsystem
 		}
 		if(jumpChargePercent < 1f){
 			noJumpReason += "> Jump System Not Charged\r\n";
+		}
+
+		if (jumpLength * 400f > Reactor.instance.fuelTankLevel [0]) {
+			noJumpReason += "> INSUFFICIENT FUEL\r\n";
 		}
 		return noJumpReason;
 	}
@@ -328,6 +336,10 @@ public class JumpSystem: BaseSubsystem
 			if(cab.isWaiting){
 				cablePuzzleFailTimer = 1.0f;
 			} 
+
+			//consume all of the fuel
+			int fuelAmount = jumpLength * 400;
+			Reactor.instance.jumpFuel(fuelAmount);
 			
 			
 		}
@@ -393,11 +405,12 @@ public class JumpSystem: BaseSubsystem
 			jumpDest = r;
 			PersistentScene ps = GameObject.Find("PersistentScripts").GetComponent<PersistentScene>();
 			ps.hyperspaceDestination = jumpDest;
-			
+			jumpLength = (int)message.Data[1];
 			updateJumpStatus();
 		} else if (operation == "clearRoute"){
 			UnityEngine.Debug.Log("Cleared jump route");
 			jumpDest = "";
+			jumpLength = 0;
 			updateJumpStatus();
 		} else if (operation == "getRoute"){
 			OSCMessage msg = new OSCMessage("/system/jumpSystem/currentRoute");

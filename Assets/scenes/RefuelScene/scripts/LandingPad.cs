@@ -6,10 +6,10 @@ using System.Collections;
  * if they ship undercarriage pulls up at any time then release the attraction
  * and let the fuckers fly away
  */
-public delegate void DockStateChanged (bool newState);
+
 
 public class LandingPad : MonoBehaviour {
-
+	public delegate void DockStateChanged (bool newState);
 	Transform theShip;
 
 	public bool shipLanded = false;

@@ -114,6 +114,11 @@ public class Hyperspace: GenericScene {
 			StartCoroutine(startExit(showFailAtClient));	//TODO i dont think we need the ps.forcedhyperspacefail field anymore. Force exits are part of map nodes now
 			
 		} 
+		//if the ship is offline then collapse the bubble slowly
+		if (Reactor.instance.systemEnabled == false) {
+			tunnelStability -= 0.0005f;
+			tunnelStability = Mathf.Clamp(tunnelStability, -1.0f, 1.0f);
+		}
 
 		//change the size of the warp field based on how stable it is (0.0 - 1.0f);
 		lerpStability = Mathf.Lerp (lerpStability, tunnelStability, 0.5f);

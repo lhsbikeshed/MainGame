@@ -18,7 +18,7 @@ public class ShipCore:MonoBehaviour{
 	int internalPower = 6;
 	int propulsionPower = 6;
 	
-	
+	public bool freezable = false;
 	
 	public float hullState = 100.0f;
 	public Vector3 acceleration;
@@ -57,6 +57,8 @@ public class ShipCore:MonoBehaviour{
 	ShipCamera shipCamera;
 	UndercarriageBehaviour undercarriage;
 	public ShipsLaser laserTurret;
+
+	IceEffect iceEffect;
 	
 	
 	
@@ -111,12 +113,16 @@ public class ShipCore:MonoBehaviour{
 		shipCamera = gameObject.GetComponentInChildren<ShipCamera>(); //Find("camera").GetComponent.<ShipCamera>();
 		undercarriage = GetComponentInChildren<UndercarriageBehaviour>();
 		miscSystem = GetComponent<MiscSystem>();
-		
+
+
 		
 		//effects refs
 		moveEffects = transform.Find("Bits").GetComponent<ParticleSystem>();
 		moveEffects.emissionRate = 0.0f;
 	
+		iceEffect = GetComponentInChildren<IceEffect> ();
+		iceEffect.freezeAmount = 0.0f;
+
 		windowScript = GetComponentInChildren<FrontWindowBehaviour>();
 		shutterScript = gameObject.GetComponentInChildren<DoorScript>();
 		
@@ -241,7 +247,7 @@ public class ShipCore:MonoBehaviour{
 	//		cab.puzzleStart();
 	//	} 
 		
-		reactor.damageReactor();
+		reactor.damageReactor(amount);
 		
 	}
 	
@@ -390,11 +396,24 @@ public class ShipCore:MonoBehaviour{
 		lastVelocity = GetComponent<Rigidbody>().velocity;
 	
 		//repair ship hull, 0.01f is max level, scale from 0-12 that internalpower provides
-		if(reactor.systemEnabled){
-			float repairAmount = UsefulShit.map((float)internalPower, 0.0f, 12.0f, 0.0f, 0.01f);
-			changeHullLevel(repairAmount);
-			reactor.repairReactor(repairAmount);
-			
+		if (reactor.systemEnabled) {
+			float repairAmount = UsefulShit.map ((float)internalPower, 0.0f, 12.0f, 0.0f, 0.01f);
+			changeHullLevel (repairAmount);
+			reactor.repairReactor (repairAmount);
+
+			if(iceEffect.freezeAmount > 0.0f){
+				iceEffect.freezeAmount -= 0.1f;
+			}
+
+		} else {
+			//freeze the ship
+			if(freezable){
+				iceEffect.freezeAmount += 0.01f * Time.fixedDeltaTime;
+				if(iceEffect.freezeAmount >= 1.0f){
+					GameObject.Find("PersistentScripts").GetComponent<PersistentScene>().shipDead("Frozen to death in deep space");
+				}
+
+			}
 		}
 		
 		//explode the ship

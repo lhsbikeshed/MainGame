@@ -114,6 +114,8 @@ public class DockChamberScript:MonoBehaviour{
 				inBay = true;
 				theShip.GetComponent<PropulsionSystem>().inBay = true;
 				ignoringCollisions = true;
+
+				theShip.GetComponent<ShipCore>().freezable = false;
 				
 				stationCollider.enabled = false;
 				UnityEngine.Debug.Log("Enter : Disabled collider");
@@ -135,6 +137,7 @@ public class DockChamberScript:MonoBehaviour{
 			inBay = false;
 			theShip.GetComponent<PropulsionSystem>().inBay = false;
 			ignoringCollisions = false;
+			theShip.GetComponent<ShipCore>().freezable = true;
 			
 			stationCollider.enabled = true;
 			UnityEngine.Debug.Log("leave : enable collider");
