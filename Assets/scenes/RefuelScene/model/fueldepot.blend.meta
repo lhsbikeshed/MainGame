@@ -20,6 +20,11 @@ ModelImporter:
     100024: landingpad
     100026: Node_001
     100028: RingGlass
+    100030: FuelHolder_002
+    100032: FuelPod_008
+    100034: FuelPod_009
+    100036: FuelPod_010
+    100038: FuelPod_011
     400000: DockingBay2
     400002: //RootNode
     400004: FuelHolder
@@ -35,6 +40,11 @@ ModelImporter:
     400024: landingpad
     400026: Node_001
     400028: RingGlass
+    400030: FuelHolder_002
+    400032: FuelPod_008
+    400034: FuelPod_009
+    400036: FuelPod_010
+    400038: FuelPod_011
     2300000: DockingBay2
     2300002: FuelHolder
     2300004: FuelHolder_001
@@ -49,6 +59,11 @@ ModelImporter:
     2300022: landingpad
     2300024: Node_001
     2300026: RingGlass
+    2300028: FuelHolder_002
+    2300030: FuelPod_008
+    2300032: FuelPod_009
+    2300034: FuelPod_010
+    2300036: FuelPod_011
     3300000: DockingBay2
     3300002: FuelHolder
     3300004: FuelHolder_001
@@ -63,6 +78,11 @@ ModelImporter:
     3300022: landingpad
     3300024: Node_001
     3300026: RingGlass
+    3300028: FuelHolder_002
+    3300030: FuelPod_008
+    3300032: FuelPod_009
+    3300034: FuelPod_010
+    3300036: FuelPod_011
     4300000: landingpad
     4300002: FuelHolder_001
     4300004: FuelPod_007
@@ -77,6 +97,11 @@ ModelImporter:
     4300022: FuelPod_001
     4300024: FuelPod_002
     4300026: RingGlass
+    4300028: FuelHolder_002
+    4300030: FuelPod_011
+    4300032: FuelPod_010
+    4300034: FuelPod_009
+    4300036: FuelPod_008
     6400000: DockingBay2
     6400002: FuelHolder
     6400004: FuelHolder_001
@@ -90,6 +115,11 @@ ModelImporter:
     6400020: FuelPod_007
     6400022: landingpad
     6400024: Node_001
+    6400026: FuelHolder_002
+    6400028: FuelPod_008
+    6400030: FuelPod_009
+    6400032: FuelPod_010
+    6400034: FuelPod_011
     7400000: Default Take
     9500000: //RootNode
   materials:
