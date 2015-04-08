@@ -2,6 +2,7 @@
 Properties {
     _MainTex ("Base (RGB)", 2D) = "white" {}
     _AlphaTex ("Alpha mask (R)", 2D) = "white" {}
+    _BumpTex("normal map", 2D) = "white" {}
     _BlendAmount ("Alpha cutoff", Range (0,1)) = 0.1
 }
 
@@ -22,10 +23,12 @@ SubShader {
             struct appdata_t {
                 float4 vertex : POSITION;
                 float2 texcoord : TEXCOORD0;
+                float3 normal : NORMAL;
+           	 	float4 tangent : TANGENT;
             };
 
             struct v2f {
-                float4 vertex : SV_POSITION;
+                float4 vertex : SV_POSITION;	
                 half2 texcoord : TEXCOORD0;
             };
 

@@ -47,6 +47,7 @@ public class LandingPad : MonoBehaviour {
 	}
 
 	void OnTriggerExit(Collider c){
+
 		if (c.attachedRigidbody != null && c.attachedRigidbody.name == "TheShip") {
 			shipLanded = false;
 			dockStateChanged(false);
