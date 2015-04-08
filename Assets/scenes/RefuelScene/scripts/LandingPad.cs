@@ -51,7 +51,7 @@ public class LandingPad : MonoBehaviour {
 		if (c.attachedRigidbody != null && c.attachedRigidbody.name == "TheShip") {
 			shipLanded = false;
 			dockStateChanged(false);
-			theShip.parent = null;
+			//theShip.parent = null;
 		}
 	}
 
@@ -63,7 +63,7 @@ public class LandingPad : MonoBehaviour {
 					dockStateChanged(true);
 					shipLanded = true;
 					applyDockingForce = true;
-					theShip.parent = transform;
+					//theShip.parent = transform;
 				}
 			} else {
 				applyDockingForce = false;
