@@ -76,8 +76,6 @@ public class LandingTrigger : MonoBehaviour {
 	}
 
 	void OnDrawGizmos(){
-		Gizmos.DrawWireCube(b.center, b.extents);
-		Gizmos.DrawRay(new Ray(b.center, Vector3.forward*10));
-		Gizmos.DrawSphere(basePos + localShipPos, 2);
+
 	}
 }
