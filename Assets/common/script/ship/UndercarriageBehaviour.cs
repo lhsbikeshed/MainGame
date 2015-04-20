@@ -32,8 +32,9 @@ public class UndercarriageBehaviour:MonoBehaviour{
 	
 	
 	public void Start() {
-		Instance = this;
-		
+		if(forPlayer){
+			Instance = this;
+		}	
 		
 		contactsThisFrame = new bool[colliders.Length];
 		wheelPosition = wheelDownPos;

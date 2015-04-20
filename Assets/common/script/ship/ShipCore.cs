@@ -484,48 +484,13 @@ public class ShipCore:MonoBehaviour{
 	
 	
 	
-	/* enable the pilots radar on leaving the bay. Also unparent from bay so that the ship rotates freely
-	*/
 	public void OnTriggerExit(Collider other){
-		if(other.name == "DockChamber"){		
-			//transform.parent = null;
-			OSCMessage msg = new OSCMessage("/scene/launchland/launchRadar");
-			msg.Append<int>(1);
-			
-			OSCHandler.Instance.SendMessageToAll(msg);
-			
-			OSCHandler.Instance.ChangeClientScreen("PilotStation", "radar");	//switch pilot to radar
-			
-			//GameObject.Find("PersistentScripts").GetComponent.<OSCSystem>().radarEnabled = true;
-		}
+
 	}
 	
-	/* enable the pilots radar on leaving the bay. Also unparent from bay so that the ship rotates freely
-	*/
+
 	public void OnTriggerEnter(Collider other){
-		if(other.name == "DockChamber"){	
-			//transform.parent = null;
-			OSCMessage msg = new OSCMessage("/scene/launchland/launchRadar");
-			msg.Append<int>(0);
-			
-			OSCHandler.Instance.SendMessageToAll(msg);
-			
-			OSCHandler.Instance.ChangeClientScreen("PilotStation", "docking");
-			
-			//undercarraige state
-			msg = new OSCMessage("/ship/undercarriage");
-			msg.Append<int>(undercarriage.getGearState());		
-			OSCHandler.Instance.SendMessageToAll(msg);
-			
-			//docking bay grav state
-			msg = new OSCMessage("/scene/launchland/bayGravity");
-			DockChamberScript dockChamber = GameObject.Find("DockChamber").GetComponent<DockChamberScript>();
-			msg.Append<int>(dockChamber.gravityOn == true ? 1 : 0);		
-			OSCHandler.Instance.SendMessageToAll(msg);
-			
-			
-			
-		}
+
 	}
 	
 	/* send out updated power levels to the clients */

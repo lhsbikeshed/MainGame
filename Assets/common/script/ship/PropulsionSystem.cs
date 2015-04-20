@@ -26,9 +26,6 @@ public class PropulsionSystem: BaseSubsystem
 	public bool rotationDisabled = true;
 	public bool translationDisabled = true;
 	
-	// are we in the loading bay at the moment, if so then gimp the throttle
-	public bool inBay = false;
-	
 	//lights and particles
 	public ParticleSystem engineParticles;
 	public AnimationCurve particleRate;
@@ -126,10 +123,13 @@ public class PropulsionSystem: BaseSubsystem
 		//lookup the propulsion modifier for the given amount of power in this system
 		float propLookup = UsefulShit.map((float)theShip.GetComponent<ShipCore>().getPropulsionPower(), 0.0f, 12.0f, 0f, 1f);		
 		propulsionModifier = propulsionPowerMapping.Evaluate(propLookup);
-		if(inBay){
+		//TODO fix this
+
+		//gimp the engines if the undercarriage is down
+		if(UndercarriageBehaviour.Instance.state != UndercarriageBehaviour.UP){
 			propulsionModifier *= 0.5f;
 		}
-		
+
 		//gimp engines if hyperspace is on
 		if(hyperspaceModifier == true){
 			propulsionModifier *= 0.3f;

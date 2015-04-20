@@ -112,7 +112,6 @@ public class DockChamberScript:MonoBehaviour{
 		if(other.name != "shipDetailBounds" && other.attachedRigidbody != null){
 			if(other.attachedRigidbody.transform.name == "TheShip"){
 				inBay = true;
-				theShip.GetComponent<PropulsionSystem>().inBay = true;
 				ignoringCollisions = true;
 
 				theShip.GetComponent<ShipCore>().freezable = false;
@@ -123,6 +122,8 @@ public class DockChamberScript:MonoBehaviour{
 					theShip.parent = transform;
 
 				}
+				OSCHandler.Instance.ChangeClientScreen("PilotStation", "landingDisplay");	
+
 			} else {
 				other.attachedRigidbody.transform.parent = transform;
 			}
@@ -135,13 +136,15 @@ public class DockChamberScript:MonoBehaviour{
 
 		if(other.attachedRigidbody.transform.name == "TheShip" ){
 			inBay = false;
-			theShip.GetComponent<PropulsionSystem>().inBay = false;
 			ignoringCollisions = false;
 			theShip.GetComponent<ShipCore>().freezable = true;
 			
 			stationCollider.enabled = true;
 			UnityEngine.Debug.Log("leave : enable collider");
 			theShip.parent = null;
+
+			OSCHandler.Instance.RevertClientScreen("PilotStation", "landingDisplay");	
+
 			
 
 		} else {

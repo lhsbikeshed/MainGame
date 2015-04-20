@@ -32,7 +32,8 @@ public class Reactor: MonoBehaviour
 	public static readonly int FUEL_CONNECTED = 1;
 	public static readonly int FUEL_DISCONNECTED = 0;
 	public int fuelLineConnectionState = FUEL_DISCONNECTED;
-	public int fuelValveState;
+	public int fuelValveDirection;
+	public bool fuelValveOpen = false;
 	int MAX_FUEL = 10000;
 
 	//------------ reactor state--------
@@ -161,24 +162,24 @@ public class Reactor: MonoBehaviour
 			}
 		}
 	
-		if (fuelValveState == 0) {
+		if (fuelValveDirection == 0) {
 			//dont do anything
 		} else {
 			
-			if (fuelLineConnectionState == FUEL_CONNECTED) {
-				fuelTankLevel[fuelValveState - 1] += 10;
-				if(fuelTankLevel[fuelValveState-  1] > MAX_FUEL){
-					fuelTankLevel[fuelValveState - 1] = MAX_FUEL;
+			if (fuelLineConnectionState == FUEL_CONNECTED && fuelValveOpen == true) {
+				fuelTankLevel[fuelValveDirection - 1] += 10;
+				if(fuelTankLevel[fuelValveDirection-  1] > MAX_FUEL){
+					fuelTankLevel[fuelValveDirection - 1] = MAX_FUEL;
 				}
 			} else {
 				//draw from the other two tanks (5 units each) and replenish selected
 				//draw a max of 10 per tick 
-				int amtToDraw = MAX_FUEL - fuelTankLevel[fuelValveState - 1];
+				int amtToDraw = MAX_FUEL - fuelTankLevel[fuelValveDirection - 1];
 				if(amtToDraw > 10) amtToDraw = 10;
 				int amountDrawn = 0;
 				for(int i = 0; i < 3; i++){
 
-					if(i != fuelValveState -  1){
+					if(i != fuelValveDirection -  1){
 						if(fuelTankLevel[i] > 0){
 							int amt = amtToDraw / 2;
 							if(fuelTankLevel[i] - amt < 0) {
@@ -194,7 +195,7 @@ public class Reactor: MonoBehaviour
 			
 					} 
 				}
-				fuelTankLevel[fuelValveState- 1] += amountDrawn;
+				fuelTankLevel[fuelValveDirection- 1] += amountDrawn;
 			}
 		}
 	}
@@ -458,14 +459,15 @@ public class Reactor: MonoBehaviour
 				} else if (operation == "setFuelConnectionState") {
 						int v = (int)message.Data [0];
 						setFuelConnectionState (v);
-	
-				} else if (operation == "setFuelValveState") {
-						fuelValveState = (int)message.Data [0];
+				} else if (operation == "setFuelValveDirection") {
+						fuelValveDirection = (int)message.Data [0];
 				} else if (operation == "setFuelAmount") {
 						fuelTankLevel [0] = (int)message.Data [0];
 						fuelTankLevel [1] = (int)message.Data [1];
 						fuelTankLevel [2] = (int)message.Data [2];
-				}
+				} else if (operation == "setFuelValveState"){
+						fuelValveOpen = (int)message.Data[0] == 1;
+				}	
 
 		}
 	

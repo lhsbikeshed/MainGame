@@ -258,29 +258,29 @@ public class LaunchScene: GenericScene {
 	}
 	
 	public override void SendOSCMessage(){
-		if(dockChamber.inBay == true){
-			Vector3 pos = theShip.transform.localPosition;
-			Quaternion rot = theShip.transform.localRotation;
-			OSCMessage msg = new OSCMessage("/scene/launchland/dockingPosition");
-			//this needs inverting when ship is facing forward in bay
-			Vector3 bayForward = dockChamber.transform.TransformDirection(Vector3.left);
-			Vector3 shipForward = theShip.transform.TransformDirection(Vector3.forward);
-			test2 = Vector3.Dot(bayForward, shipForward);
-			if(Vector3.Dot(bayForward, shipForward) < 0.0f){
-				msg.Append<float>(pos.x);
-			} else {
-				msg.Append<float>(-pos.x);
-			}
-			msg.Append<float>(pos.y);
-			msg.Append<float>(pos.z);
-			
-			
-			
-			msg.Append<float>(rot.eulerAngles.x);
-			msg.Append<float>(rot.eulerAngles.y);
-			msg.Append<float>(rot.eulerAngles.z);
-			OSCHandler.Instance.SendMessageToAll(msg);
-		}
+//		if(dockChamber.inBay == true){
+//			Vector3 pos = theShip.transform.localPosition;
+//			Quaternion rot = theShip.transform.localRotation;
+//			OSCMessage msg = new OSCMessage("/scene/launchland/dockingPosition");
+//			//this needs inverting when ship is facing forward in bay
+//			Vector3 bayForward = dockChamber.transform.TransformDirection(Vector3.left);
+//			Vector3 shipForward = theShip.transform.TransformDirection(Vector3.forward);
+//			test2 = Vector3.Dot(bayForward, shipForward);
+//			if(Vector3.Dot(bayForward, shipForward) < 0.0f){
+//				msg.Append<float>(pos.x);
+//			} else {
+//				msg.Append<float>(-pos.x);
+//			}
+//			msg.Append<float>(pos.y);
+//			msg.Append<float>(pos.z);
+//			
+//			
+//			
+//			msg.Append<float>(rot.eulerAngles.x);
+//			msg.Append<float>(rot.eulerAngles.y);
+//			msg.Append<float>(rot.eulerAngles.z);
+//			OSCHandler.Instance.SendMessageToAll(msg);
+//		}
 	
 	}
 	
@@ -288,7 +288,12 @@ public class LaunchScene: GenericScene {
 	
 	public override void configureClientScreens(){
 		if(sceneMode == SceneMode.MODE_LAUNCH){
-			OSCHandler.Instance.ChangeClientScreen("PilotStation", "docking");			//give the pilot a dockign comp
+			if(dockChamber != null && dockChamber.inBay){
+				OSCHandler.Instance.ChangeClientScreen("PilotStation", "landingDisplay");			//give the pilot a dockign comp
+			} else {
+				OSCHandler.Instance.ChangeClientScreen("PilotStation", "radar");	
+
+			}
 		} else {
 			OSCHandler.Instance.ChangeClientScreen("PilotStation", "radar");	
 		}

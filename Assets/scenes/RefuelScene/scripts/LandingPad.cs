@@ -13,6 +13,7 @@ public class LandingPad : MonoBehaviour {
 	Transform theShip;
 
 	public bool shipLanded = false;
+	public bool hasGravity = true;
 	bool applyDockingForce = false;
 	public bool hasFuelConnector = false;
 
@@ -39,7 +40,7 @@ public class LandingPad : MonoBehaviour {
 	}
 
 	void FixedUpdate(){
-		if (applyDockingForce) {
+		if (applyDockingForce && hasGravity) {
 			Vector3 padDown = -transform.TransformDirection(Vector3.forward);
 
 			theShip.GetComponent<Rigidbody>().AddForce(padDown * 520f, ForceMode.Force);
@@ -60,7 +61,9 @@ public class LandingPad : MonoBehaviour {
 			//test to see if landing gear is down
 			if (UndercarriageBehaviour.Instance.state == UndercarriageBehaviour.DOWN) {
 				if(!shipLanded){
-					dockStateChanged(true);
+					if(dockStateChanged != null){
+						dockStateChanged(true);
+					}
 					shipLanded = true;
 					applyDockingForce = true;
 					//theShip.parent = transform;
