@@ -5,6 +5,7 @@ using UnityOSC;
 public class LandingTrigger : MonoBehaviour {
 
 	public bool inTrigger = false;
+	public float clientScaleFactor = 1.0f;
 
 	Vector3 basePos = Vector3.zero;
 	Vector3 localShipPos = Vector3.zero;
@@ -28,9 +29,9 @@ public class LandingTrigger : MonoBehaviour {
 		if (Time.fixedTime - lastUpdateTime > 0.250f) {
 			lastUpdateTime = Time.fixedTime;
 			OSCMessage m = new OSCMessage("/screen/landingDisplay/shipTransform");
-			m.Append(localShipPos.x);
-			m.Append(localShipPos.y);
-			m.Append(localShipPos.z);
+			m.Append(localShipPos.x * clientScaleFactor);
+			m.Append(localShipPos.y * clientScaleFactor);
+			m.Append(localShipPos.z * clientScaleFactor);
 			m.Append(localShipRot.w);
 			m.Append(localShipRot.x);
 			m.Append(localShipRot.y);
@@ -40,8 +41,16 @@ public class LandingTrigger : MonoBehaviour {
 		}
 	}
 
+	bool isIgnorable(Collider c){
+		if (c.name == "shipDetailBounds") {
+			return true;
+		}
+
+		return false;
+	}
+
 	void OnTriggerStay(Collider c){
-		if(c.attachedRigidbody != null && c.attachedRigidbody.name == "TheShip"){
+		if(c.attachedRigidbody != null && c.attachedRigidbody.name == "TheShip" && !isIgnorable(c)){
 			inTrigger = true;
 
 			localShipPos = theShip.localPosition;
@@ -51,7 +60,7 @@ public class LandingTrigger : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider c){
-		if(c.attachedRigidbody != null && c.attachedRigidbody.name == "TheShip"){
+		if(c.attachedRigidbody != null && c.attachedRigidbody.name == "TheShip" && !isIgnorable(c)){
 			inTrigger = true;
 			OSCHandler.Instance.ChangeClientScreen("PilotStation", "landingDisplay", true);
 			theShip.parent = transform;
@@ -60,7 +69,7 @@ public class LandingTrigger : MonoBehaviour {
 	}
 
 	void OnTriggerExit(Collider c){
-		if(c.attachedRigidbody != null && c.attachedRigidbody.name == "TheShip"){
+		if(c.attachedRigidbody != null && c.attachedRigidbody.name == "TheShip" && !isIgnorable(c)){
 			inTrigger = false;
 			OSCHandler.Instance.RevertClientScreen("PilotStation", "landingDisplay");
 			theShip.parent = null;
