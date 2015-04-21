@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityOSC;
 
 /* if the ships landing gear is down and the ship is in the collider then 
  * attract the ship to the pad
@@ -53,6 +54,7 @@ public class LandingPad : MonoBehaviour {
 			shipLanded = false;
 			dockStateChanged(false);
 			//theShip.parent = null;
+
 		}
 	}
 
@@ -64,12 +66,21 @@ public class LandingPad : MonoBehaviour {
 					if(dockStateChanged != null){
 						dockStateChanged(true);
 					}
+					OSCMessage m = new OSCMessage("/ship/state/docked");
+					m.Append(1);
+					OSCHandler.Instance.SendMessageToAll(m);
 					shipLanded = true;
 					applyDockingForce = true;
 					//theShip.parent = transform;
 				}
 			} else {
 				applyDockingForce = false;
+				if(shipLanded){
+					shipLanded = false;
+					OSCMessage m = new OSCMessage("/ship/state/docked");
+					m.Append(0);
+					OSCHandler.Instance.SendMessageToAll(m);
+				}
 			}
 		}
 	}
