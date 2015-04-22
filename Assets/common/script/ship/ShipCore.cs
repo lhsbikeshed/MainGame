@@ -402,7 +402,7 @@ public class ShipCore:MonoBehaviour{
 			reactor.repairReactor (repairAmount);
 
 			if(iceEffect.freezeAmount > 0.0f){
-				iceEffect.freezeAmount -= 0.1f;
+				iceEffect.freezeAmount -= 0.1f* Time.fixedDeltaTime;
 			}
 
 		} else {

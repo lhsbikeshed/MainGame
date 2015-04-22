@@ -2,10 +2,15 @@
 using System.Collections;
 using UnityOSC;
 
-/* if the ships landing gear is down and the ship is in the collider then 
+/* LANDING PAD
+ * something that can be landed on and stuck to. Optional fuel connector
+ * 
+ * if the ships landing gear is down and the ship is in the collider then 
  * attract the ship to the pad
  * if they ship undercarriage pulls up at any time then release the attraction
  * and let the fuckers fly away
+ * 
+ * pad may have a fuel connector
  */
 
 

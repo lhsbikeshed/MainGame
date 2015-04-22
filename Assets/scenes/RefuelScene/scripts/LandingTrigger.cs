@@ -2,6 +2,9 @@
 using System.Collections;
 using UnityOSC;
 
+/* trigger landing stuff on the pilot console
+ * and send data for ship orientation and position
+ * relative to the centre of the object */
 public class LandingTrigger : MonoBehaviour {
 
 	public bool inTrigger = false;
