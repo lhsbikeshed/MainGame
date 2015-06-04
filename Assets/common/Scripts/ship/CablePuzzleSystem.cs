@@ -35,7 +35,8 @@ public class CablePuzzleSystem : MonoBehaviour {
 
 	float damageTimer = 0.0f;
 
-	int selectedPatch = 0;
+
+	public int selectedPatch = 0;
 
 	public bool test = false;
 	// Use this for initialization
@@ -87,6 +88,18 @@ public class CablePuzzleSystem : MonoBehaviour {
 //		}
 	}
 
+	public void sendStateUpdate(){
+		Debug.Log ("Cablepuzzle: sending update");
+		string state = "" + selectedPatch ;
+		for(int i = 0; i< waitingList.Length; i++){
+			state += "," + (waitingList[i].ok == true ? "1" : "0");
+		}
+		
+		OSCMessage ms = new OSCMessage("/system/cablePuzzle/currentState");
+		ms.Append(state);
+		OSCHandler.Instance.SendMessageToAll(ms);
+	}
+
 	public void puzzleStart(){
 		if(!isWaiting || puzzleComplete){
 			return;
@@ -94,7 +107,7 @@ public class CablePuzzleSystem : MonoBehaviour {
 		if(hasBeenCompleted ==  false){
 			AudioSource.PlayClipAtPoint(failClip, transform.position);
 		}
-		OSCHandler.Instance.SendMessageToAll(new OSCMessage("BITCHES"));
+		//OSCHandler.Instance.SendMessageToAll(new OSCMessage("BITCHES"));
 		//power off all screens
 		//pick a random connection chain
 		//send to engineer
@@ -105,9 +118,7 @@ public class CablePuzzleSystem : MonoBehaviour {
 		OSCHandler.Instance.ChangeClientScreen("EngineerStation", "cablepuzzle", true);
 
 		//transmit the cable list
-		OSCMessage m = new OSCMessage("/system/cablePuzzle/connectionList");
-		m.Append(selectedPatch);
-		OSCHandler.Instance.SendMessageToAll(m);
+		sendStateUpdate();
 
 	}
 
@@ -211,6 +222,9 @@ public class CablePuzzleSystem : MonoBehaviour {
 			int p = (int)m.Data[0];
 			int s = (int)m.Data[1];
 			plugDisconnected(p,s);
+		} else if (operation == "getCurrentState"){
+			sendStateUpdate();
+		
 		}
 	}
 
