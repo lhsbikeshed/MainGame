@@ -174,7 +174,7 @@ public class PropulsionSystem: BaseSubsystem
 				GetComponent<Rigidbody>().AddForce (transform.TransformDirection(Vector3.forward * thrust * -0.5f));
 			}
 			
-			rocketSFXSource.volume = scaledThrottle;
+			rocketSFXSource.volume = scaledThrottle * propulsionModifier;
 		}
 		if(translationDisabled == false){
 			GetComponent<Rigidbody>().AddRelativeForce(new Vector3(tx,ty,0.0f));

@@ -31,7 +31,7 @@ public class LandingTrigger : MonoBehaviour {
 	void FixedUpdate () {
 		if (Time.fixedTime - lastUpdateTime > 0.250f) {
 			lastUpdateTime = Time.fixedTime;
-			OSCMessage m = new OSCMessage("/screen/landingDisplay/shipTransform");
+			OSCMessage m = new OSCMessage("/ship/state/dockingTransform");
 			m.Append(localShipPos.x * clientScaleFactor);
 			m.Append(localShipPos.y * clientScaleFactor);
 			m.Append(localShipPos.z * clientScaleFactor);
@@ -39,7 +39,7 @@ public class LandingTrigger : MonoBehaviour {
 			m.Append(localShipRot.x);
 			m.Append(localShipRot.y);
 			m.Append(localShipRot.z);
-			OSCHandler.Instance.SendMessageToClient("PilotStation", m);
+			OSCHandler.Instance.SendMessageToAll( m);
 
 		}
 	}
