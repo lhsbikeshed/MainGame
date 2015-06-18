@@ -18,7 +18,7 @@ public class ShipCore:MonoBehaviour{
 	int internalPower = 6;
 	int propulsionPower = 6;
 	
-	
+	public bool freezable = false;
 	
 	public float hullState = 100.0f;
 	public Vector3 acceleration;
@@ -57,6 +57,8 @@ public class ShipCore:MonoBehaviour{
 	ShipCamera shipCamera;
 	UndercarriageBehaviour undercarriage;
 	public ShipsLaser laserTurret;
+
+	IceEffect iceEffect;
 	
 	
 	
@@ -111,12 +113,16 @@ public class ShipCore:MonoBehaviour{
 		shipCamera = gameObject.GetComponentInChildren<ShipCamera>(); //Find("camera").GetComponent.<ShipCamera>();
 		undercarriage = GetComponentInChildren<UndercarriageBehaviour>();
 		miscSystem = GetComponent<MiscSystem>();
-		
+
+
 		
 		//effects refs
 		moveEffects = transform.Find("Bits").GetComponent<ParticleSystem>();
 		moveEffects.emissionRate = 0.0f;
 	
+		iceEffect = GetComponentInChildren<IceEffect> ();
+		iceEffect.freezeAmount = 0.0f;
+
 		windowScript = GetComponentInChildren<FrontWindowBehaviour>();
 		shutterScript = gameObject.GetComponentInChildren<DoorScript>();
 		
@@ -241,7 +247,7 @@ public class ShipCore:MonoBehaviour{
 	//		cab.puzzleStart();
 	//	} 
 		
-		reactor.damageReactor();
+		reactor.damageReactor(amount);
 		
 	}
 	
@@ -249,7 +255,7 @@ public class ShipCore:MonoBehaviour{
 		//slowly repair the hull
 		previousHullState = hullState;
 		hullState += amount;
-		hullState = (float)Mathf.Clamp((int)hullState, 0, 100);
+		hullState = Mathf.Clamp(hullState, 0, 100);
 		if(hullState <= 15.0f && previousHullState > 15.0f){
 			//we crossed into red alert territory
 			CabinEffects.Instance().setRedAlert(true);
@@ -281,13 +287,13 @@ public class ShipCore:MonoBehaviour{
 	   		transform.position = exitPoint.transform.position;
 	   		transform.rotation = exitPoint.transform.rotation;
 	   		float speed = 0.0f;
-	   		speed = rigidbody.velocity.magnitude;
-	   		rigidbody.velocity = (exitPoint.transform.rotation * Vector3.forward) * speed;
+	   		speed = GetComponent<Rigidbody>().velocity.magnitude;
+	   		GetComponent<Rigidbody>().velocity = (exitPoint.transform.rotation * Vector3.forward) * speed;
 	   		 
 	   		UnityEngine.Debug.Log("Found exit node.." + exitPoint.transform.position);
 	   		
 	   	} else {
-	   		if(Application.loadedLevel!=0){
+	   		if(Application.loadedLevel != 0){
 	   			transform.position = new Vector3(0.0f,0.0f,0.0f);
 	   		}
 	   	}
@@ -307,13 +313,13 @@ public class ShipCore:MonoBehaviour{
 			//controlsLocked = false;
 			//transform.parent = null;
 			dockingChange = false;
-			rigidbody.constraints = RigidbodyConstraints.None;
+			GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
 			miscSystem.consuming = true;
 			OSCMessage msg = new OSCMessage("/system/misc/clampState");
 			msg.Append<int>(0);
 			OSCHandler.Instance.SendMessageToAll(msg);
-			rigidbody.AddRelativeForce(Vector3.down * 30.0f, ForceMode.Impulse);
-			rigidbody.AddRelativeTorque(Vector3.forward * UnityEngine.Random.Range(-10.0f, 10.0f), ForceMode.Impulse);
+			GetComponent<Rigidbody>().AddRelativeForce(Vector3.down * 30.0f, ForceMode.Impulse);
+			GetComponent<Rigidbody>().AddRelativeTorque(Vector3.forward * UnityEngine.Random.Range(-10.0f, 10.0f), ForceMode.Impulse);
 		}
 		
 		
@@ -330,7 +336,7 @@ public class ShipCore:MonoBehaviour{
 			//controlsLocked = false;
 			//transform.parent = null;
 			dockingChange = false;
-			rigidbody.constraints = RigidbodyConstraints.FreezeAll;
+			GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
 			miscSystem.consuming = false;
 			OSCMessage msg = new OSCMessage("/system/misc/clampState");
 			msg.Append<int>(1);
@@ -386,15 +392,28 @@ public class ShipCore:MonoBehaviour{
 	public void FixedUpdate(){
 	
 		//update the acceleration public var, used for animations of various things
-		acceleration = (rigidbody.velocity - lastVelocity) / Time.fixedDeltaTime;
-		lastVelocity = rigidbody.velocity;
+		acceleration = (GetComponent<Rigidbody>().velocity - lastVelocity) / Time.fixedDeltaTime;
+		lastVelocity = GetComponent<Rigidbody>().velocity;
 	
 		//repair ship hull, 0.01f is max level, scale from 0-12 that internalpower provides
-		if(reactor.systemEnabled){
-			float repairAmount = UsefulShit.map((float)internalPower, 0.0f, 12.0f, 0.0f, 0.01f);
-			changeHullLevel(repairAmount);
-			reactor.repairReactor(repairAmount);
-			
+		if (reactor.systemEnabled) {
+			float repairAmount = UsefulShit.map ((float)internalPower, 0.0f, 12.0f, 0.0f, 0.01f);
+			changeHullLevel (repairAmount);
+			reactor.repairReactor (repairAmount);
+
+			if(iceEffect.freezeAmount > 0.0f){
+				iceEffect.freezeAmount -= 0.1f* Time.fixedDeltaTime;
+			}
+
+		} else {
+			//freeze the ship
+			if(freezable){
+				iceEffect.freezeAmount += 0.01f * Time.fixedDeltaTime;
+				if(iceEffect.freezeAmount >= 1.0f){
+					GameObject.Find("PersistentScripts").GetComponent<PersistentScene>().shipDead("Frozen to death in deep space");
+				}
+
+			}
 		}
 		
 		//explode the ship
@@ -404,15 +423,17 @@ public class ShipCore:MonoBehaviour{
 				nextExplosionSfxTime = UnityEngine.Random.Range(1,5) / 10.0f;
 				AudioSource.PlayClipAtPoint(explosionSfx[Mathf.FloorToInt((float)UnityEngine.Random.Range(0, explosionSfx.Length) )], transform.position);
 				Transform t = (UnityEngine.Transform)Instantiate(explosionPrefab, transform.position + UnityEngine.Random.onUnitSphere * 2.0f, Quaternion.identity);
-				t.particleSystem.Play();
+				t.GetComponent<ParticleSystem>().Play();
 			}
 		
 		}
 		
 		
 		if(docked){
-			shipCamera.shaking = true;
-			shipCamera.shakeAmount = propulsion.scaledThrottle / 1.0f * 0.05f;
+			if(propulsion.systemEnabled){
+				shipCamera.shaking = true;
+				shipCamera.shakeAmount = propulsion.scaledThrottle / 1.0f * 0.05f;
+			}
 		} else {
 			shipCamera.shaking = false;
 		}
@@ -420,7 +441,7 @@ public class ShipCore:MonoBehaviour{
 			
 		
 		//sfx for movement
-		moveEffects.emissionRate = rigidbody.velocity.magnitude / 10.0f;
+		moveEffects.emissionRate = GetComponent<Rigidbody>().velocity.magnitude / 10.0f;
 		
 		
 		if(hullState < 20.0f){
@@ -463,48 +484,13 @@ public class ShipCore:MonoBehaviour{
 	
 	
 	
-	/* enable the pilots radar on leaving the bay. Also unparent from bay so that the ship rotates freely
-	*/
 	public void OnTriggerExit(Collider other){
-		if(other.name == "DockChamber"){		
-			//transform.parent = null;
-			OSCMessage msg = new OSCMessage("/scene/launchland/launchRadar");
-			msg.Append<int>(1);
-			
-			OSCHandler.Instance.SendMessageToAll(msg);
-			
-			OSCHandler.Instance.ChangeClientScreen("PilotStation", "radar");	//switch pilot to radar
-			
-			//GameObject.Find("PersistentScripts").GetComponent.<OSCSystem>().radarEnabled = true;
-		}
+
 	}
 	
-	/* enable the pilots radar on leaving the bay. Also unparent from bay so that the ship rotates freely
-	*/
+
 	public void OnTriggerEnter(Collider other){
-		if(other.name == "DockChamber"){	
-			//transform.parent = null;
-			OSCMessage msg = new OSCMessage("/scene/launchland/launchRadar");
-			msg.Append<int>(0);
-			
-			OSCHandler.Instance.SendMessageToAll(msg);
-			
-			OSCHandler.Instance.ChangeClientScreen("PilotStation", "docking");
-			
-			//undercarraige state
-			msg = new OSCMessage("/ship/undercarriage");
-			msg.Append<int>(undercarriage.getGearState());		
-			OSCHandler.Instance.SendMessageToAll(msg);
-			
-			//docking bay grav state
-			msg = new OSCMessage("/scene/launchland/bayGravity");
-			DockChamberScript dockChamber = GameObject.Find("DockChamber").GetComponent<DockChamberScript>();
-			msg.Append<int>(dockChamber.gravityOn == true ? 1 : 0);		
-			OSCHandler.Instance.SendMessageToAll(msg);
-			
-			
-			
-		}
+
 	}
 	
 	/* send out updated power levels to the clients */

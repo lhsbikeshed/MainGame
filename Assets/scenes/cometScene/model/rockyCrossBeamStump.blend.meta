@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: c5949bebaa0f93f4b933674eee37cac8
 ModelImporter:
-  serializedVersion: 16
+  serializedVersion: 18
   fileIDToRecycleName:
     100000: Circle
     100002: RockyCrossBeamStump
@@ -22,6 +22,8 @@ ModelImporter:
     100032: RockyCrossBeam_001_cell_012
     100034: RockyCrossBeam_001_cell_013
     100036: RockyCrossBeam_001_cell_014
+    100038: RockyCrossBeamStump_bottom
+    100040: RockyCrossBeamStump_top
     400000: Circle
     400002: RockyCrossBeamStump
     400004: //RootNode
@@ -41,6 +43,8 @@ ModelImporter:
     400032: RockyCrossBeam_001_cell_012
     400034: RockyCrossBeam_001_cell_013
     400036: RockyCrossBeam_001_cell_014
+    400038: RockyCrossBeamStump_bottom
+    400040: RockyCrossBeamStump_top
     2300000: Circle
     2300002: RockyCrossBeamStump
     2300004: //RootNode
@@ -60,6 +64,8 @@ ModelImporter:
     2300032: RockyCrossBeam_001_cell_012
     2300034: RockyCrossBeam_001_cell_013
     2300036: RockyCrossBeam_001_cell_014
+    2300038: RockyCrossBeamStump_bottom
+    2300040: RockyCrossBeamStump_top
     3300000: Circle
     3300002: RockyCrossBeamStump
     3300004: //RootNode
@@ -79,6 +85,8 @@ ModelImporter:
     3300032: RockyCrossBeam_001_cell_012
     3300034: RockyCrossBeam_001_cell_013
     3300036: RockyCrossBeam_001_cell_014
+    3300038: RockyCrossBeamStump_bottom
+    3300040: RockyCrossBeamStump_top
     4300000: RockyCrossBeamStump
     4300002: Circle
     4300004: RockyCrossBeam
@@ -98,6 +106,8 @@ ModelImporter:
     4300032: RockyCrossBeam_001_cell_002
     4300034: RockyCrossBeam_001_cell_001
     4300036: RockyCrossBeam_001_cell
+    4300038: RockyCrossBeamStump_top
+    4300040: RockyCrossBeamStump_bottom
     7400000: Default Take
     9500000: //RootNode
   materials:
@@ -108,6 +118,7 @@ ModelImporter:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
     optimizeGameObjects: 0
+    motionNodeName: 
     animationCompression: 1
     animationRotationError: .5
     animationPositionError: .5
@@ -126,11 +137,13 @@ ModelImporter:
     generateSecondaryUV: 0
     useFileUnits: 1
     optimizeMeshForGPU: 1
+    keepQuads: 0
     weldVertices: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
+    useFileScale: 0
   tangentSpace:
     normalSmoothAngle: 60
     splitTangentsAcrossUV: 1
@@ -153,3 +166,5 @@ ModelImporter:
   animationType: 0
   additionalBone: 0
   userData: 
+  assetBundleName: 
+  assetBundleVariant: 

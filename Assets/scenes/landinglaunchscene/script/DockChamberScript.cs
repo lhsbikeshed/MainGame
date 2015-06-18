@@ -21,13 +21,19 @@ public class DockChamberScript:MonoBehaviour{
 	
 	public void Start() {
 		theShip = GameObject.Find("TheShip").transform;
+		if(stationCollider == null){
+			stationCollider = transform.parent.GetComponent<MeshCollider>();
+		}
 		gravitySource = gameObject.AddComponent<AudioSource>();
 		gravitySource.clip = gravitySound;
 		gravitySource.Stop();
 		gravitySource.loop = true;
 		gravitySource.rolloffMode = AudioRolloffMode.Linear;
 		gravitySource.maxDistance = 300.0f;
-		
+		if(dockingDoor == null){
+			GameObject g = GameObject.Find ("BayDoor");
+			dockingDoor = g.GetComponent<DoorScript>();
+		}
 	}
 	
 	public void setGravity(bool st){
@@ -51,7 +57,7 @@ public class DockChamberScript:MonoBehaviour{
 	
 	public void FixedUpdate(){
 		if(gravityOn && theShip.parent == transform){
-			theShip.rigidbody.AddForce( transform.rotation * Vector3.up * -300, ForceMode.Force);
+			theShip.GetComponent<Rigidbody>().AddForce( transform.rotation * Vector3.up * -300, ForceMode.Force);
 		}
 		if(dockingDoor.state != DoorScript.DoorState.CLOSED){	//leak some atmosphere if the door isnt closed
 			oxLevel -= 0.005f;
@@ -79,8 +85,7 @@ public class DockChamberScript:MonoBehaviour{
 		//}
 	
 	}
-	
-	[RPC]
+
 	public void openDoor(){
 		
 		if (dockingDoor != null){ 
@@ -88,38 +93,37 @@ public class DockChamberScript:MonoBehaviour{
 	
 			dockingDoor.openDoor();
 			if(PersistentScene.networkReady == true){
-				networkView.RPC ("openDoor", RPCMode.Others);
+				GetComponent<NetworkView>().RPC ("openDoor", RPCMode.Others);
 			}
 		}
 		
 	
 	}
 	
-	[RPC]
 	public void closeDoor(){
 		if (dockingDoor != null){ 
 			dockingDoor.closeDoor();
-			if(PersistentScene.networkReady == true){
-				networkView.RPC ("closeDoor", RPCMode.Others);
-			}
+
 		}
 	}
 	
 	public void OnTriggerEnter(Collider other){
-			if(other.attachedRigidbody != null){
+		Debug.Log ("Bay entered by " + other.name);
+		if(other.name != "shipDetailBounds" && other.attachedRigidbody != null){
 			if(other.attachedRigidbody.transform.name == "TheShip"){
 				inBay = true;
-				theShip.GetComponent<PropulsionSystem>().inBay = true;
 				ignoringCollisions = true;
+
+				theShip.GetComponent<ShipCore>().freezable = false;
 				
-				stationCollider.isTrigger = true;
+				stationCollider.enabled = false;
 				UnityEngine.Debug.Log("Enter : Disabled collider");
 				if(theShip.parent == null){	//and were in contact with the docking bay
 					theShip.parent = transform;
-					if(PersistentScene.networkReady == true){
-						networkView.RPC ("Enter", RPCMode.Others);
-					}
+
 				}
+				OSCHandler.Instance.ChangeClientScreen("PilotStation", "landingDisplay");	
+
 			} else {
 				other.attachedRigidbody.transform.parent = transform;
 			}
@@ -128,30 +132,27 @@ public class DockChamberScript:MonoBehaviour{
 	}
 	
 	public void OnTriggerExit(Collider other){
-		
-		if(other.attachedRigidbody.transform.name == "TheShip"){
+		if(other.name == "shipDetailBounds") return;
+
+		if(other.attachedRigidbody.transform.name == "TheShip" ){
 			inBay = false;
-			theShip.GetComponent<PropulsionSystem>().inBay = false;
 			ignoringCollisions = false;
+			theShip.GetComponent<ShipCore>().freezable = true;
 			
-			stationCollider.isTrigger = false;
+			stationCollider.enabled = true;
 			UnityEngine.Debug.Log("leave : enable collider");
 			theShip.parent = null;
+
+			OSCHandler.Instance.RevertClientScreen("PilotStation", "landingDisplay");	
+
 			
-			if(PersistentScene.networkReady == true){
-				networkView.RPC ("Exit", RPCMode.Others);
-			}
+
 		} else {
 			other.attachedRigidbody.transform.parent = null;
 		}
 		
 	}
-	
-	[RPC]
-	public void Enter(){
-	}
-	[RPC]
-	public void Exit(){}
+
 	
 	
 	public void Update() {

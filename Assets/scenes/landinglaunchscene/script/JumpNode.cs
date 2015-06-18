@@ -30,16 +30,12 @@ public class JumpNode:MonoBehaviour{
 	public void OnTriggerEnter(Collider other) {
 		if(gateEnabled){
 			if (other.gameObject == theShip){
-				theShip.GetComponent<JumpSystem>().inGate = true;
+				theShip.GetComponent<JumpSystem>().setFlatSpace(true);
 				
-				theShip.GetComponent<JumpSystem>().updateJumpStatus();
-				
+
 				PersistentScene ps = GameObject.Find("PersistentScripts").GetComponent<PersistentScene>();
 				
-				ps.forcedHyperspaceFail = forcedFail;
-				
-				
-				
+
 			} 
 		}
 	}
@@ -71,9 +67,9 @@ public class JumpNode:MonoBehaviour{
 			if(t.name.Contains("Plane")){
 				t.parent = null;
 				t.gameObject.AddComponent<Rigidbody>();
-				t.rigidbody.useGravity = false;
-				t.rigidbody.AddForce( (transform.position - t.position).normalized * -10, ForceMode.Impulse);
-				t.rigidbody.AddTorque(new Vector3(0.0f,40.0f,0.0f), ForceMode.Impulse);
+				t.GetComponent<Rigidbody>().useGravity = false;
+				t.GetComponent<Rigidbody>().AddForce( (transform.position - t.position).normalized * -10, ForceMode.Impulse);
+				t.GetComponent<Rigidbody>().AddTorque(new Vector3(0.0f,40.0f,0.0f), ForceMode.Impulse);
 				
 				
 			}
@@ -88,8 +84,7 @@ public class JumpNode:MonoBehaviour{
 	public void OnTriggerExit(Collider other) {
 		
 		if (other.gameObject == theShip){
-			theShip.GetComponent<JumpSystem>().inGate = false;
-		    theShip.GetComponent<JumpSystem>().updateJumpStatus();
+			theShip.GetComponent<JumpSystem>().setFlatSpace(false);
 			
 		} 
 	}

@@ -7,6 +7,9 @@ public class SkyboxCamera:MonoBehaviour{
 
 	public Transform theShip;
 	public float translateScale;
+
+	public bool followShipPosition = true;
+	public bool followShipRotation = true;
 	
 	public float distanceFogMultiplier = 5.0f;
 	
@@ -31,10 +34,15 @@ public class SkyboxCamera:MonoBehaviour{
 	
 	//rotate and position the camera as the main camera moves
 	public void Update() {
-		transform.rotation = shipCamera.rotation;
-		Vector3 basePos = new Vector3((float)mapController.sectorPos[0], (float)mapController.sectorPos[1], (float)mapController.sectorPos[2]) * mapController.cellSize;
-		
-		transform.position = (basePos + theShip.position) * translateScale;
+		if(followShipRotation){ 
+			transform.rotation = shipCamera.rotation;
+		}
+
+		if(followShipPosition){
+			Vector3 basePos = new Vector3((float)mapController.sectorPos[0], (float)mapController.sectorPos[1], (float)mapController.sectorPos[2]) * mapController.cellSize;
+			
+			transform.position = (basePos + theShip.position) * translateScale;
+		}
 		
 	}
 	

@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 
 
-public class CometEvent:MonoBehaviour{
+public class CometEvent:HyperSpaceEvent{
 	
 	public AudioClip gravityFailSfx;	//sound to play during failed exit
 	
@@ -11,8 +11,11 @@ public class CometEvent:MonoBehaviour{
 	bool running = false;
 	
 	float startTime = 0.0f;
-	public float triggerTime = 11.0f;
+	//public float triggerTime = 11.0f;
 	public Transform cometPrefab;
+
+	Vector3 cometVel = Vector3.zero;
+
 	
 	public void Start() {
 		if(theShip == null){
@@ -20,29 +23,29 @@ public class CometEvent:MonoBehaviour{
 		}
 		cometPrefab.parent = null;
 		startTime = Time.fixedTime;
+		triggerDelay = 8.0f;
 	}
 	
-	public IEnumerator startSequence(){
-		
-		
-		
-		running = true;
-		
-		//start moving the asteroid
-		cometPrefab.GetComponent<CometBehaviour>().velocity = new Vector3(0.0f,-24.9f,0.0f);
-		yield return new WaitForSeconds(8f);
-		cometPrefab.GetComponent<CometBehaviour>().velocity = new Vector3(0.0f,0.0f,0.0f);
-		//yield WaitForSeconds(2f);
-		AudioSource.PlayClipAtPoint(gravityFailSfx, transform.position);
+	public override IEnumerator startSequence(){
+		if(running == false){
+			
+			
+			running = true;
+			
+			//start moving the asteroid
+			cometVel = new Vector3(0.0f,-24.9f,0.0f);
+			yield return new WaitForSeconds(8f);
+			cometVel = new Vector3(0.0f,0.0f,0.0f);
+			//yield WaitForSeconds(2f);
+			AudioSource.PlayClipAtPoint(gravityFailSfx, transform.position);
+		}
 	}
 	
 	public void FixedUpdate() {
 		if(running){
-			
+			cometPrefab.transform.position += cometPrefab.TransformDirection(cometVel);
 			
 		}
-		if(Time.fixedTime - startTime > triggerTime && !running){
-			StartCoroutine(startSequence());
-		}
+
 	}
 }

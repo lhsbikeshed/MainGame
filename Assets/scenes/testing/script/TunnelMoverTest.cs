@@ -27,21 +27,21 @@ public class TunnelMoverTest:MonoBehaviour{
 	public void FixedUpdate() {
 		
 		Vector3 predictedFwd = Quaternion.AngleAxis(
-	         theShip.rigidbody.angularVelocity.magnitude * Mathf.Rad2Deg * stability / speed,
-	         theShip.rigidbody.angularVelocity
+	         theShip.GetComponent<Rigidbody>().angularVelocity.magnitude * Mathf.Rad2Deg * stability / speed,
+	         theShip.GetComponent<Rigidbody>().angularVelocity
 	     ) * -theShip.transform.forward;
 	 
 	     Vector3 torqueVector = Vector3.Cross(predictedFwd, aimVector);
-	     theShip.rigidbody.AddTorque(torqueVector * speed * speed);
+	     theShip.GetComponent<Rigidbody>().AddTorque(torqueVector * speed * speed);
 	     
 	     
 	     Vector3 shipRot = theShip.TransformDirection(Vector3.forward);
 		 Vector3 xVal = Vector3.Project(shipRot, Vector3.right);
 		 Vector3 yVal = Vector3.Project(shipRot, Vector3.up);
 		
-		 theShip.rigidbody.AddForce( new Vector3(xVal.x, yVal.y, 0.0f) * moveScale, ForceMode.Acceleration);
+		 theShip.GetComponent<Rigidbody>().AddForce( new Vector3(xVal.x, yVal.y, 0.0f) * moveScale, ForceMode.Acceleration);
 	     
-	     theShip.rigidbody.AddForce(Vector3.forward * velocity, ForceMode.Acceleration);
+	     theShip.GetComponent<Rigidbody>().AddForce(Vector3.forward * velocity, ForceMode.Acceleration);
 	     
 		if(collisionTimer <= 0.0f){
 			

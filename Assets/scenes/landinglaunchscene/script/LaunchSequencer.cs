@@ -15,6 +15,7 @@ public class LaunchSequencer:MonoBehaviour{
 	public float intitialPause = 5.0f;
 	
 	public bool canBeUsed = false;
+	public GameObject objectToActivate;
 	
 	
 	Vector3 startPos;
@@ -36,12 +37,15 @@ public class LaunchSequencer:MonoBehaviour{
 	}
 	
 	public void OnTriggerEnter(Collider c){
-		if(c.name == objectToMove.name && canBeUsed == false){
+		if(objectToMove != null && c.name == objectToMove.name && canBeUsed == false){
 		
 			canBeUsed = true;
 			OSCMessage m = new OSCMessage("/scene/launchland/grabberState");
 			m.Append<int>(1);
 			OSCHandler.Instance.SendMessageToAll(m);
+			if(objectToActivate){
+				objectToActivate.SetActive(true);
+			}
 		}
 		
 	}
@@ -53,6 +57,9 @@ public class LaunchSequencer:MonoBehaviour{
 			OSCMessage m = new OSCMessage("/scene/launchland/grabberState");
 			m.Append<int>(0);
 			OSCHandler.Instance.SendMessageToAll(m);
+			if(objectToActivate){
+				objectToActivate.SetActive(false);
+			}
 		}
 		
 	}
@@ -60,14 +67,14 @@ public class LaunchSequencer:MonoBehaviour{
 	public IEnumerator begin(){
 		if(! running && canBeUsed){
 			yield return new WaitForSeconds (intitialPause);
-			audio.clip = waypoints[0].inSound;
-			audio.loop = false;
-			audio.Play();
+			GetComponent<AudioSource>().clip = waypoints[0].inSound;
+			GetComponent<AudioSource>().loop = false;
+			GetComponent<AudioSource>().Play();
 			startPos = objectToMove.transform.position;
 			startRot = objectToMove.transform.rotation;
 			targetWaypoint = 0;
 			startTime = Time.fixedTime;
-			objectToMove.rigidbody.constraints = RigidbodyConstraints.FreezeAll;
+			objectToMove.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
 			running = true;
 			
 		}
@@ -82,11 +89,11 @@ public class LaunchSequencer:MonoBehaviour{
 			float duration =  waypoints[targetWaypoint].durationTo;
 			float pause =  waypoints[targetWaypoint].pause;
 			if(Time.fixedTime > startTime + duration){
-				if(audio.clip != waypoints[targetWaypoint].outSound){
-					audio.loop = false;
-					audio.Stop();
-					audio.clip = waypoints[targetWaypoint].outSound;
-					audio.Play();
+				if(GetComponent<AudioSource>().clip != waypoints[targetWaypoint].outSound){
+					GetComponent<AudioSource>().loop = false;
+					GetComponent<AudioSource>().Stop();
+					GetComponent<AudioSource>().clip = waypoints[targetWaypoint].outSound;
+					GetComponent<AudioSource>().Play();
 				}
 				if(Time.fixedTime > startTime + duration + pause){
 					if(targetWaypoint + 1 < waypoints.Length){
@@ -95,10 +102,10 @@ public class LaunchSequencer:MonoBehaviour{
 						startTime = Time.fixedTime;
 						startPos = objectToMove.transform.position;
 						startRot = objectToMove.transform.rotation;
-						audio.loop = false;
-						audio.Stop();
-						audio.clip = waypoints[targetWaypoint].inSound;
-						audio.Play();
+						GetComponent<AudioSource>().loop = false;
+						GetComponent<AudioSource>().Stop();
+						GetComponent<AudioSource>().clip = waypoints[targetWaypoint].inSound;
+						GetComponent<AudioSource>().Play();
 					} else {
 						UnityEngine.Debug.Log("done");
 						
@@ -107,10 +114,10 @@ public class LaunchSequencer:MonoBehaviour{
 					}
 				}
 			} else {
-				if(audio.isPlaying == false){
-					audio.clip = waypoints[targetWaypoint].duringSound;
-					audio.loop = true;
-					audio.Play();
+				if(GetComponent<AudioSource>().isPlaying == false){
+					GetComponent<AudioSource>().clip = waypoints[targetWaypoint].duringSound;
+					GetComponent<AudioSource>().loop = true;
+					GetComponent<AudioSource>().Play();
 				}
 				lerp = (Time.fixedTime - startTime) / duration;
 				objectToMove.transform.position = Vector3.Lerp(startPos, waypoints[targetWaypoint].transform.position, lerp);

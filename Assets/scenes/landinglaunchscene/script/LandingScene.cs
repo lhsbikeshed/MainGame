@@ -17,7 +17,7 @@ public class LandingScene: GenericScene {
 		dockChamber = GameObject.Find("DockChamber").GetComponent<DockChamberScript>();
 
 		theShip = GameObject.Find("TheShip").transform;
-		theShip.rigidbody.useGravity = false;
+		theShip.GetComponent<Rigidbody>().useGravity = false;
 		theShip.GetComponent<PropulsionSystem>().enableSystem();
 		theShip.GetComponentInChildren<ShipCamera>().setSkyboxState (false);
 		

@@ -80,7 +80,7 @@ public class CometRockSpawner:MonoBehaviour{
 		bastardCooldown -= Time.fixedDeltaTime;
 		
 		//match positions with the ship but move ahead of them so there is always rocks in its path
-		Vector3 pos = theShip.position + theShip.rigidbody.velocity * velAdjust;	
+		Vector3 pos = theShip.position + theShip.GetComponent<Rigidbody>().velocity * velAdjust;	
 		pos.z = startPosition.z;
 		transform.position = pos;
 		
@@ -101,7 +101,7 @@ public class CometRockSpawner:MonoBehaviour{
 			if(t != null){
 				t.position = new Vector3(theShip.position.x, theShip.position.y, startPosition.z) + UnityEngine.Random.onUnitSphere * 15f;
 				t.gameObject.SetActive(true);
-				t.rigidbody.velocity = Vector3.forward * initialSpeed;
+				t.GetComponent<Rigidbody>().velocity = Vector3.forward * initialSpeed;
 				bastardCooldown = 1f;
 			}
 			
@@ -114,12 +114,23 @@ public class CometRockSpawner:MonoBehaviour{
 		Transform t = findFreeFromPool();
 		if(t != null){
 			Vector3 newpos = new Vector3(UnityEngine.Random.value * spawnArea.size.x, UnityEngine.Random.value * spawnArea.size.y, UnityEngine.Random.value * spawnArea.size.z) + transform.position - spawnArea.size / 2f;
+
+			//test to see if this will intersect another rigidbody
+			Collider[] collisions;
+			float size = 15;
+			do {
+
+				collisions = Physics.OverlapSphere(newpos, size, LayerMask.NameToLayer("Default"));
+				newpos += Vector3.forward * -size ;//shift it back a bit to prevent collision
+				newpos.z -= 10;
+			}while(collisions.Length > 0);
+
 			t.GetComponent<TargettableObject>().setPosition(newpos);
 			
 			t.gameObject.SetActive(true);
 			Quaternion randRot = Quaternion.Euler((float)UnityEngine.Random.Range(-5, 5), (float)UnityEngine.Random.Range(-5,5),0.0f);
 			
-			t.rigidbody.velocity = randRot * Vector3.forward * (initialSpeed + UnityEngine.Random.Range(-5,15));
+			t.GetComponent<Rigidbody>().velocity = randRot * Vector3.forward * (initialSpeed + UnityEngine.Random.Range(-5,15));
 		}
 	}
 	

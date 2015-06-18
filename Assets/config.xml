@@ -2,13 +2,14 @@
 <config>
 	<testmode>false</testmode>
 	<client name="TacticalStation">10.0.0.10:12004</client>
-	<client name="EngineerStation">10.0.0.1:12001</client>
+	<client name="EngineerStation">172.16.1.100:12001</client>
 	<client name="PilotStation">10.0.0.10:12002</client>
 	<client name="ModStation">127.0.0.1:12005</client>
 	<client name="Tablet">10.0.0.12:12005</client>
 	<client name="Tablet2">10.0.0.120:12005</client>
 	<client name="CommsStation">10.0.0.3:12003</client>
-	<client name="cam">10.0.0.50:12010</client>
+	<client name="cam">10.0.0.3:12010</client>
+	<client name="fvidserver">10.0.0.50:12011</client>
 
 	<useChaseCam>false</useChaseCam>
 	<resolutionWidth>1280</resolutionWidth>
@@ -16,4 +17,3 @@
 	<useWebcam>false</useWebcam>
 	
 </config>
-	

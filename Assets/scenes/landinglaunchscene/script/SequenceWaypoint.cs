@@ -2,7 +2,7 @@ using UnityEngine;
 using System;
 
 
-public class SequenceWaypoint:MonoBehaviour{
+public class SequenceWaypoint:MonoBehaviour, IComparable<SequenceWaypoint>{
 	
 	//for the crane grabber
 	public bool translate  =false;
@@ -33,6 +33,12 @@ public class SequenceWaypoint:MonoBehaviour{
 		}
 	
 	}
+	public int CompareTo(SequenceWaypoint other){
+		return name.CompareTo(other.name);
+
+	}
+
+
 	
 	public void DummyFunction(GameObject g){
 	}

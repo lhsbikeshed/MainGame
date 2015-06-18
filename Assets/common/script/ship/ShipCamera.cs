@@ -17,7 +17,7 @@ public class ShipCamera:MonoBehaviour{
 	public Camera canopyCamera;
 	
 	public bool useExternalCamera  = false;
-	
+	public bool shakeTest = false;
 	public Camera skyboxCamera;
 	
 	
@@ -107,6 +107,11 @@ public class ShipCamera:MonoBehaviour{
 	
 	
 	public void Update() {
+		if(shakeTest){
+			shakeTest = false;
+			shakeFor(1);
+		}
+
 		if(shaking || timedShaking){
 			transform.localPosition = originalPos + new Vector3(UnityEngine.Random.Range(-shakeAmount, shakeAmount), UnityEngine.Random.Range(-shakeAmount,shakeAmount),0.0f);
 			previewCamera.transform.localPosition = transform.localPosition;

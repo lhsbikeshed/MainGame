@@ -21,9 +21,11 @@ public class BlinkenFlareBehaviour:MonoBehaviour{
 	
 	
 	public void Start() {
-		
+
 		theShip = GameObject.Find("TheShip").transform;
-		
+		if (target == null) {
+			target = theShip;
+		}
 		mat = GetComponentInChildren<Renderer>().material;
 	//	Debug.Log(mat);
 		if(blinking == false){

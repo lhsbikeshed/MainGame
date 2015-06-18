@@ -60,10 +60,13 @@ public class DropScene: GenericScene {
 	
 	//ship refs
 	JumpSystem jumpSystem;
-	int jumpRoute  = -1;
+
 	bool puzzleComplete = false;
+
 	
 	public override void Start() {
+
+		sceneIsJumpInterruption = true;
 		//get references
 		planet = GameObject.Find("planet").transform;
 		skyCam = GameObject.Find("skyboxCamera").transform;
@@ -76,7 +79,7 @@ public class DropScene: GenericScene {
 		jumpSystem = theShip.GetComponent<JumpSystem>();
 		//we store this so that the players cant accidentally override it. if they do then we force it back
 		//on the console. The ship will then emergency jump down the right route
-		jumpRoute = 3;	//always jump to warzone after this scene
+
 		
 		hulltemperature = new float[6];
 		hullDirections = new Vector3[6];
@@ -97,8 +100,8 @@ public class DropScene: GenericScene {
 		// ship enters scene with fucked engines, add gravity and disable buggered systems.
 		//add some drag otherwise we ping off into space
 		GameObject.Find("Bits").active = false;
-		theShip.rigidbody.useGravity = true;
-		theShip.rigidbody.drag = 0.0f;
+		theShip.GetComponent<Rigidbody>().useGravity = true;
+		theShip.GetComponent<Rigidbody>().drag = 0.0f;
 		
 		//turn off the propulsion system but allow rotations
 		theShip.GetComponent<PropulsionSystem>().disableSystem();
@@ -109,7 +112,7 @@ public class DropScene: GenericScene {
 		//theShip.rigidbody.drag = 0.5f;
 	
 		//add a little forward speed to the drop and add a roll rotation to show we came out of warp badly
-		theShip.rigidbody.velocity = theShip.transform.rotation * Vector3.forward * 100;
+		theShip.GetComponent<Rigidbody>().velocity = theShip.transform.rotation * Vector3.forward * 100;
 		
 		
 		theShip.GetComponent<MiscSystem>().setExternalLight(false);	//ext light kills the planet shader
@@ -136,6 +139,8 @@ public class DropScene: GenericScene {
 		//set up turbulence stuff
 		lastTurbulence = Time.fixedTime + 3.0f;
 		nextTurbulence = UnityEngine.Random.Range(5.0f, 15.0f);
+
+		JumpSystem.Instance.addRequirement(new SystemRequirement("LOCKED", "Jump System Damaged - repatch power"));
 		
 	}
 	
@@ -148,10 +153,10 @@ public class DropScene: GenericScene {
 	
 	public void FixedUpdate(){
 		//disable drag for now, not physically accurate but fuck it
-		theShip.rigidbody.drag = 0.0f;
+		theShip.GetComponent<Rigidbody>().drag = 0.0f;
 		//kick the ship slightly as we fail the exit
 		if(initialKick){
-			theShip.rigidbody.AddRelativeTorque(new Vector3(0.0f,0.0f,50.0f), ForceMode.Impulse);
+			theShip.GetComponent<Rigidbody>().AddRelativeTorque(new Vector3(0.0f,0.0f,50.0f), ForceMode.Impulse);
 			initialKick = false;
 		}
 		
@@ -162,12 +167,12 @@ public class DropScene: GenericScene {
 			Vector3 ranVec = UnityEngine.Random.onUnitSphere;
 			ranVec.z = 0.0f;
 			ranVec *= UnityEngine.Random.Range(300.0f, 650.0f);
-			theShip.rigidbody.AddRelativeTorque(ranVec, ForceMode.Impulse);
+			theShip.GetComponent<Rigidbody>().AddRelativeTorque(ranVec, ForceMode.Impulse);
 		}
 		
 		
 		//slowly rotate the ship toward the fireball
-		theShip.rigidbody.AddTorque(Vector3.Cross(theShip.transform.forward, theShip.rigidbody.velocity.normalized) * airForce, ForceMode.Force);
+		theShip.GetComponent<Rigidbody>().AddTorque(Vector3.Cross(theShip.transform.forward, theShip.GetComponent<Rigidbody>().velocity.normalized) * airForce, ForceMode.Force);
 		
 		//check if the altitude has crossed a 1000/100 barrier and speak it out
 		prevFrameAltitude = altitude;
@@ -227,7 +232,7 @@ public class DropScene: GenericScene {
 			
 			for(int i = 0 ; i < 6; i++){
 				if(heating){
-					float amt = Vector3.Dot(theShip.transform.rotation * hullDirections[i], theShip.rigidbody.velocity.normalized);
+					float amt = Vector3.Dot(theShip.transform.rotation * hullDirections[i], theShip.GetComponent<Rigidbody>().velocity.normalized);
 					hulltemperature[i] += amt / 10.0f;
 					if(hulltemperature[i] < 10){
 						hulltemperature[i] = 10.0f;
@@ -274,35 +279,19 @@ public class DropScene: GenericScene {
 			//OH FUCK
 			hitPlanet();
 		}
-		
-		//fix possible jump route overwrites
-		//if the players manage to reset the route then force it to the one we had when starting the scene
-		if(puzzleComplete && jumpSystem.jumpDest < 0){
-			jumpSystem.jumpDest = 3;	//force to warzone scene
-		
-			jumpSystem.canJump = true;
-			jumpSystem.inGate = true;
-			
-			jumpSystem.updateJumpStatus();
-			
-			OSCMessage s1 = new OSCMessage("/ship/jumpStatus");
-			s1.Append<int>(jumpRoute);
-			OSCHandler.Instance.SendMessageToAll(s1);
-			
-		}
+	
 						
 	}
 	public void hitPlanet(){
 		//silence all sounds, play a humongous crash and kill the players. Black out screen
 		if(weAreDying == false){
-			theShip.rigidbody.constraints = RigidbodyConstraints.FreezeAll;	//freeze ship in place
+			theShip.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;	//freeze ship in place
 		
 			deathTime = Time.fixedTime;
 			weAreDying = true;
 			fireBallSound.volume = 0.0f;
-			//var ps : PersistentScene = GameObject.Find("PersistentScripts").GetComponent.<PersistentScene>();
-			//ps.shipDead("Crashed into planet");
-			StartCoroutine(theShip.GetComponent<ShipCore>().damageShip(1000.0f, "Smeared across surface of a dust planet"));
+
+			StartCoroutine(theShip.GetComponent<ShipCore>().damageShip(1000.0f, "Smeared across surface of Mars"));
 		}
 	}
 		
@@ -326,7 +315,20 @@ public class DropScene: GenericScene {
 			
 		}
 	}
-	
+	void puzzleCompleted(){
+		theShip.GetComponent<PropulsionSystem>().enableSystem();		
+		
+		//theShip.GetComponent<JumpSystem>().canJump = true;
+		JumpSystem.Instance.removeRequirement("FLATSPACE");
+		JumpSystem.Instance.removeRequirement("LOCKED");
+		jumpSystem.updateJumpStatus();
+		OSCHandler.Instance.RevertClientScreen("TacticalStation", "drop");		
+		OSCHandler.Instance.RevertClientScreen("EngineerStation", "drop");	
+
+		OSCHandler.Instance.ChangeClientScreen("TacticalStation", "plotting");
+		
+		puzzleComplete = true;
+	}
 	
 	public override void Update() {
 		if(weAreDying && Time.fixedTime - deathTime > 14.7f){
@@ -356,41 +358,25 @@ public class DropScene: GenericScene {
 			case "droppanelrepaired":
 				//drop scene equipment has been repaired, so turn on propulsion and jump, set jump coords
 				//to next scene and set ship to allow jump
-				if(Application.loadedLevel == 2){
-					if((int)message.Data[0] == 1){		//panel hardware was repaired but not auth
-						OSCMessage s = new OSCMessage("/scene/drop/panelRepaired");
-						
-						OSCHandler.Instance.SendMessageToAll(s);
+				
+				if((int)message.Data[0] == 1){		//panel hardware was repaired but not auth
+					OSCMessage s = new OSCMessage("/scene/drop/panelRepaired");
 					
-					} else if ((int)message.Data[0] == 2){
-						theShip.GetComponent<JumpSystem>().enableSystem();
-						theShip.GetComponent<PropulsionSystem>().enableSystem();
-						PersistentScene ps = GameObject.Find("PersistentScripts").GetComponent<PersistentScene>();
-						ps.hyperspaceDestination = 3;
-						ps.forcedHyperspaceFail = false;	
-						theShip.GetComponent<JumpSystem>().jumpDest = 1;
-		
-						theShip.GetComponent<JumpSystem>().canJump = true;
-						theShip.GetComponent<JumpSystem>().inGate = true;
-						theShip.GetComponent<JumpSystem>().jumpDest = 3;
-						OSCMessage s1 = new OSCMessage("/ship/jumpStatus");
-						s1.Append<int>(1);
-						OSCHandler.Instance.SendMessageToAll(s1);
-						
-						puzzleComplete = true;
-						
-					}
+					OSCHandler.Instance.SendMessageToAll(s);
+				
+				} else if ((int)message.Data[0] == 2){
+	
+					puzzleCompleted();
 					
 				}
-					
+				
 				break;
-				
-				
-		}	
-		
-	
+		}
 	}
-	
+			
+			
+
+
 	public override void LeaveScene(){
 		OSCHandler.Instance.RevertClientScreen("PilotStation", "drop");			
 		OSCHandler.Instance.RevertClientScreen("TacticalStation", "drop");		
@@ -420,7 +406,16 @@ public class DropScene: GenericScene {
 	public override void configureClientScreens(){
 	
 		OSCHandler.Instance.ChangeClientScreen("PilotStation", "drop", true);			
-		OSCHandler.Instance.ChangeClientScreen("TacticalStation", "drop", true);		
+		OSCHandler.Instance.ChangeClientScreen("TacticalStation", "drop", true);	
+		OSCMessage msg = new OSCMessage("/system/jump/JumpFucked");
+		if(puzzleComplete){
+
+			msg.Append(0);
+
+		} else {
+			msg.Append(1);
+		}
+		OSCHandler.Instance.SendMessageToAll(msg);
 		OSCHandler.Instance.ChangeClientScreen("EngineerStation", "drop", true);			
 	
 	}

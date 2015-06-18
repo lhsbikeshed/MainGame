@@ -10,6 +10,7 @@ public class UniverseObject:MonoBehaviour{
 	 
 	 // are we close to the player? if so scale everything up by 10
 	public bool inDetailSpace = false;
+	public bool lockInSkybox = false;	//do we permanently lock this in the skybox regardless of how close we get to it?
 	
 	public Vector3 startScale;
 	
@@ -52,6 +53,9 @@ public class UniverseObject:MonoBehaviour{
 	}
 	
 	public void moveToDetailSpace(){
+		if(lockInSkybox) return;
+
+
 		currentScale =  MapController._instance.iUniverseScale;
 		
 		//get offset between the skyboxcamera and this object

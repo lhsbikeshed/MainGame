@@ -28,12 +28,13 @@ public class UndercarriageBehaviour:MonoBehaviour{
 	public static int TRANSIT_DOWN = 2;
 	public static int TRANSIT_UP = 3;
 	
-	
+	public static UndercarriageBehaviour Instance;
 	
 	
 	public void Start() {
-		
-		
+		if(forPlayer){
+			Instance = this;
+		}	
 		
 		contactsThisFrame = new bool[colliders.Length];
 		wheelPosition = wheelDownPos;
@@ -46,7 +47,7 @@ public class UndercarriageBehaviour:MonoBehaviour{
 	//true for collide, false for not
 	public void updateFootColliders(bool st){
 		foreach(UnityEngine.Transform g in colliders){
-			g.collider.isTrigger = !st;
+			g.GetComponent<Collider>().isTrigger = !st;
 		}
 	}
 	

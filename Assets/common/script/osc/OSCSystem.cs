@@ -37,7 +37,7 @@ public class OSCSystem:MonoBehaviour{
 	
 	//last update packet send
 	float lastShipUpdate;
-	
+	bool firstResetSent = false;
 	
 	
 	//fucking unityscript
@@ -51,15 +51,20 @@ public class OSCSystem:MonoBehaviour{
 	}
 	
 	public void Awake(){
+		Debug.Log("OscSystem awake!");
 		DontDestroyOnLoad(this);
 		OSCHandler.Instance.Init(); //init OSC
-		OSCMessage msg = new OSCMessage("/scene/change");
-		msg.Append<int>(Application.loadedLevel);
-		OSCHandler.Instance.SendMessageToAll(msg);
-		//since this is only ever called at the start of the game
-		//send a reset signal to all consoles
-		msg = new OSCMessage("/game/reset");
-		//OSCHandler.Instance.SendMessageToAll(msg);
+			
+
+		if(!firstResetSent){
+			firstResetSent = true;
+			//since this is only ever called at the start of the game
+			//send a reset signal to all consoles
+			OSCMessage msg = new OSCMessage("/game/reset");
+			OSCHandler.Instance.SendMessageToAll(msg);
+			firstResetSent = true;
+		}
+		//now init all of the refs etc
 		init();
 	}
 	
@@ -80,6 +85,10 @@ public class OSCSystem:MonoBehaviour{
 			//get a list of all radar visible objects
 			targettingSystem.updateTrackingList();
 		}
+		OSCMessage msg = new OSCMessage("/scene/change");
+		msg.Append<string>(Application.loadedLevelName);
+		msg.Append<string>(currentScene.mapNodeId);
+		OSCHandler.Instance.SendMessageToAll( msg);
 	}
 	
 	
@@ -87,9 +96,7 @@ public class OSCSystem:MonoBehaviour{
 	public void OnLevelWasLoaded(int level) {
 		print ("level started");
 		//send scene change to all stations
-		OSCMessage msg = new OSCMessage("/scene/change");
-		msg.Append<int>(level);
-		OSCHandler.Instance.SendMessageToAll( msg);
+
 		//redo all the object refs
 		init();
 	
@@ -161,7 +168,7 @@ public class OSCSystem:MonoBehaviour{
 	 */
 	 
 	public void sendShipStats(){
-		if(Application.loadedLevel != 5){
+		if(Application.loadedLevelName != "deadscene"){
 			OSCMessage msg = new OSCMessage("/ship/stats");
 			
 			float oxLevel = miscSystem.oxygenLevel;
@@ -183,16 +190,16 @@ public class OSCSystem:MonoBehaviour{
 			msg.Append<float>(playerShip.transform.rotation.y);
 			msg.Append<float>(playerShip.transform.rotation.z);
 			
-			msg.Append<float>(playerShip.rigidbody.velocity.x);
-			msg.Append<float>(playerShip.rigidbody.velocity.y);
-			msg.Append<float>(playerShip.rigidbody.velocity.z);
+			msg.Append<float>(playerShip.GetComponent<Rigidbody>().velocity.x);
+			msg.Append<float>(playerShip.GetComponent<Rigidbody>().velocity.y);
+			msg.Append<float>(playerShip.GetComponent<Rigidbody>().velocity.z);
 			OSCHandler.Instance.SendMessageToAll(msg);
 		}
 	
 	}
 	
-	
-	public void jumpToScene(int id){
+	//fake warp the ship to the given scene
+	public void jumpToScene(string id){
 		UnityEngine.Debug.Log("Forcing ship to scene: " + id);
 		
 		if(currentScene != null){
@@ -200,11 +207,11 @@ public class OSCSystem:MonoBehaviour{
 		}
 		
 		GameObject theShip = GameObject.Find("TheShip");
-		theShip.rigidbody.freezeRotation = false;
-		theShip.rigidbody.constraints = RigidbodyConstraints.None;
+		theShip.GetComponent<Rigidbody>().freezeRotation = false;
+		theShip.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
 		theShip.GetComponent<JumpSystem>().didWeWarpIn = true;
 		theShip.GetComponent<MiscSystem>().consuming = true; //reenable air consumption
-		theShip.rigidbody.angularDrag = 0.5f;
+		theShip.GetComponent<Rigidbody>().angularDrag = 0.5f;
 	 	theShip.GetComponent<PropulsionSystem>().throttleDisabled = false;
 	
 		theShip.transform.parent = null;
@@ -284,17 +291,27 @@ public class OSCSystem:MonoBehaviour{
 			
 			case "takeMeTo":
 				//force the ship to hyperspace to given scene id
-				int sceneId = (int)message.Data[0];
+				string sceneId = (string)message.Data[0];
 				jumpToScene(sceneId);
 				break;
 			case "reset":
 				//if(Application.loadedLevel == 5){
+					OSCHandler.Instance.ClearScreenStackTo("EngineerStation", "power");
+					OSCHandler.Instance.ClearScreenStackTo("TacticalStation", "weapons");
+			
+					OSCHandler.Instance.ClearScreenStackTo("PilotStation", "radar");
+
 					OSCHandler.Instance.dieFuckerDie();
+					
 					Destroy(GameObject.Find("OSCHandler"));
 					Destroy(GameObject.Find("PersistentScripts"));
+					Destroy(GameObject.Find("skyboxCamera"));
+
+					Destroy(GameObject.Find("SceneScripts"));
 					Destroy(GameObject.Find("TheShip"));
 					Destroy(GameObject.Find("DynamicCamera"));
-					Application.LoadLevel(0);
+					Application.LoadLevel("preload");
+					
 					//FIXME destroy the persistent things
 					
 				//}
@@ -312,7 +329,8 @@ public class OSCSystem:MonoBehaviour{
 			case "Hello":
 				OSCMessage m = new OSCMessage("/scene/change");
 				string station = msgAddress[3];
-				m.Append<int>( Application.loadedLevel);
+				m.Append<string>( Application.loadedLevelName);
+				m.Append<string>(currentScene.mapNodeId);
 				
 				OSCHandler.Instance.SendMessageToClient(station, m);
 				

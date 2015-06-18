@@ -79,7 +79,7 @@ public class FrontWindowBehaviour:MonoBehaviour{
 			//Mathf.FloorToInt(Random.Range(0, crashTextures.Length));
 			Transform p = (UnityEngine.Transform)Instantiate(crackPrefab, Vector3.zero, Quaternion.identity);
 			p.gameObject.SetActive(true);
-			p.renderer.material.mainTexture = crashTextures[rand];
+			p.GetComponent<Renderer>().material.mainTexture = crashTextures[rand];
 			p.parent = transform;
 			p.transform.localPosition = new Vector3(UnityEngine.Random.Range(-.9f,.9f), UnityEngine.Random.Range(-0.6f, 0.6f), 1.05f);
 			//p.transform.localRotation = Quaternion.Euler(270, Random.Range(0,360), 0);

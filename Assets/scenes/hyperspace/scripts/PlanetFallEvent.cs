@@ -1,8 +1,9 @@
 using UnityEngine;
 using System;
+using System.Collections;
 
 
-public class PlanetFallEvent:MonoBehaviour{
+public class PlanetFallEvent:HyperSpaceEvent{
 	
 	public Transform rotatorObject; //parent to the particles and ship for rotation goodness
 	public AudioClip gravityFailSfx;	//sound to play during failed exit
@@ -11,7 +12,7 @@ public class PlanetFallEvent:MonoBehaviour{
 	bool fallingTowardPlanet = false;
 	
 	float startTime = 0.0f;
-	public float triggerTime = 25f;
+//	public float triggerTime = 25f;
 	
 	public void Start() {
 		if(theShip == null){
@@ -19,16 +20,20 @@ public class PlanetFallEvent:MonoBehaviour{
 		}
 		startTime = Time.fixedTime;
 	}
-	
-	public void startSequence(){
-		theShip.transform.parent = rotatorObject;
-		
-		GameObject.Find("warp bits").transform.parent = rotatorObject;
-		
-		
-		
-		AudioSource.PlayClipAtPoint(gravityFailSfx, transform.position);
-		fallingTowardPlanet = true;
+
+
+	public override IEnumerator startSequence(){
+		if(!fallingTowardPlanet){
+			theShip.transform.parent = rotatorObject;
+			
+			GameObject.Find("warp bits").transform.parent = rotatorObject;
+			
+			
+			
+			AudioSource.PlayClipAtPoint(gravityFailSfx, transform.position);
+			fallingTowardPlanet = true;
+			yield return new WaitForSeconds(0);
+		}
 	}
 	
 	public void FixedUpdate() {
@@ -36,9 +41,7 @@ public class PlanetFallEvent:MonoBehaviour{
 			
 			rotatorObject.rotation = Quaternion.Euler(0.1f, 0.0f, 0.0f) * rotatorObject.rotation;
 		}
-		if(Time.fixedTime - startTime > triggerTime && !fallingTowardPlanet){
-			startSequence();
-		}
+
 		
 	}
 

@@ -40,6 +40,7 @@ public class CometTunnelScene: GenericScene , CodeAuthSystem.AuthCodeListener {
 	
 	
 	public override void Start() {
+		sceneIsJumpInterruption = true; //lock out the jump plotting computer from text entry
 		skyboxCameraActive = true;
 		theShip = GameObject.Find("TheShip").transform;
 		skyboxCamera = GameObject.Find("skyboxCamera").transform;
@@ -115,25 +116,15 @@ public class CometTunnelScene: GenericScene , CodeAuthSystem.AuthCodeListener {
 			jumpReady = true;
 			//clear the gravity well requirement as we're now outside of it.
 			JumpSystem.Instance.removeRequirement("GRAVITYWELL");
-			
-			//turn on the jump system and set it to IDGAF ABOUT ROUTES mode. This is a fucking hack.
-			theShip.GetComponent<JumpSystem>().enableSystem();
+
+
 			theShip.GetComponent<PropulsionSystem>().enableSystem();
-			PersistentScene ps = GameObject.Find("PersistentScripts").GetComponent<PersistentScene>();
-			ps.hyperspaceDestination = 3;
-			ps.forcedHyperspaceFail = false;	
-			
-			
-			theShip.GetComponent<JumpSystem>().canJump = true;
-			theShip.GetComponent<JumpSystem>().inGate = true;
-			theShip.GetComponent<JumpSystem>().jumpDest = 3;	//set dest to warzone scene
-			//i dont think this class should be responsible for this
-			OSCMessage s1 = new OSCMessage("/ship/jumpStatus");
-			s1.Append<int>(1);
-			OSCHandler.Instance.SendMessageToAll(s1);
+
+			theShip.GetComponent<JumpSystem>().setFlatSpace(true);
 			
 			//tell the players the gravity well has been cleared
 			OSCHandler.Instance.DisplayBannerAtClient("EngineerStation", "SUCCESS", "Gravity well cleared\r\nEngage hyperspace system to resume course", 4000);
+			OSCHandler.Instance.DisplayBannerAtClient("TacticalStation", "SUCCESS", "Gravity well cleared\r\nEngage hyperspace system to resume course", 4000);
 		}
 		
 		
@@ -185,7 +176,7 @@ public class CometTunnelScene: GenericScene , CodeAuthSystem.AuthCodeListener {
 		//turn off the propulsion system but allow translation
 		theShip.GetComponent<PropulsionSystem>().disableSystem();
 		theShip.GetComponent<PropulsionSystem>().translationDisabled = false;	
-		theShip.rigidbody.drag = 0.5f;	
+		theShip.GetComponent<Rigidbody>().drag = 0.5f;	
 		//turn off jumpSystem	
 		theShip.GetComponent<JumpSystem>().disableSystem();
 		//play a failure sound effect of some sort

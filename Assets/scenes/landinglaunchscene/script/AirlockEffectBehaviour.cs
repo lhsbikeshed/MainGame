@@ -4,19 +4,17 @@ using System;
 
 public class AirlockEffectBehaviour:MonoBehaviour{
 	
-	ParticleSystem particles;
-	BlinkenFlareBehaviour[] lights;
-	AudioSource[] audioEffects;
+	public ParticleSystem particles;
+	public BlinkenFlareBehaviour[] lights;
+	public AudioSource[] audioEffects;
 	
 	
 	
 	public void Start() {
-		particles = GetComponent<ParticleSystem>();
+
 		particles.enableEmission = false;
 		
-		lights = GetComponentsInChildren<BlinkenFlareBehaviour>();
-		
-		audioEffects = GetComponentsInChildren<AudioSource>();
+
 	}
 	
 	//amount of air in the chamber, from 0 - 1
@@ -33,12 +31,14 @@ public class AirlockEffectBehaviour:MonoBehaviour{
 	}
 	
 	public void start(){
+		Debug.Log(gameObject.name);
 		particles.enableEmission = true;
 		foreach(BlinkenFlareBehaviour l in lights){
 			l.blinking = true;
 		}
-		audioEffects[1].Play();
-		
+		if(audioEffects.Length > 0){
+			audioEffects[1].Play();
+		}
 	}
 	
 	public void stop(){

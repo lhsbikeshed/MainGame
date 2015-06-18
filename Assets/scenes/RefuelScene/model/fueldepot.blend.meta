@@ -1,0 +1,182 @@
+fileFormatVersion: 2
+guid: 7db0bca448e435c47927aa5540914c57
+timeCreated: 1427806063
+licenseType: Free
+ModelImporter:
+  serializedVersion: 18
+  fileIDToRecycleName:
+    100000: DockingBay2
+    100002: //RootNode
+    100004: FuelHolder
+    100006: FuelHolder_001
+    100008: FuelPod
+    100010: FuelPod_001
+    100012: FuelPod_002
+    100014: FuelPod_003
+    100016: FuelPod_004
+    100018: FuelPod_005
+    100020: FuelPod_006
+    100022: FuelPod_007
+    100024: landingpad
+    100026: Node_001
+    100028: RingGlass
+    100030: FuelHolder_002
+    100032: FuelPod_008
+    100034: FuelPod_009
+    100036: FuelPod_010
+    100038: FuelPod_011
+    400000: DockingBay2
+    400002: //RootNode
+    400004: FuelHolder
+    400006: FuelHolder_001
+    400008: FuelPod
+    400010: FuelPod_001
+    400012: FuelPod_002
+    400014: FuelPod_003
+    400016: FuelPod_004
+    400018: FuelPod_005
+    400020: FuelPod_006
+    400022: FuelPod_007
+    400024: landingpad
+    400026: Node_001
+    400028: RingGlass
+    400030: FuelHolder_002
+    400032: FuelPod_008
+    400034: FuelPod_009
+    400036: FuelPod_010
+    400038: FuelPod_011
+    2300000: DockingBay2
+    2300002: FuelHolder
+    2300004: FuelHolder_001
+    2300006: FuelPod
+    2300008: FuelPod_001
+    2300010: FuelPod_002
+    2300012: FuelPod_003
+    2300014: FuelPod_004
+    2300016: FuelPod_005
+    2300018: FuelPod_006
+    2300020: FuelPod_007
+    2300022: landingpad
+    2300024: Node_001
+    2300026: RingGlass
+    2300028: FuelHolder_002
+    2300030: FuelPod_008
+    2300032: FuelPod_009
+    2300034: FuelPod_010
+    2300036: FuelPod_011
+    3300000: DockingBay2
+    3300002: FuelHolder
+    3300004: FuelHolder_001
+    3300006: FuelPod
+    3300008: FuelPod_001
+    3300010: FuelPod_002
+    3300012: FuelPod_003
+    3300014: FuelPod_004
+    3300016: FuelPod_005
+    3300018: FuelPod_006
+    3300020: FuelPod_007
+    3300022: landingpad
+    3300024: Node_001
+    3300026: RingGlass
+    3300028: FuelHolder_002
+    3300030: FuelPod_008
+    3300032: FuelPod_009
+    3300034: FuelPod_010
+    3300036: FuelPod_011
+    4300000: landingpad
+    4300002: FuelHolder_001
+    4300004: FuelPod_007
+    4300006: FuelPod_006
+    4300008: FuelPod_005
+    4300010: FuelPod_004
+    4300012: DockingBay2
+    4300014: Node_001
+    4300016: FuelHolder
+    4300018: FuelPod_003
+    4300020: FuelPod
+    4300022: FuelPod_001
+    4300024: FuelPod_002
+    4300026: RingGlass
+    4300028: FuelHolder_002
+    4300030: FuelPod_011
+    4300032: FuelPod_010
+    4300034: FuelPod_009
+    4300036: FuelPod_008
+    6400000: DockingBay2
+    6400002: FuelHolder
+    6400004: FuelHolder_001
+    6400006: FuelPod
+    6400008: FuelPod_001
+    6400010: FuelPod_002
+    6400012: FuelPod_003
+    6400014: FuelPod_004
+    6400016: FuelPod_005
+    6400018: FuelPod_006
+    6400020: FuelPod_007
+    6400022: landingpad
+    6400024: Node_001
+    6400026: FuelHolder_002
+    6400028: FuelPod_008
+    6400030: FuelPod_009
+    6400032: FuelPod_010
+    6400034: FuelPod_011
+    7400000: Default Take
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 10
+    meshCompression: 0
+    addColliders: 1
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

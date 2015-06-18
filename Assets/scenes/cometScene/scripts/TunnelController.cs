@@ -24,12 +24,13 @@ public void Start() {
 		
 		
 		//spawn some cross beams
+		UnityEngine.Random.seed = (int)System.DateTime.Now.Ticks;
 		int amount = UnityEngine.Random.Range(14, 18);
 		for(int i = 0; i < amount; i++){
 		
 			//pick a segment to spawn this in
 			
-			int segmentIndex = UnityEngine.Random.Range(1, wayPoints.Length - 1);
+			int segmentIndex = UnityEngine.Random.Range(2, wayPoints.Length - 1);
 			Vector3 delta = wayPoints[segmentIndex] - wayPoints[segmentIndex - 1];
 			
 			Vector3 pos = wayPoints[segmentIndex - 1] + delta.normalized * (delta.magnitude * UnityEngine.Random.value);
@@ -54,7 +55,7 @@ public void Start() {
 	public void OnTriggerEnter(Collider col){
 		if(col.gameObject.name == "TheShip"){
 			UnityEngine.Debug.Log ("exitted tunnel");
-			GameObject.Find("SceneScripts").GetComponent<CometScene>().tunnelComplete();
+			GameObject.Find("SceneScripts").GetComponent<CometTunnelScene>().tunnelComplete();
 			moverPrefab.parent = null;
 		}
 	}
@@ -67,8 +68,8 @@ public void Start() {
 		mt.localPosition = Vector3.zero;
 		mt.localRotation = Quaternion.Euler(0.0f,0.0f,0.0f);
 		moverPrefab = mt;
-		theShip.rigidbody.constraints = RigidbodyConstraints.None;
-		theShip.rigidbody.velocity = theShip.forward * 100f;
+		theShip.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+		theShip.GetComponent<Rigidbody>().velocity = theShip.forward * 100f;
 		moverPrefab.GetComponent<Light>().intensity = 0.0f;
 		
 	}
@@ -95,7 +96,7 @@ public void Start() {
 			Vector3 forceVector = ClosestPointOnLine(wayPoints[ind-1], wayPoints[ind], transform.InverseTransformPoint(theShip.position));
 			forceVector = (transform.TransformPoint(forceVector) - theShip.position).normalized;
 			testVector = forceVector * 10f;
-			theShip.rigidbody.AddForce(forceVector.normalized * helpForceAmount, ForceMode.Acceleration);
+			theShip.GetComponent<Rigidbody>().AddForce(forceVector.normalized * helpForceAmount, ForceMode.Acceleration);
 			
 			//calculate aim vector
 			aimVector = (wayPoints[ind-1] - wayPoints[ind]).normalized;

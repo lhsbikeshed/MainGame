@@ -7,21 +7,22 @@ using UnityOSC;
 public class BaseSubsystem: MonoBehaviour
 {
 	public bool systemEnabled;			//is this thing still working?
-	public float energyConsumptionRate;	//energy consumed per update at 100% power
+
 	public float powerState;				//how much power are we putting here?
 	public float maxPowerState = 1.0f;	//max percentage we can push this system to. This can also go down due to damage
 	//var energyInSystem : float = 0.0;	//how much energy is in this system
 	//var maxEnergyInSystem : float = 100;	//max amount we can have
 	
 	public float damage;			//percentage were damaged
-	
+
+
 	
 	protected char[] separator = new char[]{'/'};
 
 	protected GameObject theShip;	//reference to the ship
 	protected Reactor reactor;
 	
-	protected OSCSystem oscSender;
+	//protected OSCSystem oscSender;
 	
 	protected List<SystemRequirement> requirementList;
 	
@@ -32,7 +33,7 @@ public class BaseSubsystem: MonoBehaviour
 	public virtual void Start() {
 		theShip = GameObject.Find("TheShip");
 		reactor = theShip.GetComponent<Reactor>();
-		oscSender = GameObject.Find("PersistentScripts").GetComponent<OSCSystem>();
+	//	oscSender = GameObject.Find("PersistentScripts").GetComponent<OSCSystem>();
 	
 	}
 	

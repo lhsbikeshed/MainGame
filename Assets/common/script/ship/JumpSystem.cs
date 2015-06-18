@@ -22,10 +22,10 @@ public class JumpSystem: BaseSubsystem
 	//JUMP STUFF
 
 	public bool didWeWarpIn;	//did we jump into this scene?
-	public bool canJump;		//are we allowed to jump? Used by Jump Node
-	public bool inGate;		//are we in a gate
+	//public bool canJump;		//are we allowed to jump? Used by Jump Node
 	public bool inTunnelGate; //are we in a tunnel gate?
-	public int jumpDest;	//where we jump to after the hyperspace scene is finished
+	public string  jumpDest;	//where we jump to after the hyperspace scene is finished
+	public int jumpLength = 0;
 	
 	public bool jumping;			//are we currently accelerating for a jump?
 	float jumpStartTime;		//time we started the jump, jump sequence lasts 7 seconds
@@ -62,12 +62,24 @@ public class JumpSystem: BaseSubsystem
 			restoreFov = true;
 			shipCamera.setFovs(180.0f);
 		}
-		
+		setFlatSpace(false);	//we arent in a gate or somewhere we can jump
 		jumpBlocked = false;
 	}
 	
 	
 	public override void repair(float amount){
+	}
+
+
+	//force the ship to be in an area of flat spacetime
+	public void setFlatSpace(bool state){
+
+		if(state == true){
+			removeRequirement("FLATSPACE");
+		} else {
+			addRequirement(new SystemRequirement("FLATSPACE", "not in area of smooth spacetime"));
+		}
+		updateJumpStatus();
 	}
 	
 	public void go(){
@@ -112,14 +124,18 @@ public class JumpSystem: BaseSubsystem
 	
 	public override void disableSystem(){
 		if(systemEnabled){
-			canJump = false;
+			//canJump = false;
 			systemEnabled = false;
 			//0jumpChargePercent = 0.0;
 			//soundSource.Stop();
 			discharging = true;
-			canJump = false;
+			//canJump = false;
 			updateJumpStatus();
 			GetComponent<PropulsionSystem>().hyperspaceModifier = false;
+			if(jumping){
+				jumpAbort();	//cancel the current sequence if someone turns the jump sys off while jumping
+								//thanks to tgreer for this one
+			}
 		}
 	}
 	
@@ -131,11 +147,11 @@ public class JumpSystem: BaseSubsystem
 				jumpChargePercent += (chargeRate * damage * powerState) / 100.0f;
 				if(jumpChargePercent >= 1.0f){
 					jumpChargePercent = 1.0f;
-					canJump = true;
+					//canJump = true;
 					updateJumpStatus();
 
 				} else {
-					canJump = false;
+					//canJump = false;
 					updateJumpStatus();
 				}
 				soundSource.pitch = jumpChargePercent;
@@ -165,14 +181,14 @@ public class JumpSystem: BaseSubsystem
 		}
 	
 	
-		rigidbody.AddForce (transform.TransformDirection(Vector3.forward * 15000));
+		GetComponent<Rigidbody>().AddForce (transform.TransformDirection(Vector3.forward * 15000));
 		
 		float timeSinceJumpStart = Time.fixedTime - jumpStartTime;
 		if(Mathf.FloorToInt (timeSinceJumpStart - Time.fixedDeltaTime ) != Mathf.FloorToInt (timeSinceJumpStart)){
 			int ti = 5 - Mathf.FloorToInt(timeSinceJumpStart);
 			StartCoroutine(GetComponent<DistanceSpeaker>().SpeakDistance((float)ti, 1, false));
 		}
-		if(timeSinceJumpStart > 2){	//turn on effects at 2 seconds
+		if(timeSinceJumpStart > 2){	//turn on effects at 2 seconds	
 			
 			shipCamera.setFovs(85 + ((Time.fixedTime - jumpStartTime - 2) / 3.0f ) * 30);
 		}
@@ -186,7 +202,7 @@ public class JumpSystem: BaseSubsystem
 				sceneScript.GetComponent<GenericScene>().LeaveScene();
 			}
 			
-			Application.LoadLevel(1);			
+			Application.LoadLevel("hyper1");			
 			UnityEngine.Debug.Log("JUMP!");
 			
 			
@@ -196,9 +212,11 @@ public class JumpSystem: BaseSubsystem
 	//restore fov after a jump - not used until i split the guilayer and game into seperate cameras
 	if (restoreFov){
 		shipCamera.setFovs( Mathf.Lerp(shipCamera.getFov(),85.0f,Time.deltaTime * 5.0f) );
-		if (shipCamera.getFov() <= 85.0f){
+		if (shipCamera.getFov() <= 85.1f){
 			shipCamera.setFovs(85.0f);
 			restoreFov = false;
+			didWeWarpIn = false;
+
 		}
 		
 	}
@@ -208,9 +226,9 @@ public class JumpSystem: BaseSubsystem
 		
 	   	if(didWeWarpIn){
 			resetAfterJump();
-			jumpDest = -1; //players will have to plot again to escape
+
+			jumpDest = ""; //players will have to plot again to escape
 			jumpEffects.setJumpEffectState(false);
-			didWeWarpIn = false;
 			shipCamera.setFovs(180.0f);
 		}
 	}   
@@ -223,7 +241,7 @@ public class JumpSystem: BaseSubsystem
 
 		
 		OSCMessage msg = new OSCMessage("/ship/jumpStatus");	
-		if(inGate && canJump && jumpDest >= 0){		
+		if(canShipJump() && jumpDest != ""){		
 			msg.Append<int>(1);		
 		} else {
 			msg.Append<int>(0);
@@ -238,32 +256,62 @@ public class JumpSystem: BaseSubsystem
 		jumpStartTime = Time.fixedTime;
 		theShip.GetComponent<ShipCore>().setControlLock(true);
 		jumping = true;
-		rigidbody.drag = 0.05f;
+		GetComponent<Rigidbody>().drag = 0.05f;
 		theShip.GetComponent<PropulsionSystem>().rotationDisabled  = true;
 	}
 
+	public bool canShipJump(){
+		bool result = true;
+		if(TargettingSystem.instance != null && TargettingSystem.instance.weaponState != WeaponState.WEAPON_STOWED){
+			result = false;
+		}
+		if(jumpDest == ""){
+			result = false;
+		}
+		// other requirements are handled by the requirements system stuff. landing gear and gravity well so far.
+		if(canBeUsed() ==  false){
+			result = false;
+		}
+		if(jumpChargePercent < 1f){
+			result = false;
+		}
+		if (Reactor.instance != null && jumpLength * 400f > Reactor.instance.fuelTankLevel [0]) {
+			result = false;
+		}
+		return result;
+	}
+
+	public string getFailureReason(){
+		string noJumpReason = "Cannot jump\r\n";
+
+		if(TargettingSystem.instance.weaponState != null && TargettingSystem.instance.weaponState != WeaponState.WEAPON_STOWED){
+			noJumpReason += "> Retract Weapons Bays\r\n";
+		}
+		if(jumpDest == ""){
+			noJumpReason += "> No Route Set\r\n";
+		}
+		// other requirements are handled by the requirements system stuff. landing gear and gravity well so far.
+		if(canBeUsed() ==  false){
+			noJumpReason += getRequirementString();
+		}
+		if(jumpChargePercent < 1f){
+			noJumpReason += "> Jump System Not Charged\r\n";
+		}
+
+		if (jumpLength * 400f > Reactor.instance.fuelTankLevel [0]) {
+			noJumpReason += "> INSUFFICIENT FUEL\r\n";
+		}
+		return noJumpReason;
+	}
 	/* Begin a jump sequence
 	 * only works if we are inside a gate ring, the jump system reports its charged
 	 * and we arent currently jumping (prevents idiots from spamming the jump button 
 	*/
 	public void startJump(){	//TODO replace these with systemrequirements
-		string noJumpReason = "Cannot jump\r\n";
-		bool jumpFail = false;
-		
-		if(TargettingSystem.instance.weaponState != WeaponState.WEAPON_STOWED){
-			jumpFail = true;
-			noJumpReason += "> Retract Weapons Bays\r\n";
-		}
-		if(jumpDest == -1){
-			jumpFail = true;
-			noJumpReason += "> No Route Set\r\n";
-		}
-		// other requirements are handled by the requirements system stuff. landing gear and gravity well so far.
-		if(canBeUsed() ==  false){
-			jumpFail = true;
-			noJumpReason += getRequirementString();
-		}
-		if(jumpFail){
+		bool shipCanJump = canShipJump();
+
+		if(!shipCanJump){
+			string noJumpReason = getFailureReason();
 			//give the players the bad news
 			OSCHandler.Instance.DisplayBannerAtClient("TacticalStation", "Jump Error", noJumpReason, 3000);
 			OSCHandler.Instance.DisplayBannerAtClient("EngineerStation", "Jump Error", noJumpReason, 3000);
@@ -271,13 +319,13 @@ public class JumpSystem: BaseSubsystem
 		}
 		
 		
-		if(inGate && canJump && !jumping && jumpFail == false){
+		if(shipCanJump && !jumping){
 			
 			go();
 			jumpStartTime = Time.fixedTime;
 			theShip.GetComponent<ShipCore>().setControlLock(true);
 			jumping = true;
-			rigidbody.drag = 0.05f;
+			GetComponent<Rigidbody>().drag = 0.05f;
 			theShip.GetComponent<PropulsionSystem>().rotationDisabled  = true;
 			
 			//test switching the consoles to hyperspace early
@@ -288,6 +336,10 @@ public class JumpSystem: BaseSubsystem
 			if(cab.isWaiting){
 				cablePuzzleFailTimer = 1.0f;
 			} 
+
+			//consume all of the fuel
+			int fuelAmount = jumpLength * 400;
+			Reactor.instance.jumpFuel(fuelAmount);
 			
 			
 		}
@@ -302,7 +354,7 @@ public class JumpSystem: BaseSubsystem
 		theShip.GetComponent<PropulsionSystem>().rotationDisabled  = false;
 		theShip.GetComponent<ShipCore>().setControlLock(false);
 		jumping = false;
-		rigidbody.drag = 1.0f;
+		GetComponent<Rigidbody>().drag = 1.0f;
 		restoreFov = true;
 		jumpEffects.setJumpEffectState(false);
 		OSCHandler.Instance.RevertClientScreen("PilotStation", "hyperspace");
@@ -314,7 +366,7 @@ public class JumpSystem: BaseSubsystem
 	/* tidy up all of the jump effects
 	*/
 	public void resetAfterJump(){
-		rigidbody.drag = 1.0f;
+		GetComponent<Rigidbody>().drag = 1.0f;
 		theShip.GetComponent<ShipCore>().setControlLock(false);
 		theShip.GetComponent<PropulsionSystem>().rotationDisabled  = false;
 		jumping = false;
@@ -348,19 +400,29 @@ public class JumpSystem: BaseSubsystem
 		} else if (operation ==  "startJump"){
 			startJump();
 		} else if (operation == "setRoute"){
-			int r = (int)message.Data[0];
+			string r = (string)message.Data[0];	//TODO
 			UnityEngine.Debug.Log("Set jump route : " + r);
 			jumpDest = r;
 			PersistentScene ps = GameObject.Find("PersistentScripts").GetComponent<PersistentScene>();
 			ps.hyperspaceDestination = jumpDest;
-			
+			jumpLength = (int)message.Data[1];
 			updateJumpStatus();
 		} else if (operation == "clearRoute"){
 			UnityEngine.Debug.Log("Cleared jump route");
-			jumpDest = -1;
+			jumpDest = "";
+			jumpLength = 0;
 			updateJumpStatus();
+		} else if (operation == "getRoute"){
+			OSCMessage msg = new OSCMessage("/system/jumpSystem/currentRoute");
+			msg.Append(jumpDest);
+			OSCHandler.Instance.SendMessageToAll(msg);
+		} else if (operation == "whereAmI"){
+			GenericScene g = GameObject.Find ("SceneScripts").GetComponent<GenericScene>();
+			OSCMessage msg = new OSCMessage("/ship/state/currentLocationId");
+			msg.Append(g.mapNodeId);
+
+			OSCHandler.Instance.SendMessageToAll(msg);
 		}
-			
 			
 	}
 }

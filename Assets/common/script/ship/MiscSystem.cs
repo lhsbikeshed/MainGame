@@ -40,7 +40,7 @@ public class MiscSystem: BaseSubsystem
 		if(systemEnabled){
 			systemEnabled = false;	
 			powerState = 0.0f;	
-			energyConsumptionRate = 0.0f;
+
 			setExternalLight(false);
 		}
 	}
@@ -49,12 +49,12 @@ public class MiscSystem: BaseSubsystem
 		//if(systemEnabled == false ){ return; }
 		if(state == true){
 			shipsLight.intensity = 0.6f;
-			energyConsumptionRate += 1f;
+
 		} else {
 			if(shipsLight != null){
 				shipsLight.intensity = 0.0f;
 			}
-			energyConsumptionRate -= 1f;
+		
 		}
 	}
 		

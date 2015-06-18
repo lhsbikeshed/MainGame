@@ -13,7 +13,7 @@ public class EjectedDudeBehaviour:MonoBehaviour{
 	public void Start() {
 		childPlane = GameObject.Find("Plane").transform;
 		theShip = GameObject.Find("TheShip").transform;	
-		velocity = theShip.rigidbody.velocity + theShip.transform.rotation * new Vector3(0.0f,0.0f,0.1f);
+		velocity = theShip.GetComponent<Rigidbody>().velocity + theShip.transform.rotation * new Vector3(0.0f,0.0f,0.1f);
 		createTime = Time.fixedTime;
 	}
 	
