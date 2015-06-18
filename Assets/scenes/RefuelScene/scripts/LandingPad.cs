@@ -52,10 +52,18 @@ public class LandingPad : MonoBehaviour {
 			theShip.GetComponent<Rigidbody>().AddForce(padDown * 520f, ForceMode.Force);
 		}
 	}
+	bool isIgnorable(Collider c){
+		if (c.name == "shipDetailBounds") {
+			return true;
+		}
+		
+		
+		return false;
+	}
 
 	void OnTriggerExit(Collider c){
-
-		if (c.attachedRigidbody != null && c.attachedRigidbody.name == "TheShip") {
+		Debug.Log (" landing pad exit"  + c.name);
+		if (c.attachedRigidbody != null && c.attachedRigidbody.name == "TheShip" && !isIgnorable(c)) {
 			shipLanded = false;
 			dockStateChanged(false);
 			//theShip.parent = null;
@@ -63,8 +71,9 @@ public class LandingPad : MonoBehaviour {
 		}
 	}
 
+
 	void OnTriggerStay(Collider c){
-		if (c.attachedRigidbody != null && c.attachedRigidbody.name == "TheShip") {
+		if (c.attachedRigidbody != null && c.attachedRigidbody.name == "TheShip" && !isIgnorable(c)) {
 			//test to see if landing gear is down
 			if (UndercarriageBehaviour.Instance.state == UndercarriageBehaviour.DOWN) {
 				if(!shipLanded){

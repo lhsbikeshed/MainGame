@@ -49,6 +49,7 @@ public class LandingTrigger : MonoBehaviour {
 			return true;
 		}
 
+
 		return false;
 	}
 
@@ -68,6 +69,8 @@ public class LandingTrigger : MonoBehaviour {
 			OSCHandler.Instance.ChangeClientScreen("PilotStation", "landingDisplay", true);
 			theShip.parent = transform;
 		}
+		Debug.Log (" landing trigger enter"  + c.name);
+
 
 	}
 
@@ -77,7 +80,8 @@ public class LandingTrigger : MonoBehaviour {
 			OSCHandler.Instance.RevertClientScreen("PilotStation", "landingDisplay");
 			theShip.parent = null;
 		}
-		
+		Debug.Log (" landing trigger exit"  + c.name);
+
 
 	}
 
