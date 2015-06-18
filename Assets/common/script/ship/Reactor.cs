@@ -146,7 +146,7 @@ public class Reactor: MonoBehaviour
 		for (int i = 0; i < 3; i++) {
 			if (fuelTankLeaking [i] == true){
 				if(fuelTankLevel[i] > 0) {
-					fuelTankLevel [i] -= 2;
+					//TODO remove this comment fuelTankLevel [i] -= 2;
 				} else {
 					fuelTankLevel[i] = 0;
 					//TODO raise a warning with engineer
@@ -156,7 +156,7 @@ public class Reactor: MonoBehaviour
 
 		//process fuel usage by reactor
 		if (systemEnabled) {
-			fuelTankLevel [0] -= 1;
+			//TODO remove this comment fuelTankLevel [0] -= 1;
 			if (fuelTankLevel [0] <= 0) {
 				StartCoroutine (reactorFailure ());
 			}

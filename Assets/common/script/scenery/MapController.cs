@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityOSC;
 
+public delegate void MapCellChangedEvent(int newX, int newY, int newZ);
 
 public class MapController:MonoBehaviour{
 	
@@ -20,7 +21,7 @@ public class MapController:MonoBehaviour{
 	public float universeScale = 0.02f;	//scale factor between large space and detail space
 	public float iUniverseScale;			//scale factor between detail -> large space
 	
-	List<CellChangeListener> cellChangeListeners;
+	public  MapCellChangedEvent mapCellChanged;
 	
 	
 	
@@ -37,8 +38,7 @@ public class MapController:MonoBehaviour{
 		updateObjectList();
 		_instance = this;
 		
-		cellChangeListeners = new System.Collections.Generic.List<CellChangeListener>();
-		
+
 	}
 	
 	public void Start(){
@@ -60,12 +60,7 @@ public class MapController:MonoBehaviour{
 		mapObjects.Remove(obj);
 	
 	}
-	
-	public void registerCellChangeListener(CellChangeListener obj){
-		if(cellChangeListeners.Contains(obj) == false){
-			cellChangeListeners.Add(obj);
-		}
-	}
+
 	
 	public void updateObjectList(){
 		//find all gameobjects that have DynamicMapObject attached
@@ -203,9 +198,7 @@ public class MapController:MonoBehaviour{
 						
 	
 						g.position += correctionTransform;
-						foreach(CellChangeListener c in cellChangeListeners){
-							c.CellChanged(correctionTransform);
-						}
+						
 						
 						if(newTrail){
 							trailObj = (UnityEngine.Transform)Instantiate(trailPrefab, g.position, g.rotation);
@@ -230,6 +223,11 @@ public class MapController:MonoBehaviour{
 			
 			//let the current scene know we moved sectors
 			currentScene.MapSectorChanged(oldPos, new Vector3 ( (float)sectorPos[0], (float)sectorPos[1], (float)sectorPos[2]) );
+
+
+			if(mapCellChanged != null){
+				mapCellChanged(sectorPos[0], sectorPos[1], sectorPos[2]);
+			}
 			//alert clients that we changed sector
 			OSCMessage msg = new OSCMessage("/ship/sectorChanged");
 			msg.Append<int>(sectorPos[0]);

@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class SpaceParticles : MonoBehaviour, CellChangeListener{
+public class SpaceParticles : MonoBehaviour{
 	public Transform target;
 	public float distance ;
 	
