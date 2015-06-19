@@ -207,8 +207,14 @@ public class WarzoneLandingScene: GenericScene {
 		missPos.y = 0.0f;
 		missPos = theShip.transform.position + missPos;
 		Transform g = (UnityEngine.Transform)Instantiate(missilePrefab, missPos, Quaternion.identity);
-		g.GetComponent<IncomingMissile>().targetTransform = theShip.transform;
-		
+		GameObject npcShip = GameObject.Find ("npcvan");
+		if(npcShip != null && UnityEngine.Random.Range(0,100) <= 10){
+			
+			g.GetComponent<IncomingMissile>().targetTransform = npcShip.transform;
+		} else {
+			g.GetComponent<IncomingMissile>().targetTransform = theShip.transform;
+		}
+
 		theShip.GetComponentInChildren<TargettingSystem>().addObject(g.gameObject);
 		
 		//send a message to the console letting it know a missile was spawned

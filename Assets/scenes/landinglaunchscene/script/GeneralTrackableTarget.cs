@@ -2,13 +2,18 @@ using UnityEngine;
 using System;
 using System.Collections;
 
-[System.Serializable]
+
+public delegate void TargetDestroyed();
+
+
 public class GeneralTrackableTarget: TargettableObject {
 	
 	public AudioClip[] sounds;
 	ParticleSystem parts;
 	
 	int randomSound = 0;
+
+	public  TargetDestroyed targetDestroyed;
 	
 	public override void Start() {
 		base.Start();
@@ -42,7 +47,10 @@ public class GeneralTrackableTarget: TargettableObject {
 			health -=damage;
 			if(health <= 0){
 				targetted = false;
-				StartCoroutine(explode());
+				if(targetDestroyed != null){
+					targetDestroyed();
+				}
+				//StartCoroutine(explode());
 			}
 		}
 	}

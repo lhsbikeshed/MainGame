@@ -181,33 +181,36 @@ public class MapController:MonoBehaviour{
 			
 			foreach(Transform g in gameObjs){
 					
-					if(g.parent == null && g.gameObject.layer != 9 && g.GetComponent<GUITexture>() == null){
-						Transform trailObj  = g.Find("trail(Clone)");
-						Transform trailPrefab = null;
-						bool newTrail = false;
-						if(trailObj != null){
-							trailObj.parent = null;
-							
-							IncomingMissile inc = g.GetComponent<IncomingMissile>();
-							if(inc != null){
-								trailPrefab = inc.trailPrefab;
-								newTrail = true;
-							}
+				if(g.parent == null && g.gameObject.layer != 9 && g.GetComponent<GUITexture>() == null){
+					Transform trailObj  = g.Find("trail(Clone)");
+					Transform trailPrefab = null;
+					bool newTrail = false;
+					if(trailObj != null){
+						trailObj.parent = null;
+						
+						IncomingMissile inc = g.GetComponent<IncomingMissile>();
+						if(inc != null){
+							trailPrefab = inc.trailPrefab;
+							newTrail = true;
 						}
-	
-						
-	
-						g.position += correctionTransform;
-						
-						
-						if(newTrail){
-							trailObj = (UnityEngine.Transform)Instantiate(trailPrefab, g.position, g.rotation);
-							trailObj.transform.parent = g.transform;
-						}
-						
-							
-									
 					}
+
+					
+					TimedTrailRenderer[] trailList = g.GetComponentsInChildren<TimedTrailRenderer>();
+					foreach(TimedTrailRenderer tr in trailList){
+						tr.translateAll(correctionTransform);
+					}
+					g.position += correctionTransform;
+					
+					
+					if(newTrail){
+						trailObj = (UnityEngine.Transform)Instantiate(trailPrefab, g.position, g.rotation);
+						trailObj.transform.parent = g.transform;
+					}
+					
+						
+								
+				}
 			}
 			
 			Vector3 oldPos = new Vector3 ( (float)sectorPos[0], (float)sectorPos[1], (float)sectorPos[2]) ;

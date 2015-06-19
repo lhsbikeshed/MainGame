@@ -56,6 +56,8 @@ public class Reactor: MonoBehaviour
 	public bool overloading;
 	int lastSecondCounter = 0;
 	float lastUpdateTime = 0;
+
+	public AudioClip[] fuelSounds;
 	
 	
 		/*
@@ -92,6 +94,11 @@ public class Reactor: MonoBehaviour
 			OSCMessage msg = new OSCMessage ("/ship/state/setFuelConnectionState");
 			msg.Append (fuelLineConnectionState);
 			OSCHandler.Instance.SendMessageToClient ("EngineerStation", msg);
+
+			//is there a sound for this?
+			if(v >= 0 && v < 3){
+				AudioSource.PlayClipAtPoint(fuelSounds[v],transform.position);
+			}
 
 		
 		}
