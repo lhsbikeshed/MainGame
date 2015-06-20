@@ -165,7 +165,7 @@ public class ShipCamera:MonoBehaviour{
 			foreach(Camera c in cameras){
 				c.clearFlags = CameraClearFlags.Depth;
 			}
-			
+			//the rest of the camera setup is dictated by the scene itself
 			
 		} else {
 			UnityEngine.Debug.Log("Ships camera set to non-skybox mode");

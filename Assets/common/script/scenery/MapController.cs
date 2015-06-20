@@ -181,7 +181,7 @@ public class MapController:MonoBehaviour{
 			
 			foreach(Transform g in gameObjs){
 					
-				if(g.parent == null && g.gameObject.layer != 9 && g.GetComponent<GUITexture>() == null){
+				if(g.parent == null && g.gameObject.layer != 9 && g.GetComponent<GUITexture>() == null && g.gameObject.layer != LayerMask.NameToLayer("background")){
 					Transform trailObj  = g.Find("trail(Clone)");
 					Transform trailPrefab = null;
 					bool newTrail = false;

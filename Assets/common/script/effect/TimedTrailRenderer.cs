@@ -182,7 +182,9 @@ public class TimedTrailRenderer : MonoBehaviour
 				float widthRatio = ratio * (widths.Length-1);
 				int min = (int) Mathf.Floor(widthRatio);
 				float lerp = Mathf.InverseLerp(min, min+1, widthRatio);
-				width = Mathf.Lerp(widths[min], widths[min+1], lerp);
+				float lerpTo = 0.0f;
+				if(min+1 < widths.Length) lerpTo = widths[min + 1];
+				width = Mathf.Lerp(widths[min], lerpTo, lerp);
 			}
 			trailObj.transform.position = point.position;
 			trailObj.transform.rotation = point.rotation;

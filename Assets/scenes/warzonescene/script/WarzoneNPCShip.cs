@@ -35,6 +35,8 @@ public class WarzoneNPCShip : MonoBehaviour{
 
 	bool jumping = false;
 
+	float nextTargetTime = 0.0f;
+
 	//swerving to avoid debris
 	float swerveTime = 0.0f;
 	Quaternion swerveRotation;
@@ -84,7 +86,7 @@ public class WarzoneNPCShip : MonoBehaviour{
 	
 	public void FixedUpdate(){
 		//if the ship is damaged randomly turn repair on and off
-		if(UnityEngine.Random.Range(0,100) < 10 && repairing == false){
+		if(UnityEngine.Random.Range(0,100) < 10 && repairing == false && targetData.health < 0.3f){
 			repairTime = UnityEngine.Random.Range(0.1f, 2f);
 			repairing = true;
 		}
@@ -150,8 +152,39 @@ public class WarzoneNPCShip : MonoBehaviour{
 			float dampAmount = (v / 200f);
 			dampAmount = 1.0f - Mathf.Clamp(dampAmount, 0f, 1f);
 			transform.rotation = Quaternion.Slerp(transform.rotation, newRotation, Time.fixedDeltaTime * rotationDamping * dampAmount);
+
+			doTargetSelection();
 		}
 
+	}
+
+	void doTargetSelection(){
+		//look for a missile in range and fire at it
+		nextTargetTime -= Time.fixedDeltaTime;
+		if(nextTargetTime < 0.0f){
+			nextTargetTime = UnityEngine.Random.Range (3f, 6f);	//select and shoot at a new target every 3 - 6 seconds
+
+			//oh god finding a target
+			Collider[] colliders = Physics.OverlapSphere(transform.position, 800f);
+			float minDist = 10000f;
+			Transform bestTarget = null;
+			Debug.Log ("ship gun selectig from " + colliders.Length);
+			foreach(Collider c in colliders){
+				if(c.gameObject.name.Contains("Missile")){
+					//its a missile and ITS COMING RIGHT FOR US
+					float tDist = (transform.position - c.transform.position).magnitude;
+					if(tDist < minDist){
+						bestTarget = c.transform;
+						minDist = tDist;
+					}
+				}
+			}
+			if(bestTarget != null){
+				Debug.Log ("shooting at target");
+				GetComponentInChildren<ShipsLaser>().fireAtTarget(bestTarget);
+			}
+
+		}
 	}
 
 

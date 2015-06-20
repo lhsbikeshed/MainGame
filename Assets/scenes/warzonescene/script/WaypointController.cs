@@ -91,17 +91,22 @@ public class WaypointController:MonoBehaviour{
 		int ct = 0;
 		
 		DynamicMapObject d = null;
+		Transform dynObj = null;
 		foreach(Vector3 v in waypoints){
 			if(ct >= from){
 				if(createObjects){
 					UnityEngine.Debug.Log("Creating wp: " + ct);
-					Transform dynObj = (UnityEngine.Transform)Instantiate(waypointObj, new Vector3(10000.0f,10000.0f,10000.0f), UnityEngine.Random.rotation);
+
+
+					dynObj = (UnityEngine.Transform)Instantiate(waypointObj, new Vector3(10000.0f,10000.0f,10000.0f), UnityEngine.Random.rotation);
+
 					d = dynObj.GetComponent<DynamicMapObject>();
 					d.sectorCoord[0] = (int)v.x;
 					d.sectorCoord[1] = (int)v.y;
 					d.sectorCoord[2] = (int)v.z;
 					d.originalPosition = UnityEngine.Random.onUnitSphere * UnityEngine.Random.Range(40,400);
 					dynObj.GetComponent<TargettableObject>().objectName = "Waypoint " + (ct + 1);
+
 					mapObjects[ct] = dynObj.gameObject;
 					mapController.updateObject(dynObj.gameObject);
 				} else {

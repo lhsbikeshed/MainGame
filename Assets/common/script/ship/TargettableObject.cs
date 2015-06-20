@@ -35,7 +35,8 @@ public class TargettableObject: MonoBehaviour{
 	
 	public bool doNotInterpolate = false;	//do not interpolate the position of this object at the radar client end
 	
-	
+	public int connectedToId = 0; 			//id number of an object we are connected to. On the radar console this is represented as a
+											//line between the targets. Mostly used by waypoints. 0 = not connected
 	
 	public virtual void Start() {
 		targetId = gameObject.GetHashCode();
