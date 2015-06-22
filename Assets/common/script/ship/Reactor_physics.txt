@@ -1,0 +1,57 @@
+some ideas on representing a reactor in the game
+
+Basic reactor physics
+
+Reactor power varies in an exponential manner with time driven by the
+reactivity (related to any excess neutrons over the number that barely
+maintains a chain reaction at steady power).  A small proportion of the
+neutrons are "delayed neutrons" which might be a minute behind the fission
+events that caused them.
+
+Power drives the temperature of the fuel (short term) and other components
+(longer term) but temperature is also affected by the coolant removing heat
+from the fuel and taking it to the boilers.
+
+Temperature affects the reactivity through doppler shifting of atoms in the
+neutron spectrum and by thermal expansion of reactor components and by voiding
+in the coolant.  How these work out in total depends on quite a bit of detail.
+Safety is promoted when at least some of the feedbacks are negative - that is
+when an increase in power leads to conditions that naturally lead to a reduction
+in power.  The opposite would be positive feedback which should be minimised.
+
+The fact that reactivity drives power, power drives temperature and temperature
+drives reactivity leads in real life to repetitive finite element calculations
+finding values that satisfy the equations in time and space.  For game purposes
+a single-point reactor with values for reactivity, power, fuel temperature and
+some coolant properties should be enough (and this avoids looking at the stability
+of the power generation across the core).
+
+Control rods are made of neutron-absorbing material and inserting them further into
+the core reduces the reactivity - and negative reactivity means reduction of power.
+Shutdown rods are held outside the core in normal operation so they can be inserted
+to add large negative reactivity. Measurements of temperature and neutron flux - if
+if they exceed allowed values - will lead to an automatic shutdown in a few seconds.
+
+The measured values of temperature and coolant flow and the calculated power will
+be shown to operators.  Refuelling is infrequent and probably does not need to
+feature in the game.
+
+
+Accidents
+
+Melting fuel comes from either generating too much heat in it (excessive power)
+or applying too little cooling - or both. Excess power can come from wrong
+control rod movements, loading the wrong fuel, having a wrong idea of the reactor
+conditions etc. Inadequate cooling can come from leaks, blockages, pump failures
+and loss of power to drive pumps. Studying causes and effect can be done using
+tree diagrams:
+  http://en.wikipedia.org/wiki/Fault_tree_analysis
+  http://en.wikipedia.org/wiki/Event_tree_analysis
+
+Chernobyl involved greatly increased power. Three Mile Island involved
+reduced cooling because of a slow undetected leak of steam through a valve
+that was open while supposed to be closed.  Automatic shutdown systems
+didn't prevent Three Mile Island because a reactor after shutdown continues to
+produce heat at around 6% of full power (depending on details of composition and
+history) and cooling at that level has to be maintained if fuel temperature is
+not to rise.
