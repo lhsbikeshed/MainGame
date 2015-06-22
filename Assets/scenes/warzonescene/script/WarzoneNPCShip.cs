@@ -49,7 +49,7 @@ public class WarzoneNPCShip : MonoBehaviour{
 	public bool test = false;
 
 
-	
+
 	
 	public void Start() {
 		targetData = GetComponent<GeneralTrackableTarget>();
@@ -61,6 +61,21 @@ public class WarzoneNPCShip : MonoBehaviour{
 		if(!jumping){
 			GameObject.Find("JumpEffects").GetComponent<ParticleSystem>().enableEmission = true;
 			jumping = true;
+		}
+	}
+
+	public void setEngineState(bool state){
+		if(engineRunning != state){
+
+			foreach(BlinkenFlareBehaviour bl in GetComponentsInChildren<BlinkenFlareBehaviour>()){
+				bl.enabled = state;
+			}
+			if(!state){
+				GetComponent<AudioSource>().Stop();
+			} else {
+				GetComponent<AudioSource>().Play();
+			}
+			engineRunning = state;
 		}
 	}
 
@@ -80,7 +95,7 @@ public class WarzoneNPCShip : MonoBehaviour{
 		//	engineLight.intensity = 1 + (velocity / maxVelocity) * 3.5f;
 		if(test){
 			test = false;
-			targetData.ApplyDamage(DamageTypes.DAMAGE_EXPLOSION, 1.0f);
+			OSCSystem._instance.incomingAudioClipCall("help");
 		}
 	}
 	
@@ -168,7 +183,7 @@ public class WarzoneNPCShip : MonoBehaviour{
 			Collider[] colliders = Physics.OverlapSphere(transform.position, 800f);
 			float minDist = 10000f;
 			Transform bestTarget = null;
-			Debug.Log ("ship gun selectig from " + colliders.Length);
+//			Debug.Log ("ship gun selectig from " + colliders.Length);
 			foreach(Collider c in colliders){
 				if(c.gameObject.name.Contains("Missile")){
 					//its a missile and ITS COMING RIGHT FOR US
@@ -180,7 +195,7 @@ public class WarzoneNPCShip : MonoBehaviour{
 				}
 			}
 			if(bestTarget != null){
-				Debug.Log ("shooting at target");
+			//	Debug.Log ("shooting at target");
 				GetComponentInChildren<ShipsLaser>().fireAtTarget(bestTarget);
 			}
 

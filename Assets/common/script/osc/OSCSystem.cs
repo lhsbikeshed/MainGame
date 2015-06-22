@@ -38,12 +38,15 @@ public class OSCSystem:MonoBehaviour{
 	//last update packet send
 	float lastShipUpdate;
 	bool firstResetSent = false;
+
+	public static OSCSystem _instance;
 	
 	
 	//fucking unityscript
 	char[] separator = new char[]{'/'};
 	
 	public void Start() {
+
 		//reset all osc controls?
 		//stop this from pausing when focus lost
 		Application.runInBackground = true;
@@ -66,6 +69,7 @@ public class OSCSystem:MonoBehaviour{
 		}
 		//now init all of the refs etc
 		init();
+		_instance = this;
 	}
 	
 	
@@ -217,6 +221,88 @@ public class OSCSystem:MonoBehaviour{
 		theShip.transform.parent = null;
 		Application.LoadLevel(id);
 	}
+
+	public void hangupCall(){
+		if(commsOnline){
+			OSCHandler.Instance.RevertClientScreen("CommsStation", lastCommsScreen);
+			commsOnline = false;
+			
+			
+			OSCHandler.Instance.SendMessageToAll(new OSCMessage("/ship/comms/hangupCall"));
+			AudioSource asource = GetComponent<AudioSource>();
+			if(asource != null){
+				Destroy (asource);
+			}
+		}
+	}
+
+	public void incomingCall(string filename){
+		if(commsOnline){
+			OSCHandler.Instance.RevertClientScreen("CommsStation", lastCommsScreen);
+			commsOnline = false;
+		}
+		AudioSource.PlayClipAtPoint(hailingSound, playerShip.transform.position);
+		OSCMessage msg2 = new OSCMessage("/clientscreen/CommsStation/setMovieMode");
+
+		msg2.Append(filename);
+		OSCHandler.Instance.SendMessageToClient("CommsStation", msg2);
+		
+		OSCHandler.Instance.ChangeClientScreen("CommsStation", "videoDisplay");
+		lastCommsScreen = "videoDisplay";
+		commsOnline = true;	
+		
+		//now tell all of the clients that a call is coming in. Eventually replace all of the above with this message
+		
+		OSCHandler.Instance.SendMessageToAll(new OSCMessage("/ship/comms/incomingCall"));
+
+	}
+
+	public void incomingAudioClipCall(string fileName){
+		StartCoroutine(audioClipCall(fileName));
+	}
+
+	System.Collections.IEnumerator audioClipCall(string fileName){
+		if(!commsOnline){
+			AudioClip ac = Resources.Load<AudioClip>("clips/" + fileName);
+			if(ac == null){
+				Debug.Log ("played nonexistent clip : " + fileName);
+				yield break;
+			}
+			AudioSource.PlayClipAtPoint(hailingSound, playerShip.transform.position);
+			OSCHandler.Instance.ChangeClientScreen("CommsStation", "audioDisplay");
+			lastCommsScreen = "audioDisplay";
+			yield return  new WaitForSeconds(2);
+
+			commsOnline = true;
+
+
+			AudioSource source = gameObject.AddComponent<AudioSource>();
+			source.spatialBlend = 0.0f;
+			source.clip = ac;
+			source.Play();
+			source.loop = false;
+			Invoke ("hangupCall", ac.length);
+		}
+	}
+
+	public void incomingCall(bool isAudio){
+		if(!commsOnline){
+
+			AudioSource.PlayClipAtPoint(hailingSound, playerShip.transform.position);
+			
+			OSCMessage msg = new OSCMessage("/clientscreen/CommsStation/setCameraMode");
+			OSCHandler.Instance.SendMessageToClient("CommsStation", msg);
+			
+			if(isAudio){
+				OSCHandler.Instance.ChangeClientScreen("CommsStation", "audioDisplay");
+				lastCommsScreen = "audioDisplay";
+			} else {
+				OSCHandler.Instance.ChangeClientScreen("CommsStation", "videoDisplay");
+				lastCommsScreen = "videoDisplay";
+			}
+			commsOnline = true;
+		}
+	}
 	
 	public void commsMessage(OSCPacket message){
 		string[] msgAddress = message.Address.Split(separator);
@@ -224,57 +310,26 @@ public class OSCSystem:MonoBehaviour{
 		string target = msgAddress[3];
 		
 		if (target == "incomingCall"){
-			if(!commsOnline){
-				AudioSource.PlayClipAtPoint(hailingSound, playerShip.transform.position);
-				bool audioCall = false;
+			bool audioCall = false;
+			
+			if(message.Data.Count > 0){	//if data present and its a 1 then do audio call, else do video
 				
-				if(message.Data.Count > 0){	//if data present and its a 1 then do audio call, else do video
-				
-					if((int)message.Data[0] == 1){
+				if((int)message.Data[0] == 1){
 					
-						audioCall = true;
-					}
-				} 
-				OSCMessage msg = new OSCMessage("/clientscreen/CommsStation/setCameraMode");
-				OSCHandler.Instance.SendMessageToClient("CommsStation", msg);
-				
-				if(audioCall){
-					OSCHandler.Instance.ChangeClientScreen("CommsStation", "audioDisplay");
-					lastCommsScreen = "audioDisplay";
-				} else {
-					OSCHandler.Instance.ChangeClientScreen("CommsStation", "videoDisplay");
-					lastCommsScreen = "videoDisplay";
+					audioCall = true;
 				}
-				commsOnline = true;
-			}
+			} 
+			incomingCall(audioCall);
+
 		} else if (target == "hangUp"){
-			if(commsOnline){
-				OSCHandler.Instance.RevertClientScreen("CommsStation", lastCommsScreen);
-				commsOnline = false;
-				
-				
-				OSCHandler.Instance.SendMessageToAll(new OSCMessage("/ship/comms/hangupCall"));
-				
-			}
+			hangupCall();
 		} else if (target == "playVideo"){
-			if(commsOnline){
-				OSCHandler.Instance.RevertClientScreen("CommsStation", lastCommsScreen);
-				commsOnline = false;
-			}
-			AudioSource.PlayClipAtPoint(hailingSound, playerShip.transform.position);
-			OSCMessage msg2 = new OSCMessage("/clientscreen/CommsStation/setMovieMode");
 			string file = "" + message.Data[0];
-			msg2.Append(file);
-			OSCHandler.Instance.SendMessageToClient("CommsStation", msg2);
+			incomingCall (file);
 			
-			OSCHandler.Instance.ChangeClientScreen("CommsStation", "videoDisplay");
-			lastCommsScreen = "videoDisplay";
-			commsOnline = true;	
-			
-			//now tell all of the clients that a call is coming in. Eventually replace all of the above with this message
-			
-			OSCHandler.Instance.SendMessageToAll(new OSCMessage("/ship/comms/incomingCall"));
-			
+		} else if (target == "playAudio"){
+			string file = "" + message.Data[0]; //this exists in the resources/clips folder
+			incomingAudioClipCall (file);
 		}
 					
 	}
