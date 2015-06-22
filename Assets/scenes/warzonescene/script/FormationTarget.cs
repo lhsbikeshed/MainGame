@@ -33,7 +33,7 @@ public class FormationTarget : MonoBehaviour {
 		//plane is now in our local xy plane
 		//project npc van onto this plane
 		Vector3 shipOffset = npcShip.position - sourcePos;
-		Vector3 planeNormal = -theShip.forward;
+		Vector3 planeNormal = (sourcePos - theShip.position).normalized;
 
 		Vector3 shipPlanePos = Vector3.Project(shipOffset, planeNormal);
 
@@ -43,7 +43,7 @@ public class FormationTarget : MonoBehaviour {
 		transform.position = sourcePos + shipPlanePos;
 
 
-		
+				
 	}
 
 	void OnDrawGizmos(){

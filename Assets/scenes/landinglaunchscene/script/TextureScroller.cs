@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[ExecuteInEditMode]
 public class TextureScroller : MonoBehaviour {
 
 	public Vector2 speed;

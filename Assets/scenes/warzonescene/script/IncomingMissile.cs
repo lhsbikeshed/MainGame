@@ -131,7 +131,7 @@ public class IncomingMissile: TargettableObject {
 			if(!isDummy){
 				StartCoroutine(c.gameObject.GetComponent<ShipCore>().damageShip((float)UnityEngine.Random.Range(8,12), "Exploded by missile"));
 			}
-			c.GetComponent<Rigidbody>().AddExplosionForce(200.0f, transform.position, 100.0f,0.0f,ForceMode.Impulse);
+			c.GetComponent<Rigidbody>().AddExplosionForce(50.0f, transform.position, 100.0f,0.0f,ForceMode.Impulse);
 			StartCoroutine(explode());
 		} else if (c.GetComponent<TargettableObject>() != null){
 			TargettableObject t = c.GetComponent<TargettableObject>();
