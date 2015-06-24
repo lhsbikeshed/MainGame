@@ -51,6 +51,7 @@ public class WarzoneNPCShip : MonoBehaviour{
 
 	public float shipOfflineCounter = 0.0f;
 	public bool shipOfflineDone = false;
+	bool exploding = false;
 
 
 
@@ -87,6 +88,7 @@ public class WarzoneNPCShip : MonoBehaviour{
 
 	//delegated from trackable target component
 	void blownUp(){
+		exploding = true;
 		engineRunning = false;
 		shipOffline = true;
 		//for now just explode and die in 6 seconds time
@@ -112,7 +114,7 @@ public class WarzoneNPCShip : MonoBehaviour{
 	}
 
 	void takenDamage(DamageTypes type, float dam){
-		if(shipOfflineDone == false && UnityEngine.Random.Range (0,100) < 10){
+		if(shipOfflineDone == false && exploding == false && UnityEngine.Random.Range (0,100) < 15){
 			//10% chance that this fucks the ship and makes it halt for repairs
 			shipOfflineDone = true;
 			shipOffline = true;
