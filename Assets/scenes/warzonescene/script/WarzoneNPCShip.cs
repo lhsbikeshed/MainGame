@@ -91,7 +91,7 @@ public class WarzoneNPCShip : MonoBehaviour{
 
 	System.Collections.IEnumerator explosionEffects(){
 		yield return new WaitForSeconds(2.5f);
-		GetComponentInChildren<BigExplosionBehaviour>().Start();
+//		GetComponentInChildren<BigExplosionBehaviour>().Start();
 		transform.Find("explosion").GetComponent<ParticleSystem>().Play();
 		foreach(Transform t in transform){
 			MeshRenderer mr = t.GetComponent<MeshRenderer>();
@@ -193,7 +193,7 @@ public class WarzoneNPCShip : MonoBehaviour{
 		//look for a missile in range and fire at it
 		nextTargetTime -= Time.fixedDeltaTime;
 		if(nextTargetTime < 0.0f){
-			nextTargetTime = UnityEngine.Random.Range (3f, 6f);	//select and shoot at a new target every 3 - 6 seconds
+			nextTargetTime = UnityEngine.Random.Range (5f, 7f);	//select and shoot at a new target every 3 - 6 seconds
 
 			//oh god finding a target
 			Collider[] colliders = Physics.OverlapSphere(transform.position, 800f);

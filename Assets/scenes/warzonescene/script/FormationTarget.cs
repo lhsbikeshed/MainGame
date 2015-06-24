@@ -27,21 +27,21 @@ public class FormationTarget : MonoBehaviour {
 	
 		//proj offset between us and target onto a plane
 
+		if (npcShip != null) {
+			Vector3 sourcePos = theShip.position + theShip.TransformDirection (distance);
 
-		Vector3 sourcePos = theShip.position + theShip.TransformDirection(distance);
+			//plane is now in our local xy plane
+			//project npc van onto this plane
+			Vector3 shipOffset = npcShip.position - sourcePos;
+			Vector3 planeNormal = (sourcePos - theShip.position).normalized;
 
-		//plane is now in our local xy plane
-		//project npc van onto this plane
-		Vector3 shipOffset = npcShip.position - sourcePos;
-		Vector3 planeNormal = (sourcePos - theShip.position).normalized;
+			Vector3 shipPlanePos = Vector3.Project (shipOffset, planeNormal);
 
-		Vector3 shipPlanePos = Vector3.Project(shipOffset, planeNormal);
-
-		shipPlanePos.Normalize();
-		shipPlanePos *= radius;
-		//shipPlanePos += transform.position;
-		transform.position = sourcePos + shipPlanePos;
-
+			shipPlanePos.Normalize ();
+			shipPlanePos *= radius;
+			//shipPlanePos += transform.position;
+				transform.position = sourcePos + shipPlanePos;
+		}
 
 				
 	}

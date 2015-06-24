@@ -48,7 +48,7 @@ public class LaunchScene: GenericScene {
 			configureForLanding();
 		}
 
-		theShip.GetComponentInChildren<ShipCamera>().setSkyboxState (false);
+		//theShip.GetComponentInChildren<ShipCamera>().setSkyboxState (false);
 	}
 
 	void configureForLanding(){

@@ -25,6 +25,12 @@ public class ShipsLaser:MonoBehaviour{
 	public void Start() {
 
 		theShip = transform.parent;
+		if (!forPlayerShip) {
+			foreach (AudioSource a in GetComponentsInChildren<AudioSource>()) {
+				a.spatialBlend = 1.0f;
+			}
+		}
+				
 
 	}
 	
