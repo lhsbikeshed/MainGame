@@ -81,11 +81,27 @@ public class WarzoneNPCShip : MonoBehaviour{
 
 	//delegated from trackable target component
 	void blownUp(){
-
+		engineRunning = false;
 		//for now just explode and die in 6 seconds time
 		//TODO:
 		//make this audio call the players and explode in time with a goodbye message
-		StartCoroutine(targetData.explode());
+		OSCSystem._instance.incomingAudioClipCall("npcdead");
+		StartCoroutine(explosionEffects());
+	}
+
+	System.Collections.IEnumerator explosionEffects(){
+		yield return new WaitForSeconds(2.5f);
+		GetComponentInChildren<BigExplosionBehaviour>().Start();
+		transform.Find("explosion").GetComponent<ParticleSystem>().Play();
+		foreach(Transform t in transform){
+			MeshRenderer mr = t.GetComponent<MeshRenderer>();
+			if(mr != null){
+				mr.enabled=  false;
+			}
+		}
+		yield return new WaitForSeconds(1.5f);
+		Destroy (gameObject);
+
 	}
 
 
@@ -95,7 +111,7 @@ public class WarzoneNPCShip : MonoBehaviour{
 		//	engineLight.intensity = 1 + (velocity / maxVelocity) * 3.5f;
 		if(test){
 			test = false;
-			OSCSystem._instance.incomingAudioClipCall("help");
+			GetComponent<GeneralTrackableTarget>().ApplyDamage(DamageTypes.DAMAGE_COLLISION,100);
 		}
 	}
 	
