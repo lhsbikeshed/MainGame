@@ -7,7 +7,8 @@ public class ShipsLaser:MonoBehaviour{
 	//public AudioClip chargeEffect;
 	//public AudioClip loopEffect;
 	//public AudioClip endEffect;
-	
+
+
 	//var missilePrefab : Transform;
 	public float fireDuration;
 	
@@ -25,6 +26,11 @@ public class ShipsLaser:MonoBehaviour{
 	public void Start() {
 
 		theShip = transform.parent;
+		if(!forPlayerShip){
+			foreach(AudioSource a in GetComponentsInChildren<AudioSource>()){
+				a.spatialBlend = 1.0f;
+			}
+		}
 
 	}
 	
@@ -83,7 +89,7 @@ public class ShipsLaser:MonoBehaviour{
 						Vector3 targetDirection = (targettedObject.position - t.position ).normalized;
 
 						float angle = Vector3.Dot (turretDirection, targetDirection);
-						Debug.Log ("an: " + t.name + " - "  + angle);
+//						Debug.Log ("an: " + t.name + " - "  + angle);
 						if(angle > 0 && angle < minAngle){
 							minAngle = angle;
 							bestTurret = t;

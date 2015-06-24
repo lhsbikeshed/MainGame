@@ -31,6 +31,7 @@ public class WarzoneNPCShip : MonoBehaviour{
 
 	public bool engineRunning = true;
 	public bool repairing = false;
+	public bool shipOffline = false;
 	float repairTime = 0.0f;
 
 	bool jumping = false;
@@ -48,12 +49,17 @@ public class WarzoneNPCShip : MonoBehaviour{
 
 	public bool test = false;
 
+	public float shipOfflineCounter = 0.0f;
+	public bool shipOfflineDone = false;
+
+
 
 
 	
 	public void Start() {
 		targetData = GetComponent<GeneralTrackableTarget>();
 		targetData.targetDestroyed += blownUp;
+		targetData.onTakeDamage += takenDamage;
 	}
 
 	
@@ -82,6 +88,7 @@ public class WarzoneNPCShip : MonoBehaviour{
 	//delegated from trackable target component
 	void blownUp(){
 		engineRunning = false;
+		shipOffline = true;
 		//for now just explode and die in 6 seconds time
 		//TODO:
 		//make this audio call the players and explode in time with a goodbye message
@@ -104,6 +111,17 @@ public class WarzoneNPCShip : MonoBehaviour{
 
 	}
 
+	void takenDamage(DamageTypes type, float dam){
+		if(shipOfflineDone == false && UnityEngine.Random.Range (0,100) < 10){
+			//10% chance that this fucks the ship and makes it halt for repairs
+			shipOfflineDone = true;
+			shipOffline = true;
+
+			shipOfflineCounter = UnityEngine.Random.Range (10f,15f);
+			OSCSystem._instance.incomingAudioClipCall("help");
+
+		}
+	}
 
 	
 	public void Update() {
@@ -116,75 +134,89 @@ public class WarzoneNPCShip : MonoBehaviour{
 	}
 	
 	public void FixedUpdate(){
-		//if the ship is damaged randomly turn repair on and off
-		if(UnityEngine.Random.Range(0,100) < 10 && repairing == false && targetData.health < 0.3f){
-			repairTime = UnityEngine.Random.Range(0.1f, 2f);
-			repairing = true;
-		}
-		if(repairing){
-			float h = targetData.health;
-			h+= 0.05f * Time.fixedDeltaTime;
-			h = Mathf.Clamp(h, 0.0f, 1.0f);
 
-			targetData.health = h;
-			repairTime -= Time.fixedDeltaTime;
-			if(repairTime <= 0.0f){
-				repairing = false;
-				repairTime = 0.0f;
+		if(shipOffline){
+			shipOfflineCounter -= Time.fixedDeltaTime;
+			if(shipOfflineCounter <= 0.0f){
+				shipOffline = false;
+				//play a THANKS message
+				OSCSystem._instance.incomingAudioClipCall("npcthanks");
+
+
+
 			}
 
-		}
-
-		if(engineRunning){
-				
-			//var velocity : float = moveTarget.newVelocity;
-			float dist = Mathf.Abs( (moveTarget.transform.position - transform.position).magnitude) ;
-			//far enough away to fly toward it
-			Quaternion newRotation;
-			if(dist > 5){
-				velocity = Mathf.Clamp(dist,0.0f,maxVelocity);
-				velocity *= Mathf.Abs(Vector3.Dot((transform.position - moveTarget.transform.position).normalized, transform.TransformDirection(Vector3.forward)));
-	//
-	//			float distMod = (transform.position - moveTarget.position).magnitude / 10f;
-	//			distMod = Mathf.Clamp(distMod, 0.1f, 1.0f);
-	//			velocity *= distMod;
-
-				newRotation = Quaternion.LookRotation(moveTarget.transform.position - transform.position, moveTarget.transform.TransformDirection(Vector3.up));
-
-			} else {
-				//stop the ship if its close enough
-				velocity = 0.0f;
-				newRotation = transform.rotation;
+		} else {
+			//if the ship is damaged randomly turn repair on and off
+			if(UnityEngine.Random.Range(0,100) < 10 && repairing == false && targetData.health < 0.3f){
+				repairTime = UnityEngine.Random.Range(0.1f, 2f);
+				repairing = true;
 			}
+			if(repairing){
+				float h = targetData.health;
+				h+= 0.05f * Time.fixedDeltaTime;
+				h = Mathf.Clamp(h, 0.0f, 1.0f);
 
-			//trace ahead and see if we impact anything soon
-			RaycastHit rHit;
-			bool hit = Physics.Raycast(transform.position,transform.forward, out rHit, lookAheadDistance);
-			if(hit){
-				//were going to collide, swerve!
-				if(swerveTime <= 0.0f){
-					swerveTime = 2f;
-					swerveRotation = Quaternion.Euler(UnityEngine.Random.onUnitSphere * 20f);
-					swerveRotation.z = 0f;
-					Debug.Log ("NPC EVASIVE ACTION");
-
+				targetData.health = h;
+				repairTime -= Time.fixedDeltaTime;
+				if(repairTime <= 0.0f){
+					repairing = false;
+					repairTime = 0.0f;
 				}
+
 			}
 
-			if(swerveTime > 0.0f){
-				swerveTime -= Time.fixedDeltaTime;
-				newRotation *= swerveRotation;
-			} else {
-				swerveTime = 0.0f;
+			if(engineRunning){
+					
+				//var velocity : float = moveTarget.newVelocity;
+				float dist = Mathf.Abs( (moveTarget.transform.position - transform.position).magnitude) ;
+				//far enough away to fly toward it
+				Quaternion newRotation;
+				if(dist > 5){
+					velocity = Mathf.Clamp(dist,0.0f,maxVelocity);
+					velocity *= Mathf.Abs(Vector3.Dot((transform.position - moveTarget.transform.position).normalized, transform.TransformDirection(Vector3.forward)));
+		//
+		//			float distMod = (transform.position - moveTarget.position).magnitude / 10f;
+		//			distMod = Mathf.Clamp(distMod, 0.1f, 1.0f);
+		//			velocity *= distMod;
+
+					newRotation = Quaternion.LookRotation(moveTarget.transform.position - transform.position, moveTarget.transform.TransformDirection(Vector3.up));
+
+				} else {
+					//stop the ship if its close enough
+					velocity = 0.0f;
+					newRotation = transform.rotation;
+				}
+
+				//trace ahead and see if we impact anything soon
+				RaycastHit rHit;
+				bool hit = Physics.Raycast(transform.position,transform.forward, out rHit, lookAheadDistance);
+				if(hit){
+					//were going to collide, swerve!
+					if(swerveTime <= 0.0f){
+						swerveTime = 2f;
+						swerveRotation = Quaternion.Euler(UnityEngine.Random.onUnitSphere * 20f);
+						swerveRotation.z = 0f;
+						Debug.Log ("NPC EVASIVE ACTION");
+
+					}
+				}
+
+				if(swerveTime > 0.0f){
+					swerveTime -= Time.fixedDeltaTime;
+					newRotation *= swerveRotation;
+				} else {
+					swerveTime = 0.0f;
+				}
+
+				GetComponent<Rigidbody>().AddRelativeForce(Vector3.forward * velocity, ForceMode.Acceleration);
+				float v = GetComponent<Rigidbody>().velocity.magnitude;
+				float dampAmount = (v / 200f);
+				dampAmount = 1.0f - Mathf.Clamp(dampAmount, 0f, 1f);
+				transform.rotation = Quaternion.Slerp(transform.rotation, newRotation, Time.fixedDeltaTime * rotationDamping * dampAmount);
+
+				doTargetSelection();
 			}
-
-			GetComponent<Rigidbody>().AddRelativeForce(Vector3.forward * velocity, ForceMode.Acceleration);
-			float v = GetComponent<Rigidbody>().velocity.magnitude;
-			float dampAmount = (v / 200f);
-			dampAmount = 1.0f - Mathf.Clamp(dampAmount, 0f, 1f);
-			transform.rotation = Quaternion.Slerp(transform.rotation, newRotation, Time.fixedDeltaTime * rotationDamping * dampAmount);
-
-			doTargetSelection();
 		}
 
 	}

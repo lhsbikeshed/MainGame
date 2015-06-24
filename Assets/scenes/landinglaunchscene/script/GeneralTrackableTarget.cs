@@ -4,6 +4,7 @@ using System.Collections;
 
 
 public delegate void TargetDestroyed();
+public delegate void OnTakeDamage(DamageTypes type, float dam);
 
 
 public class GeneralTrackableTarget: TargettableObject {
@@ -14,6 +15,7 @@ public class GeneralTrackableTarget: TargettableObject {
 	int randomSound = 0;
 
 	public  TargetDestroyed targetDestroyed;
+	public OnTakeDamage onTakeDamage;
 	
 	public override void Start() {
 		base.Start();
@@ -45,6 +47,9 @@ public class GeneralTrackableTarget: TargettableObject {
 	public override void ApplyDamage(DamageTypes type, float damage){
 		if(damageable){
 			health -=damage;
+			if(onTakeDamage != null){
+				onTakeDamage(type, damage);
+			}
 			if(health <= 0){
 				targetted = false;
 				if(targetDestroyed != null){
