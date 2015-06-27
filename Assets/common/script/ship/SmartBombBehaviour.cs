@@ -55,7 +55,7 @@ public class SmartBombBehaviour:MonoBehaviour{
 	    //Debug.Log(hitColliders[i].name);
 	    	TargettableObject t = hitColliders[i].GetComponent<TargettableObject>();
 	    	
-	    	if(t != null){
+	    	if(t != null && hitColliders[i].gameObject.name != "npcvan"){
 	    		t.ApplyDamage(DamageTypes.DAMAGE_EMP, 100.0f);
 	    	}
 	    }
