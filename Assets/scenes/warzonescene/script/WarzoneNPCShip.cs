@@ -114,7 +114,13 @@ public class WarzoneNPCShip : MonoBehaviour{
 	}
 
 	void takenDamage(DamageTypes type, float dam){
-		if(shipOfflineDone == false && exploding == false && UnityEngine.Random.Range (0,100) < 15){
+		//if the ship hasnt done the "help" sequence then theres a 15% chance this hit will knock it out
+		// unless its exploding or the health is too low
+		if(	shipOfflineDone == false && 
+		   	exploding == false && 
+		   	UnityEngine.Random.Range (0,100) < 15 && 
+		   	targetData.health > 10.0f)	 {
+
 			//10% chance that this fucks the ship and makes it halt for repairs
 			shipOfflineDone = true;
 			shipOffline = true;
@@ -174,14 +180,21 @@ public class WarzoneNPCShip : MonoBehaviour{
 				float dist = Mathf.Abs( (moveTarget.transform.position - transform.position).magnitude) ;
 				//far enough away to fly toward it
 				Quaternion newRotation;
+
 				if(dist > 5){
 					velocity = Mathf.Clamp(dist,0.0f,maxVelocity);
-					velocity *= Mathf.Abs(Vector3.Dot((transform.position - moveTarget.transform.position).normalized, transform.TransformDirection(Vector3.forward)));
+					float angmod = Vector3.Dot((moveTarget.transform.position- transform.position ).normalized, transform.TransformDirection(Vector3.forward));
+					if(angmod > 0){
+						velocity *= angmod;
+					}
+					if(Math.Abs(1f - angmod) < 0.1f && dist > 100){
+						velocity *= 5f;
+					}
+
 		//
 		//			float distMod = (transform.position - moveTarget.position).magnitude / 10f;
 		//			distMod = Mathf.Clamp(distMod, 0.1f, 1.0f);
 		//			velocity *= distMod;
-
 					newRotation = Quaternion.LookRotation(moveTarget.transform.position - transform.position, moveTarget.transform.TransformDirection(Vector3.up));
 
 				} else {
