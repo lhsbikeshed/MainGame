@@ -20,6 +20,7 @@ public class DropScene: GenericScene {
 	public float rotateStrength = 1.0f;
 	
 	public float[] hulltemperature; //top/bottom/front/back/left/right
+	public float[] hullHeatMod;
 	Vector3[] hullDirections; //maps hull temps to directions
 	public bool heating = true;
 	
@@ -63,6 +64,8 @@ public class DropScene: GenericScene {
 
 	bool puzzleComplete = false;
 
+	public Color fogColor;
+	public Transform shipMover;
 	
 	public override void Start() {
 
@@ -79,7 +82,7 @@ public class DropScene: GenericScene {
 		jumpSystem = theShip.GetComponent<JumpSystem>();
 		//we store this so that the players cant accidentally override it. if they do then we force it back
 		//on the console. The ship will then emergency jump down the right route
-
+		shipMover.parent = theShip.transform;
 		
 		hulltemperature = new float[6];
 		hullDirections = new Vector3[6];
@@ -100,7 +103,7 @@ public class DropScene: GenericScene {
 		// ship enters scene with fucked engines, add gravity and disable buggered systems.
 		//add some drag otherwise we ping off into space
 		GameObject.Find("Bits").active = false;
-		theShip.GetComponent<Rigidbody>().useGravity = true;
+		//theShip.GetComponent<Rigidbody>().useGravity = true;
 		theShip.GetComponent<Rigidbody>().drag = 0.0f;
 		
 		//turn off the propulsion system but allow rotations
@@ -141,7 +144,7 @@ public class DropScene: GenericScene {
 		nextTurbulence = UnityEngine.Random.Range(5.0f, 15.0f);
 
 		JumpSystem.Instance.addRequirement(new SystemRequirement("LOCKED", "Jump System Damaged - repatch power"));
-		
+		RenderSettings.skybox.SetFloat ("_Blend", 0f);
 	}
 	
 	public void updateFireballDirection(){
@@ -197,6 +200,7 @@ public class DropScene: GenericScene {
 			var tmp_cs2 = fogball.material.color;
             tmp_cs2.a = alpha;
             fogball.material.color = tmp_cs2;
+			float actualAlt = altitude - minAltitude; //0-2500
 			if(altitude > 28000){
 				//particle speed and size
 				float speed = map(altitude, maxAltitude, minAltitude, 15.0f, 35.0f);
@@ -226,19 +230,37 @@ public class DropScene: GenericScene {
 					fireBallSound.Play();
 					
 				}
+				//work out a fog level
+
+				float fogLevel = UsefulShit.map (actualAlt, 0, 2500, 100, 600);
+				fogLevel = Mathf.Clamp(fogLevel, 100, 600);
+				RenderSettings.fogStartDistance = fogLevel;
+				RenderSettings.fogEndDistance = fogLevel + 200;
+				RenderSettings.fogColor = fogColor;
+				
+
 			}
+			float sbLevel = UsefulShit.map (actualAlt, 3000, 5000, 1f, 0f);
+			sbLevel = Mathf.Clamp(sbLevel, 0f, 1f);
+
+			RenderSettings.skybox.SetFloat ("_Blend", sbLevel);
 			
 			//work out hull temps
 			
 			for(int i = 0 ; i < 6; i++){
 				if(heating){
 					float amt = Vector3.Dot(theShip.transform.rotation * hullDirections[i], theShip.GetComponent<Rigidbody>().velocity.normalized);
-					hulltemperature[i] += amt / 10.0f;
+					if(amt > 0.3f){
+						hulltemperature[i] += (amt / 10.0f) * hullHeatMod[i];
+					} else {
+						hulltemperature[i] += (amt / 10.0f);
+					}
+
 					if(hulltemperature[i] < 10){
 						hulltemperature[i] = 10.0f;
 					}
 					
-					if(hulltemperature[i] > 300){
+					if(hulltemperature[i] > 300 && i != 4){ //front of the ship is immune to fire
 					//we died
 						StartCoroutine(playerDied());
 						
@@ -282,9 +304,12 @@ public class DropScene: GenericScene {
 	
 						
 	}
+
+
 	public void hitPlanet(){
 		//silence all sounds, play a humongous crash and kill the players. Black out screen
 		if(weAreDying == false){
+			Destroy(shipMover.gameObject);
 			theShip.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;	//freeze ship in place
 		
 			deathTime = Time.fixedTime;
@@ -381,6 +406,11 @@ public class DropScene: GenericScene {
 		OSCHandler.Instance.RevertClientScreen("PilotStation", "drop");			
 		OSCHandler.Instance.RevertClientScreen("TacticalStation", "drop");		
 		OSCHandler.Instance.RevertClientScreen("EngineerStation", "drop");			
+		RenderSettings.fogStartDistance = 6000;
+		RenderSettings.fogEndDistance = 7000;
+		RenderSettings.fogColor = new Color (0, 0, 0);
+		RenderSettings.skybox.SetFloat ("_Blend", 0);
+		Destroy(shipMover.gameObject);
 	}
 	
 	public override void SendOSCMessage(){
