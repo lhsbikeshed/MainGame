@@ -51,6 +51,12 @@ public class LaunchScene: GenericScene {
 		//theShip.GetComponentInChildren<ShipCamera>().setSkyboxState (false);
 	}
 
+	public override void LeaveScene(){
+		Debug.Log ("leaving scene...");
+		OSCHandler.Instance.RevertClientScreen("PilotStation", "landingDisplay");	
+
+	}
+
 	void configureForLanding(){
 		Debug.Log ("landing mode..");
 		GameObject exitPoint = GameObject.Find("JumpExit");
