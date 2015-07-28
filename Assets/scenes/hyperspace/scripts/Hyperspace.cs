@@ -88,7 +88,12 @@ public class Hyperspace: GenericScene {
 		//prevent throttle from working
 		theShip.GetComponent<PropulsionSystem>().throttleDisabled = true;
 		  
-		  
+		RenderSettings.fogColor = new Color(0,0,0);
+		RenderSettings.fogStartDistance = 1500;
+		RenderSettings.fogEndDistance = 6500;
+		RenderSettings.skybox.SetFloat("_Blend", 0f);
+
+
 		 //spawn any special prefabs given our destination, currently only mars and a comet
 		destinationScene = ps.hyperspaceDestination;
 		if(destinationScene == "drop"){				

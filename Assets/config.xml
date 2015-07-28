@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <config>
-	<testmode>true</testmode>
+	<testmode>false</testmode>
 	<client name="TacticalStation">10.0.0.10:12004</client>
 	<client name="EngineerStation">10.0.0.1:12001</client>
 	<client name="PilotStation">10.0.0.10:12002</client>
@@ -10,6 +10,7 @@
 	<client name="CommsStation">10.0.0.3:12003</client>
 	<client name="cam">10.0.0.3:12010</client>
 	<client name="fvidserver">10.0.0.50:12011</client>
+	<client name="fvidserver2">10.0.0.151:12151</client>
 
 	<useChaseCam>false</useChaseCam>
 	<resolutionWidth>1280</resolutionWidth>
