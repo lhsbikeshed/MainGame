@@ -58,6 +58,8 @@ public class DropScene: GenericScene {
 	//turbulence
 	float lastTurbulence;
 	float nextTurbulence;
+	float turbulenceDuration = 3.0f;
+	Quaternion turbulenceRotation;
 	
 	//ship refs
 	JumpSystem jumpSystem;
@@ -163,20 +165,22 @@ public class DropScene: GenericScene {
 			initialKick = false;
 		}
 		
-		if(lastTurbulence + nextTurbulence < Time.fixedTime){
+		if( Time.fixedTime - lastTurbulence > nextTurbulence){	//trigger a bout of turbulence
 			lastTurbulence = Time.fixedTime;
-			nextTurbulence = UnityEngine.Random.Range(8.0f, 20.0f);
-			OSCHandler.Instance.SendMessageToAll(new OSCMessage("/scene/drop/turbulenceWarning"));
-			Vector3 ranVec = UnityEngine.Random.onUnitSphere;
-			ranVec.z = 0.0f;
-			ranVec *= UnityEngine.Random.Range(300.0f, 650.0f);
-			theShip.GetComponent<Rigidbody>().AddRelativeTorque(ranVec, ForceMode.Impulse);
+			nextTurbulence = UnityEngine.Random.Range(3.0f, 8.0f);
+//			OSCMessage msg = new OSCMessage("/scene/drop/turbulenceWarning");
+//			msg.Append(turbulenceDuration); 
+//			OSCHandler.Instance.SendMessageToAll(msg);
+			turbulenceRotation = Quaternion.Euler(UnityEngine.Random.onUnitSphere * 40f);
 		}
 		
 		
-		//slowly rotate the ship toward the fireball
-		theShip.GetComponent<Rigidbody>().AddTorque(Vector3.Cross(theShip.transform.forward, theShip.GetComponent<Rigidbody>().velocity.normalized) * airForce, ForceMode.Force);
+		Vector3 rotateTorque = Vector3.Cross(turbulenceRotation * theShip.transform.forward, theShip.GetComponent<Rigidbody>().velocity.normalized) * airForce ;
 		
+		theShip.GetComponent<Rigidbody>().AddTorque(rotateTorque,ForceMode.Force);
+
+
+
 		//check if the altitude has crossed a 1000/100 barrier and speak it out
 		prevFrameAltitude = altitude;
 		altitude =  Vector3.Distance(planet.position, skyCam.position) * 10;
