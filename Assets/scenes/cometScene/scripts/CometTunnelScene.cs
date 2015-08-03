@@ -120,6 +120,8 @@ public class CometTunnelScene: GenericScene , CodeAuthSystem.AuthCodeListener {
 	public void puzzleComplete(){
 		Debug.Log ("scene received code ok");
 		puzzleState = PuzzleState.STATE_COMPLETE;
+		JumpSystem.Instance.removeRequirement("FLATSPACE");
+
 		
 		
 	}
