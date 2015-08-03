@@ -36,7 +36,6 @@ public struct ServerLog
 {
 	public OSCServer server;
 	public List<OSCPacket> packets;
-	public List<string> log;
 }
 
 /// <summary>
@@ -47,7 +46,6 @@ public struct ClientLog
 {
 	public OSCClient client;
 	public List<OSCMessage> messages;
-	public List<string> log;
 }
 
 /// <summary>
@@ -229,7 +227,6 @@ public class OSCHandler : MonoBehaviour
 	{
 		ClientLog clientitem = new ClientLog();
 		clientitem.client = new OSCClient(destination, port);
-		clientitem.log = new List<string>();
 		clientitem.messages = new List<OSCMessage>();
 		
 		_clients.Add(clientId, clientitem);
@@ -239,9 +236,7 @@ public class OSCHandler : MonoBehaviour
 		OSCMessage message = new OSCMessage(testaddress, destination.ToString());
 		message.Append(port); message.Append("OK");
 		
-		_clients[clientId].log.Add(String.Concat(DateTime.UtcNow.ToString(),".",
-		                                         FormatMilliseconds(DateTime.Now.Millisecond), " : ",
-		                                         testaddress," ", DataToString(message.Data)));
+
 		_clients[clientId].messages.Add(message);
 		
 		_clients[clientId].client.Send(message);
@@ -260,7 +255,6 @@ public class OSCHandler : MonoBehaviour
 	{
 		ServerLog serveritem = new ServerLog();
 		serveritem.server = new OSCServer(port);
-		serveritem.log = new List<string>();
 		serveritem.packets = new List<OSCPacket>();
 		
 		_servers.Add(serverId, serveritem);
@@ -416,24 +410,7 @@ public class OSCHandler : MonoBehaviour
 		if(_clients.ContainsKey(clientId))
 		{
 			
-			
-			if(_clients[clientId].log.Count < _loglength)
-			{
-				_clients[clientId].log.Add(String.Concat(DateTime.UtcNow.ToString(),".",
-				                                         FormatMilliseconds(DateTime.Now.Millisecond),
-				                                         " : ", message.Address, " ", DataToString(message.Data)));
-				_clients[clientId].messages.Add(message);
-			}
-			else
-			{
-				_clients[clientId].log.RemoveAt(0);
-				_clients[clientId].messages.RemoveAt(0);
-				
-				_clients[clientId].log.Add(String.Concat(DateTime.UtcNow.ToString(),".",
-				                                         FormatMilliseconds(DateTime.Now.Millisecond),
-				                                         " : ", message.Address, " ", DataToString(message.Data)));
-				_clients[clientId].messages.Add(message);
-			}
+			//_clients[clientId].messages.Add(message);
 			
 			_clients[clientId].client.Send(message);
 		}
@@ -465,24 +442,10 @@ public class OSCHandler : MonoBehaviour
 			{
 				message.Append(msgvalue);
 			}
-			
-			if(_clients[clientId].log.Count < _loglength)
-			{
-				//_clients[clientId].log.Add(String.Concat(DateTime.UtcNow.ToString(),".",
-				//                                         FormatMilliseconds(DateTime.Now.Millisecond),
-				 //                                        " : ", address, " ", DataToString(message.Data)));
-				_clients[clientId].messages.Add(message);
-			}
-			else
-			{
-				//_clients[clientId].log.RemoveAt(0);
-				_clients[clientId].messages.RemoveAt(0);
-				
-				//_clients[clientId].log.Add(String.Concat(DateTime.UtcNow.ToString(),".",
-				 //                                        FormatMilliseconds(DateTime.Now.Millisecond),
-				//                                         " : ", address, " ", DataToString(message.Data)));
-				_clients[clientId].messages.Add(message);
-			}
+	
+
+			//_clients[clientId].messages.Add(message);
+
 			
 			_clients[clientId].client.Send(message);
 		}
@@ -501,37 +464,14 @@ public class OSCHandler : MonoBehaviour
 		{
 			if(_servers[pair.Key].server.LastReceivedPacket != null)
 			{
-				//Initialization for the first packet received
-				if(_servers[pair.Key].log.Count == 0)
-				{	
-					_servers[pair.Key].packets.Add(_servers[pair.Key].server.LastReceivedPacket);
-						
-					_servers[pair.Key].log.Add(String.Concat(DateTime.UtcNow.ToString(), ".",
-					                                         FormatMilliseconds(DateTime.Now.Millisecond)," : ",
-					                                         _servers[pair.Key].server.LastReceivedPacket.Address," ",
-					                                         DataToString(_servers[pair.Key].server.LastReceivedPacket.Data)));
-					break;
-				}
-				/*		
-				if(_servers[pair.Key].server.LastReceivedPacket.TimeStamp
-				   != _servers[pair.Key].packets[_servers[pair.Key].packets.Count - 1].TimeStamp)
-				*/
+
 				OSCPacket p = _servers[pair.Key].server.getPacket();
 				if(p!=null)
 				{	
-					//_servers[pair.Key].server.LastReceivedPacket.readFromServer = true;
-					if(_servers[pair.Key].log.Count > _loglength - 1)
-					{
-						_servers[pair.Key].log.RemoveAt(0);
-						_servers[pair.Key].packets.RemoveAt(0);
-					}
-		
+							
 					_servers[pair.Key].packets.Add(p);
 						
-					_servers[pair.Key].log.Add(String.Concat(DateTime.UtcNow.ToString(), ".",
-					                                         FormatMilliseconds(DateTime.Now.Millisecond)," : ",
-					                                         p.Address," ",
-					                                         DataToString(p.Data)));
+
 				}
 			}
 		}
