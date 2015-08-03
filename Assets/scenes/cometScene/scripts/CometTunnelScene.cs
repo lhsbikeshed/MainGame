@@ -28,9 +28,7 @@ public class CometTunnelScene: GenericScene , CodeAuthSystem.AuthCodeListener {
 	float lastPingNoise = 0f;
 	float nextPingNoise = 1f;
 	
-	bool inTunnel = false;
-	bool tunnelExited = false;
-	float exitPercentage =0.0f;
+
 	bool jumpReady = false;
 	
 	
@@ -48,29 +46,27 @@ public class CometTunnelScene: GenericScene , CodeAuthSystem.AuthCodeListener {
 		CodeAuthSystem.Instance.addListener(this);
 		
 		startScene();
-		//lock the jump system with a requirement telling the players they need to clear the gravity well of the asteroid first
-		JumpSystem.Instance.addRequirement(new SystemRequirement("GRAVITYWELL", "Large Gravity well detected"));
 	}
 	
 	public void FixedUpdate() {
 		//work out how far we are from the comet
 		//trace a ray from the skyboxcamera to the main comet, take distance of first collision
 		
-		if(!inTunnel){
-			calculateDistance();
-			if(distanceToDeath < minRangeForRocks){
-				rockSpawner.setRate(0f);	//turn off rocks close to the comet as they look shit
-			} else {
-				//scale the rate depending on distance
-				float rate = UsefulShit.map(distanceToDeath, maxRangeForRocks, minRangeForRocks, 1.0f, 10.0f);
-				rockSpawner.setRate(rate);
-			}
+		calculateDistance();
+		if(distanceToDeath < minRangeForRocks){
+			rockSpawner.setRate(0f);	//turn off rocks close to the comet as they look shit
+		} else {
+			//scale the rate depending on distance
+			float rate = UsefulShit.map(distanceToDeath, maxRangeForRocks, minRangeForRocks, 1.0f, 10.0f);
+			rockSpawner.setRate(rate);
 		}
+
 		
 		if(puzzleState == PuzzleState.STATE_CABLE){
 			doCableWait();
 		} else if (puzzleState == PuzzleState.STATE_COMPLETE){
-			waitForTunnelExit();
+			//get everything back online
+			//TODO : make this work
 		}
 		
 		/* do random hull pinging noises */
@@ -82,11 +78,7 @@ public class CometTunnelScene: GenericScene , CodeAuthSystem.AuthCodeListener {
 			AudioSource tempAs = UsefulShit.PlayClipAt(clip, theShip.position + UnityEngine.Random.onUnitSphere * 5f);
 			tempAs.pitch = UnityEngine.Random.Range(0.8f, 1.2f);
 		}
-		if(tunnelExited){
-			exitPercentage = Mathf.Clamp(exitPercentage + 0.01f, 0.0f, 1.0f);		
-			GameObject.Find("Directional light").GetComponent<Light>().intensity = 0.5f * exitPercentage;
-			RenderSettings.ambientLight = new Color(0.72f, 0.72f, 0.72f) * exitPercentage;
-		}
+
 		
 	}
 	
@@ -110,47 +102,7 @@ public class CometTunnelScene: GenericScene , CodeAuthSystem.AuthCodeListener {
 		}
 		
 	}
-	
-	public void waitForTunnelExit(){
-		if(tunnelExited && !jumpReady){
-			jumpReady = true;
-			//clear the gravity well requirement as we're now outside of it.
-			JumpSystem.Instance.removeRequirement("GRAVITYWELL");
 
-
-			theShip.GetComponent<PropulsionSystem>().enableSystem();
-
-			theShip.GetComponent<JumpSystem>().setFlatSpace(true);
-			
-			//tell the players the gravity well has been cleared
-			OSCHandler.Instance.DisplayBannerAtClient("EngineerStation", "SUCCESS", "Gravity well cleared\r\nEngage hyperspace system to resume course", 4000);
-			OSCHandler.Instance.DisplayBannerAtClient("TacticalStation", "SUCCESS", "Gravity well cleared\r\nEngage hyperspace system to resume course", 4000);
-		}
-		
-		
-	}
-	
-	public void enteredTunnel(){
-		rockSpawner.gameObject.SetActive(false);
-		mainComet.gameObject.SetActive(false);
-		inTunnel = true;
-		
-	}
-	
-	public void tunnelComplete(){
-		UnityEngine.Debug.Log("tunnel complete");
-		puzzleComplete();
-		inTunnel = false;
-		mainComet.gameObject.SetActive(true);
-		var tmp_cs1 = mainComet.position;
-		tmp_cs1.z = 25698.77f;
-		mainComet.position = tmp_cs1;
-		
-		tunnelExited = true;
-	}
-	
-	
-	
 	/* wait for the cable puzzle to complete, once complete send out the auth screen stuff */
 	public void doCableWait(){	
 		if(cablePuzzleSystem.hasBeenCompleted){
@@ -168,6 +120,8 @@ public class CometTunnelScene: GenericScene , CodeAuthSystem.AuthCodeListener {
 	public void puzzleComplete(){
 		Debug.Log ("scene received code ok");
 		puzzleState = PuzzleState.STATE_COMPLETE;
+		JumpSystem.Instance.removeRequirement("FLATSPACE");
+
 		
 		
 	}
