@@ -64,6 +64,7 @@ public class TargettingSystem:MonoBehaviour{
 	
 	public void addObject(TargettableObject g){
 		if(!objectList.Contains(g)){
+			Debug.Log ("new target for radar : " + g.GetHashCode() + ":" + g.name);
 			objectList.Add(g);
 		}
 	}
