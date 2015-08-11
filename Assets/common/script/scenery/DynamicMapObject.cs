@@ -7,15 +7,12 @@ public class DynamicMapObject:MonoBehaviour{
 	public int[] sectorCoord;
 	public bool isBig;		//things tagged as "isbig" can be seen from the adjacent sector
 	public int sectorSize = 1;	//how many sectors around is this visible for? (for planets i guess)
-	public bool generateSkyBoxVersion = false ;// do we make a smaller clone in the skybox?
-	public Transform skyboxDummy;
 	public Vector3 originalPosition;
 	
 	[HideInInspector]
 	public Collider[] cols ;
 	
 	MapController mapController;
-	GameObject clone;
 	SkyboxCamera skyboxCamera;
 	
 	public Action ActivateFunction;
@@ -52,7 +49,7 @@ public class DynamicMapObject:MonoBehaviour{
 		tag = "dynamic";
 		cols = gameObject.GetComponentsInChildren<Collider>();
 		originalPosition = transform.position;
-		mapController = GameObject.Find("SceneScripts").GetComponent<MapController>();
+		mapController = MapController._instance;//GameObject.Find("SceneScripts").GetComponent<MapController>();
 
 		mapController.addObject(gameObject);
 		
@@ -69,9 +66,7 @@ public class DynamicMapObject:MonoBehaviour{
 		foreach(Collider c in cols){
 			c.enabled = true;
 		}
-		if(clone != null){
-			clone.SetActive(false);
-		}
+
 	}
 	
 	public void DefaultDeactivation(){
@@ -87,9 +82,7 @@ public class DynamicMapObject:MonoBehaviour{
 		gameObject.SetActive(false);
 		
 		
-		if(clone != null){
-			clone.SetActive(true);
-		}
+
 	}
 	
 	/* called by the map controller script */
@@ -102,8 +95,6 @@ public class DynamicMapObject:MonoBehaviour{
 	}
 	
 	public void FixedUpdate() {
-		if(clone != null){
-			clone.transform.rotation = transform.rotation;
-		}
+
 	}
 }
