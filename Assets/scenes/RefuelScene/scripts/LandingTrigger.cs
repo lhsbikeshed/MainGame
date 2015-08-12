@@ -29,7 +29,7 @@ public class LandingTrigger : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-		if (Time.fixedTime - lastUpdateTime > 0.250f) {
+		if (Time.fixedTime - lastUpdateTime > 0.250f && inTrigger) {
 			lastUpdateTime = Time.fixedTime;
 			OSCMessage m = new OSCMessage("/ship/state/dockingTransform");
 			m.Append(localShipPos.x * clientScaleFactor);

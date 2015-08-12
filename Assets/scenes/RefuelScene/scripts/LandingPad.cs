@@ -71,6 +71,15 @@ public class LandingPad : MonoBehaviour {
 		}
 	}
 
+	/* wait for ship to settle then, if still landed, freeze it in place*/
+	IEnumerator waitAndClamp(){
+		yield return new WaitForSeconds (2);
+		if (shipLanded) {
+
+			theShip.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
+		}
+
+	}
 
 	void OnTriggerStay(Collider c){
 		if (c.attachedRigidbody != null && c.attachedRigidbody.name == "TheShip" && !isIgnorable(c)) {
@@ -86,10 +95,13 @@ public class LandingPad : MonoBehaviour {
 					shipLanded = true;
 					applyDockingForce = true;
 					//theShip.parent = transform;
+					//need to wait for it to settle first
+					StartCoroutine(waitAndClamp());
 				}
 			} else {
 				applyDockingForce = false;
 				if(shipLanded){
+					theShip.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
 					shipLanded = false;
 					OSCMessage m = new OSCMessage("/ship/state/docked");
 					m.Append(0);

@@ -25,6 +25,17 @@ ModelImporter:
     100034: FuelPod_009
     100036: FuelPod_010
     100038: FuelPod_011
+    100040: landingpad_001
+    100042: landingpad_sahft
+    100044: landingpad_spike
+    100046: landingpad_000
+    100048: landingpad_part1
+    100050: landingpad_left
+    100052: landingpad_right
+    100054: landingpad_left_001
+    100056: bottomspoke
+    100058: core
+    100060: topspike_001
     400000: DockingBay2
     400002: //RootNode
     400004: FuelHolder
@@ -45,6 +56,17 @@ ModelImporter:
     400034: FuelPod_009
     400036: FuelPod_010
     400038: FuelPod_011
+    400040: landingpad_001
+    400042: landingpad_sahft
+    400044: landingpad_spike
+    400046: landingpad_000
+    400048: landingpad_part1
+    400050: landingpad_left
+    400052: landingpad_right
+    400054: landingpad_left_001
+    400056: bottomspoke
+    400058: core
+    400060: topspike_001
     2300000: DockingBay2
     2300002: FuelHolder
     2300004: FuelHolder_001
@@ -64,6 +86,17 @@ ModelImporter:
     2300032: FuelPod_009
     2300034: FuelPod_010
     2300036: FuelPod_011
+    2300038: landingpad_001
+    2300040: landingpad_sahft
+    2300042: landingpad_spike
+    2300044: landingpad_000
+    2300046: landingpad_part1
+    2300048: landingpad_left
+    2300050: landingpad_right
+    2300052: landingpad_left_001
+    2300054: bottomspoke
+    2300056: core
+    2300058: topspike_001
     3300000: DockingBay2
     3300002: FuelHolder
     3300004: FuelHolder_001
@@ -83,6 +116,17 @@ ModelImporter:
     3300032: FuelPod_009
     3300034: FuelPod_010
     3300036: FuelPod_011
+    3300038: landingpad_001
+    3300040: landingpad_sahft
+    3300042: landingpad_spike
+    3300044: landingpad_000
+    3300046: landingpad_part1
+    3300048: landingpad_left
+    3300050: landingpad_right
+    3300052: landingpad_left_001
+    3300054: bottomspoke
+    3300056: core
+    3300058: topspike_001
     4300000: landingpad
     4300002: FuelHolder_001
     4300004: FuelPod_007
@@ -102,6 +146,17 @@ ModelImporter:
     4300032: FuelPod_010
     4300034: FuelPod_009
     4300036: FuelPod_008
+    4300038: landingpad_001
+    4300040: landingpad_spike
+    4300042: landingpad_sahft
+    4300044: landingpad_000
+    4300046: landingpad_part1
+    4300048: landingpad_right
+    4300050: landingpad_left
+    4300052: landingpad_left_001
+    4300054: bottomspoke
+    4300056: topspike_001
+    4300058: core
     6400000: DockingBay2
     6400002: FuelHolder
     6400004: FuelHolder_001
@@ -120,6 +175,17 @@ ModelImporter:
     6400030: FuelPod_009
     6400032: FuelPod_010
     6400034: FuelPod_011
+    6400036: landingpad_001
+    6400038: landingpad_sahft
+    6400040: landingpad_spike
+    6400042: landingpad_000
+    6400044: landingpad_part1
+    6400046: landingpad_left
+    6400048: landingpad_right
+    6400050: landingpad_left_001
+    6400052: bottomspoke
+    6400054: core
+    6400056: topspike_001
     7400000: Default Take
     9500000: //RootNode
   materials:
@@ -131,6 +197,10 @@ ModelImporter:
     bakeSimulation: 0
     optimizeGameObjects: 0
     motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
     animationCompression: 1
     animationRotationError: .5
     animationPositionError: .5
