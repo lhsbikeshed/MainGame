@@ -37,7 +37,7 @@ public class RefuelDepot : MonoBehaviour {
 			r.useGravity = false;
 			r.mass = 500;
 			//kick them apart a little
-			r.AddExplosionForce(150, g.transform.position + Random.onUnitSphere * 10, 800);
+			r.AddExplosionForce(4550, g.transform.position + Random.onUnitSphere * 10, 800);
 			r.AddRelativeTorque(Random.onUnitSphere * 500, ForceMode.Impulse);
 
 			//add an explosion particle emitter

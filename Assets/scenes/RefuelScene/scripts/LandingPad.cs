@@ -65,7 +65,9 @@ public class LandingPad : MonoBehaviour {
 		Debug.Log (" landing pad exit"  + c.name);
 		if (c.attachedRigidbody != null && c.attachedRigidbody.name == "TheShip" && !isIgnorable(c)) {
 			shipLanded = false;
-			dockStateChanged(false);
+			if(dockStateChanged != null){
+				dockStateChanged(false);
+			}
 			//theShip.parent = null;
 
 		}
@@ -77,6 +79,7 @@ public class LandingPad : MonoBehaviour {
 		if (shipLanded) {
 
 			theShip.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
+			applyDockingForce = false;
 		}
 
 	}
