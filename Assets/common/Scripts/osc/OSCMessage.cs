@@ -52,7 +52,7 @@ namespace UnityOSC
 		private const char VECTOR  = 'v';	
 		private const char DEFAULT = ',';
 		
-		private string _typeTag;
+		public string _typeTag;
 		
 		#endregion
 		

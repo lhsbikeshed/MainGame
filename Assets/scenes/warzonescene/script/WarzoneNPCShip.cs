@@ -191,10 +191,6 @@ public class WarzoneNPCShip : MonoBehaviour{
 						velocity *= 5f;
 					}
 
-		//
-		//			float distMod = (transform.position - moveTarget.position).magnitude / 10f;
-		//			distMod = Mathf.Clamp(distMod, 0.1f, 1.0f);
-		//			velocity *= distMod;
 					newRotation = Quaternion.LookRotation(moveTarget.transform.position - transform.position, moveTarget.transform.TransformDirection(Vector3.up));
 
 				} else {
@@ -228,7 +224,10 @@ public class WarzoneNPCShip : MonoBehaviour{
 				float v = GetComponent<Rigidbody>().velocity.magnitude;
 				float dampAmount = (v / 200f);
 				dampAmount = 1.0f - Mathf.Clamp(dampAmount, 0f, 1f);
-				transform.rotation = Quaternion.Slerp(transform.rotation, newRotation, Time.fixedDeltaTime * rotationDamping * dampAmount);
+				dampAmount = Time.fixedDeltaTime * rotationDamping * dampAmount;
+
+				//transform.rotation = Quaternion.Slerp(transform.rotation, newRotation, dampAmount);
+				transform.rotation = Quaternion.RotateTowards(transform.rotation, newRotation, rotationDamping);
 
 				doTargetSelection();
 			}

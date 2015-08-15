@@ -1,169 +1,155 @@
 using UnityEngine;
-using System;
 using UnityOSC;
+using System.Collections.Generic;
 
-
+/* keep an eye on the waypoints
+ * when ship approaches one spawn another in adjacent sector
+ */
 public class WaypointController:MonoBehaviour{
-	
-	public Vector3[] waypoints ; 
+
+	int poolMax = 7;
 	public Transform waypointObj;
-	GameObject[] mapObjects;
-	MapController mapController;
+	Transform[] waypointPool ;
+	int poolPtr = 0;
 	public int currentWaypoint = 0;
-	
-	/* generate waypoint coordinates before anything else wakes up*/
-	
-	
-	
-	/* FIX THIS SHIT
-	* Waypoints are overlaying
-	* also moving the gate after we've spawned it
-	*/
+	int lastSpawnId = 0;
+
+	MapController mapController;
+
+	List<Transform> pool = new List<Transform> ();
+
+
+
 	public void Awake() {
-		
-		
-		
+		OSCSystem._instance.RegisterRpcClass (this);
 		
 	}
 	
 	
 	public void Start(){
 		mapController = GameObject.Find("SceneScripts").GetComponent<MapController>();
-		mapObjects = new GameObject[14];
-		
-		spawnWaypoint(0, true);
-		//mapController.updateObjectList();
-		//mapController.updateObjects();
-		
-		
+		//now position them
+		waypointPool = new Transform[poolMax];
+		//spawn 4 waypoints for the pool
+		for (int i = 0; i < poolMax; i++) {
+			Transform t = Instantiate<Transform> (waypointObj);
+			t.GetComponent<WaypointBehaviour>().setController(this);
+			DynamicMapObject dObject = t.GetComponent<DynamicMapObject> ();
+			/*dObject.originalPosition = Random.onUnitSphere * 40f;
+			dObject.sectorCoord = new int[] {0,0,i};*/
+
+
+			dObject.OnDeactivate += ObjectDeactivated;
+			dObject.OnActivate += ObjectActivated;
+			dObject.Deactivate();
+			waypointPool[i] = t;
+		}
+
+
+		Vector3 currentPos = Random.onUnitSphere * 40;
+		currentPos.z += 1000 + Random.Range (-200,200);
+		currentPos.x += Random.Range(-300,300);
+		currentPos.y += Random.Range (-300,300);
+		Transform tNew = spawnNew (currentPos, 0);
+		tNew.GetComponent<TargettableObject>().highlighted = true;
+		currentPos.z += 1000 + Random.Range (-200,200);
+		currentPos.x += Random.Range(-300,300);
+		currentPos.y += Random.Range (-300,300);
+		spawnNew (currentPos, 1);
+		lastSpawnId = 1;
+
 	}
-	
-	public void gateDone(GameObject obj){
-		int ct = 0;
-		foreach(GameObject g in mapObjects){
-			if (g == obj){
-				g.GetComponent<TargettableObject>().highlighted = false;
-				OSCMessage msg2 = new OSCMessage("/radar/wayPointReached");
-				OSCHandler.Instance.SendMessageToAll(msg2);
-				break;
-			}
-			
-			ct++;
+
+	[OscCallable]
+	public void PlayersGotLost(){
+		//re-pool all of the waypoints
+		foreach (Transform t in waypointPool) {
+			t.GetComponent<DynamicMapObject>().Deactivate();
+
 		}
-		
-		if(ct < 13){
-			mapObjects[ct+1].GetComponent<DynamicMapObject>().Activate();
-			mapObjects[ct+1].GetComponent<TargettableObject>().highlighted = true;
-			OSCMessage msg = new OSCMessage("/game/speedrun/beaconDone");
-			msg.Append<int>(ct+1);
-			OSCHandler.Instance.SendMessageToAll(msg);
-			currentWaypoint = ct+1;
-		}
+		Vector3 currentPos = mapController.getShipWorldPosition () + Random.onUnitSphere * 100f;
+		currentPos.z += 1000 + Random.Range (-200,200);
+		currentPos.x += Random.Range(-300,300);
+		currentPos.y += Random.Range (-300,300);
+		Transform tNew = spawnNew (currentPos, lastSpawnId);
+		tNew.GetComponent<TargettableObject>().highlighted = true;
+		lastSpawnId ++;
+
+		currentPos.z += 1000 + Random.Range (-200,200);
+		currentPos.x += Random.Range(-300,300);
+		currentPos.y += Random.Range (-300,300);
+		spawnNew (currentPos, lastSpawnId);
+		lastSpawnId ++;
+
 	}
-	
-	/* actually spawn the items in the scene */
-	public void spawnWaypoint(int from,bool createObjects){
-	
-		waypoints = new Vector3[14];
-		int xc = mapController.sectorPos[0];
-		int yc = mapController.sectorPos[1];
-		for(int a = from; a < 14; a++){
-			if(UnityEngine.Random.Range(0,100) < 50){
-				xc += UnityEngine.Random.Range(-1,1);
-			} else {
-				yc += UnityEngine.Random.Range(-1,1);
-			}
-			waypoints[a] = new Vector3((float)xc, (float)yc, (float)(a + 1));
-		}
-		if(UnityEngine.Random.Range(0,100) < 50){
-			xc += UnityEngine.Random.Range(-1,1);
+
+
+	/* pull a gate out of the pool, move it somewhere nice then activate it
+	 * returns: the gate spawned
+	 */
+	Transform spawnNew(Vector3 currentWorldPos, int id){
+
+		//find a free waypoint, set its world pos to currentworldpos, update with map controller
+		Transform newWp = null;
+		if (pool.Count > 0) {
+			newWp = pool [0];
+			pool.RemoveAt (0);
 		} else {
-			yc += UnityEngine.Random.Range(-1,1);
+		
+			Debug.Log ("RUN OUT OF WAYPOINTS IN POOL");
+			return null;
 		}
-		
-		int[] t = new int[3];
-		t[0] = xc;
-		t[1] = yc;
-		t[2] = 15;
-		//mapController.spawnGate(t);
-		
-		//now spawn them
-		int ct = 0;
-		
-		DynamicMapObject d = null;
-		Transform dynObj = null;
-		foreach(Vector3 v in waypoints){
-			if(ct >= from){
-				if(createObjects){
-					UnityEngine.Debug.Log("Creating wp: " + ct);
 
+		DynamicMapObject dObject = newWp.GetComponent<DynamicMapObject> ();
+		dObject.setWorldPosition (currentWorldPos);
+		newWp.GetComponent<WaypointBehaviour>().id = id;
+		newWp.GetComponent<GeneralTrackableTarget> ().objectName = "Waypoint " + (id+1);
 
-					dynObj = (UnityEngine.Transform)Instantiate(waypointObj, new Vector3(10000.0f,10000.0f,10000.0f), UnityEngine.Random.rotation);
-
-					d = dynObj.GetComponent<DynamicMapObject>();
-					d.sectorCoord[0] = (int)v.x;
-					d.sectorCoord[1] = (int)v.y;
-					d.sectorCoord[2] = (int)v.z;
-					d.originalPosition = UnityEngine.Random.onUnitSphere * UnityEngine.Random.Range(40,400);
-					dynObj.GetComponent<TargettableObject>().objectName = "Waypoint " + (ct + 1);
-
-					mapObjects[ct] = dynObj.gameObject;
-					mapController.updateObject(dynObj.gameObject);
-				} else {
-				
-					d = mapObjects[ct].GetComponent<DynamicMapObject>();;
-					d.sectorCoord[0] = (int)v.x;
-					d.sectorCoord[1] = (int)v.y;
-					d.sectorCoord[2] = (int)v.z;
-					d.originalPosition = new Vector3(0.0f,0.0f,400.0f);
-					mapObjects[ct] = d.gameObject;
-					mapController.updateObject(d.gameObject);
-				}
-				
-			}
-			ct ++;
-			//dynObj.Deactivate();
-		}
-		
-		mapObjects[from].GetComponent<TargettableObject>().highlighted = true;
-		
+		mapController.updateObject (dObject.gameObject);
+		return newWp;
 	}
-	
-	public void FixedUpdate() {
-		float minDist = 100000.0f;
-		int closest = 0;
-		int ct = 0;
-		Vector3 wpPos = Vector3.zero;
-		Vector3 shipPos = Vector3.zero;
-        float dist = 0.0f;
-        foreach(GameObject m in mapObjects){
-			
-			wpPos = m.GetComponent<DynamicMapObject>().getSectorAsVec();
-			shipPos = mapController.getSectorAsVec();
-			dist = (shipPos - wpPos).magnitude;
-			if(dist < minDist){
-				minDist = dist;
-				closest = ct;
+
+	void ObjectActivated(DynamicMapObject dObj){
+
+	}
+
+	/* called when a live gate is hidden by the map engine. Return it to the pool */
+	void ObjectDeactivated(DynamicMapObject dObj){
+		//return to pool
+		pool.Add (dObj.transform);
+
+	}
+
+	/* called by gates when player passes through them 
+     * if we've passed the last in the chain then spawn a new one from the pool
+	 */
+	public void gateDone(GameObject obj){
+		int id = obj.GetComponent<WaypointBehaviour> ().id;
+		if (id >= currentWaypoint) {
+			currentWaypoint = id;
+
+			obj.GetComponent<TargettableObject>().highlighted = false;
+			OSCMessage msg2 = new OSCMessage("/radar/wayPointReached");
+			OSCHandler.Instance.SendMessageToAll(msg2);
+			if(lastSpawnId <= currentWaypoint){
+				//spawn another one further out
+				Vector3 lastPos = obj.GetComponent<DynamicMapObject> ().getWorldPosition ();
+				lastPos.z += 1000 + Random.Range (-200,200);
+				lastPos.x += Random.Range(-300,300);
+				lastPos.y += Random.Range (-300,300);
+				lastSpawnId ++;
+				Transform newTransform = spawnNew (lastPos, lastSpawnId);
+				if(newTransform != null){
+					newTransform.GetComponent<TargettableObject>().highlighted = true;
+				}
 			}
-			ct++;
 		}
-		//Debug.Log(closest);
-		if(closest > currentWaypoint){
-			mapObjects[currentWaypoint].GetComponent<TargettableObject>().highlighted = false;
-			currentWaypoint = closest;
-			mapObjects[currentWaypoint].GetComponent<TargettableObject>().highlighted = true;
-		}
-		
-		wpPos = mapObjects[currentWaypoint].GetComponent<DynamicMapObject>().getSectorAsVec();
-		float closestDist = (shipPos - wpPos).magnitude;
-		if(closestDist > 1.5f && currentWaypoint < 13){
-			UnityEngine.Debug.Log("Regenerating waypoints dist = " + dist);
-	
-			spawnWaypoint(currentWaypoint, false);
-		
-		}
-		
-		
+
+
+	}
+
+	public void FixedUpdate() {
+
 		
 		
 	}

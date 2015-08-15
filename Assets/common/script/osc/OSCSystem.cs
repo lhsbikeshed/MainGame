@@ -3,6 +3,7 @@ using System;
 using System.Net;
 using System.Collections.Generic;
 using UnityOSC;
+using System.Reflection;
 
 
 
@@ -154,6 +155,8 @@ public class OSCSystem:MonoBehaviour{
 						
 					} else if (pkt.Address.IndexOf("/clientscreen/CommsStation") == 0){
 						commsMessage(pkt);
+					}else if (pkt.Address.IndexOf("/rpc/") == 0){
+						RpcMessage(pkt);
 					}
 					
 					
@@ -527,4 +530,72 @@ public class OSCSystem:MonoBehaviour{
 		
 	
 	}
+
+	#region RPCMessages
+	Dictionary<Type, object> registeredClasses = new Dictionary<Type, object>();
+	public void RegisterRpcClass(object o){
+		Type name = o.GetType ();
+		Debug.Log ("registered RPC class: " + name.ToString());
+		registeredClasses.Add (name, o);
+
+	}
+
+	public void RpcMessage(OSCPacket msg){
+		string[] msgAddress = msg.Address.Split(separator);
+		// [1] = System, 2 = Subsystem name, 3 = operation
+		string className = msgAddress[2];
+		string methodName = msgAddress[3];
+
+		Debug.Log ("rpc method: " + methodName + " for class " + className);
+		//get class by name
+		Type t = Type.GetType (className);
+		if (t == null) {
+			Debug.LogWarning ("unknown RPC class");
+			return;
+		}
+		//try and pull this out of the registered classes list
+		object o = null;
+		registeredClasses.TryGetValue (t, out o);
+		if (o == null) {
+			Debug.LogWarning ("class type not registered");
+			return;
+		}
+
+		//now look for the method to call
+		MethodInfo mInfo = t.GetMethod (methodName);
+		if (mInfo == null || mInfo.GetCustomAttributes (typeof(OscCallable), false).Length == 0) {
+			Debug.LogWarning ("attempted to call method not marked as osccallable or doesnt exist");
+			return;
+		}
+
+		//check the parameters match 
+		ParameterInfo[] paramInfo = mInfo.GetParameters ();
+		if(paramInfo.Length != msg.Data.Count){
+			Debug.LogWarning ("attempted to call method with incorrect params");
+			return;
+		}
+		//check parameters match
+		object[] parameterArray = new object[ msg.Data.Count ];
+
+		string sourceTypeTag = ((OSCMessage)msg)._typeTag.Substring(1);
+		string destTypeTag = "";
+		for (int i = 0; i < paramInfo.Length; i++) {
+			String name = paramInfo [i].ParameterType.ToString();
+			destTypeTag += name.Split('.')[1].ToLower()[0];//.ToLower () [0];//DIRTY
+		}
+		if (sourceTypeTag != destTypeTag) {
+			Debug.LogWarning ("incorrect parameters on rpc method");
+			return;
+		}
+		//at this point they match types, so lets copy them into the parameters array and call the method
+		for (int i = 0; i < parameterArray.Length; i++) {
+			parameterArray[i] = msg.Data[i];
+
+		}
+		//Debug.Log ("stypetag :" + sourceTypeTag + " - " + destTypeTag);
+		//invoke!
+		mInfo.Invoke (o, parameterArray);
+
+	}
+	#endregion
 }

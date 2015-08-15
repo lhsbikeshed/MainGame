@@ -1,13 +1,18 @@
 using UnityEngine;
 using System;
 
+public delegate void OnActivateMethod(DynamicMapObject mo);
+public delegate void OnDeactivateMethod(DynamicMapObject mo);
 
 public class DynamicMapObject:MonoBehaviour{
-	
+	public bool isActive = true;
 	public int[] sectorCoord;
 	public bool isBig;		//things tagged as "isbig" can be seen from the adjacent sector
 	public int sectorSize = 1;	//how many sectors around is this visible for? (for planets i guess)
 	public Vector3 originalPosition;
+
+	public OnActivateMethod OnActivate;
+	public OnDeactivateMethod OnDeactivate;
 	
 	[HideInInspector]
 	public Collider[] cols ;
@@ -66,6 +71,7 @@ public class DynamicMapObject:MonoBehaviour{
 		foreach(Collider c in cols){
 			c.enabled = true;
 		}
+		isActive = true;
 
 	}
 	
@@ -80,18 +86,24 @@ public class DynamicMapObject:MonoBehaviour{
 			rItem.enabled = false;
 		}
 		gameObject.SetActive(false);
-		
+		isActive = false;
 		
 
 	}
 	
 	/* called by the map controller script */
 	public void Activate() {
-			ActivateFunction(); 
+		ActivateFunction(); 
+		if (OnActivate != null) {
+			OnActivate(this);
+		}
 	}
 	
 	public void Deactivate(){
-			DeactivateFunction();
+		DeactivateFunction();
+		if (OnDeactivate != null) {
+			OnDeactivate(this);
+		}
 	}
 	
 	public void FixedUpdate() {

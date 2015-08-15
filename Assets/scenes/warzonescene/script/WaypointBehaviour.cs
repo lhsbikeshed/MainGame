@@ -5,13 +5,17 @@ using System;
 public class WaypointBehaviour:MonoBehaviour{
 	
 	WaypointController wpController;
+	public int id = 0;
 	
 	public void Start() {
-		wpController = GameObject.Find("SceneScripts").GetComponent<WaypointController>();
 	}
 	
 	public void Update() {
 	
+	}
+
+	public void setController(WaypointController wc){
+		wpController = wc;
 	}
 	
 	public void OnTriggerEnter(Collider col){
