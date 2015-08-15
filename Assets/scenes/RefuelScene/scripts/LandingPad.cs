@@ -79,6 +79,7 @@ public class LandingPad : MonoBehaviour {
 		if (shipLanded) {
 
 			theShip.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
+			applyDockingForce = false;
 		}
 
 	}
