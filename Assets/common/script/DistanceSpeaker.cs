@@ -32,16 +32,16 @@ public class DistanceSpeaker:MonoBehaviour{
 	}
 	
 	public IEnumerator DistancePart(int clip,int fig){
-		AudioSource.PlayClipAtPoint(sounds[clip], transform.position);
+		UsefulShit.PlayClipAt(sounds[clip], transform.position);
 		yield return new WaitForSeconds(sounds[clip].length);
 		if(fig == 1000){
 			//Debug.Log(clip + "thousand");
-			AudioSource.PlayClipAtPoint(sounds[11], transform.position);
+			UsefulShit.PlayClipAt(sounds[11], transform.position);
 			yield return new WaitForSeconds(sounds[11].length);
 		} else if (fig == 100){
 			//Debug.Log(clip + "hundred");
 			
-			AudioSource.PlayClipAtPoint(sounds[10], transform.position);
+			UsefulShit.PlayClipAt(sounds[10], transform.position);
 			yield return new WaitForSeconds(sounds[10].length);
 			
 		}
@@ -67,7 +67,7 @@ public class DistanceSpeaker:MonoBehaviour{
 				yield return StartCoroutine(DistancePart(toSpeak, 1000));
 				//metres
 				if(metersSuffix){
-					AudioSource.PlayClipAtPoint(sounds[12], transform.position);
+					UsefulShit.PlayClipAt(sounds[12], transform.position);
 					yield return new WaitForSeconds(sounds[12].length);
 				}
 				speaking = false;
@@ -95,7 +95,7 @@ public class DistanceSpeaker:MonoBehaviour{
 				
 				//metres
 				if(metersSuffix){
-					AudioSource.PlayClipAtPoint(sounds[12], transform.position);
+					UsefulShit.PlayClipAt(sounds[12], transform.position);
 					yield return new WaitForSeconds(sounds[12].length);
 				}
 				speaking = false;
@@ -105,11 +105,11 @@ public class DistanceSpeaker:MonoBehaviour{
 			speaking = true;
 			int s = Mathf.FloorToInt(distance);
 			if(s >=0 && s < 10){
-				AudioSource.PlayClipAtPoint(sounds[s], transform.position);
+				UsefulShit.PlayClipAt(sounds[s], transform.position);
 				yield return new WaitForSeconds(sounds[s].length);
 			}
 			if(metersSuffix){
-				AudioSource.PlayClipAtPoint(sounds[12], transform.position);
+				UsefulShit.PlayClipAt(sounds[12], transform.position);
 				yield return new WaitForSeconds(sounds[12].length);
 			}
 			speaking = false;

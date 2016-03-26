@@ -159,7 +159,7 @@ public class Hyperspace: GenericScene {
 	public void hadAFail(){
 		
 
-		AudioSource.PlayClipAtPoint(failSfx[ UnityEngine.Random.Range(0,failSfx.Length) ], theShip.transform.position);
+		UsefulShit.PlayClipAt(failSfx[ UnityEngine.Random.Range(0,failSfx.Length) ], theShip.transform.position);
 		StartCoroutine(theShip.GetComponent<ShipCore>().damageShip((float)UnityEngine.Random.Range(3,10), "Broken apart by hyperspace disturbances"));
 	}
 	

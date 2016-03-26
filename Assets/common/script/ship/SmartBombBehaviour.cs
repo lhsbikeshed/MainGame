@@ -62,7 +62,7 @@ public class SmartBombBehaviour:MonoBehaviour{
 		
 		parts.Play();
 		
-		AudioSource.PlayClipAtPoint(sounds[randomSound], transform.position);
+		UsefulShit.PlayClipAt(sounds[randomSound], transform.position);
 		
 		yield return new WaitForSeconds(6.0f);
 		Destroy(gameObject);

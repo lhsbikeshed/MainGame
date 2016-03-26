@@ -80,7 +80,7 @@ public class WarzoneLandingScene: GenericScene {
 		msg.Append(t);
 		OSCHandler.Instance.SendMessageToAll(msg);
 		
-		AudioSource.PlayClipAtPoint(evacSound, transform.position);
+		UsefulShit.PlayClipAt(evacSound, transform.position);
 		
 		//start our evac timer
 		evacRunning = true;
@@ -188,7 +188,7 @@ public class WarzoneLandingScene: GenericScene {
 				warningTimer -= Time.fixedDeltaTime;
 				if(warningTimer <= 0.0f){
 					warningTimer = 4.0f;
-					AudioSource.PlayClipAtPoint(warningSound, transform.position);
+					UsefulShit.PlayClipAt(warningSound, transform.position);
 				}
 				
 			}

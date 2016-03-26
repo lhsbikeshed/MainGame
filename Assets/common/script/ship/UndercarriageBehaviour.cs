@@ -122,14 +122,14 @@ public class UndercarriageBehaviour:MonoBehaviour{
 			if(newState == false){	//pull em up!
 				state = TRANSIT_UP;
 				if(transitSound != null){
-					AudioSource.PlayClipAtPoint(transitSound, transform.position);
+					UsefulShit.PlayClipAt(transitSound, transform.position);
 				}
 			}
 		} else if (state == UP){
 			if(newState == true){
 				state = TRANSIT_DOWN;
 				if(transitSound != null){
-					AudioSource.PlayClipAtPoint(transitSound, transform.position);
+					UsefulShit.PlayClipAt(transitSound, transform.position);
 				}
 			}
 		}

@@ -54,7 +54,7 @@ public class DeadScene: GenericScene{
 		// "end scene message"
 		sceneStartTime = Time.fixedTime;
 		ps = GameObject.Find("PersistentScripts").GetComponent<PersistentScene>();
-		//AudioSource.PlayClipAtPoint(deadSound, Vector3(0,1,-10));
+		//UsefulShit.PlayClipAt(deadSound, Vector3(0,1,-10));
 		if(ps.survivedTheGame){
 			mainText.text = "You Aren't Dead";
 			subText.text = "you shortly to lead you to safety";
@@ -78,7 +78,7 @@ public class DeadScene: GenericScene{
 			var tmp_cs4 = overlay.color;
             tmp_cs4.a = 0.0f;
             overlay.color = tmp_cs4;
-			AudioSource.PlayClipAtPoint(deadSound, new Vector3(0.0f,1.0f,-10.0f));
+			UsefulShit.PlayClipAt(deadSound, new Vector3(0.0f,1.0f,-10.0f));
 			sentMessage = true;
 			GameObject.Find("CreditRoller").GetComponent<CreditRoller>().scrolling = true;
 			

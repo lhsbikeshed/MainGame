@@ -46,7 +46,7 @@ public class MissileFlareBehaviour:MonoBehaviour{
 		if(successful){
 			parts.Play();
 		//GetComponent.<TrailRenderer>().enabled =
-			AudioSource.PlayClipAtPoint(sounds[randomSound], transform.position);
+			UsefulShit.PlayClipAt(sounds[randomSound], transform.position);
 		}
 		yield return new WaitForSeconds(6.0f);
 		Destroy(gameObject);

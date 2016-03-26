@@ -33,14 +33,14 @@ public class TransporterSystem: BaseSubsystem , JammingListener {
 	public void jammingResult(int state){
 		UnityEngine.Debug.Log("cb");
 		if(state == 0){	//failed to jam
-//			AudioSource.PlayClipAtPoint(beamInSfx, theShip.transform.position);
+//			UsefulShit.PlayClipAt(beamInSfx, theShip.transform.position);
 			
 			OSCHandler.Instance.DisplayBannerAtClient("EngineerStation", "!!WARNING!!", "INTRUDER DETECTED IN TRANSPORTER ROOM, PREPARE TO DUMP AIRLOCK CONTENTS", 1500);
 			OSCHandler.Instance.ChangeClientScreen("EngineerStation", "airlockdump", true);
 		} else if (state == 1){
 			//beam was stopped. All consoles see this message
 			//anyway and will revert to their normal function
-			//AudioSource.PlayClipAtPoint(beamFailSfx, theShip.transform.position);
+			//UsefulShit.PlayClipAt(beamFailSfx, theShip.transform.position);
 			//yield WaitForSeconds(2);
 			OSCHandler.Instance.ChangeClientScreen("EngineerStation", "power");
 		}
@@ -63,13 +63,13 @@ public class TransporterSystem: BaseSubsystem , JammingListener {
 		if(res == 0){
 			//play a beam aboard sound
 			//consoles will display an intruder alert warning
-			/*AudioSource.PlayClipAtPoint(beamInSfx, theShip.transform.position);
+			/*UsefulShit.PlayClipAt(beamInSfx, theShip.transform.position);
 			OSCHandler.Instance.DisplayBannerAtClient("EngineerStation", "!!WARNING!!", "INTRUDER DETECTED IN TRANSPORTER ROOM, PREPARE TO DUMP AIRLOCK CONTENTS", 1500);
 			OSCHandler.Instance.ChangeClientScreen("EngineerStation", "airlockdump");*/
 		} else if (res == 1){
 			//beam was stopped. All consoles see this message
 			//anyway and will revert to their normal function
-			/*AudioSource.PlayClipAtPoint(beamFailSfx, theShip.transform.position);
+			/*UsefulShit.PlayClipAt(beamFailSfx, theShip.transform.position);
 			yield WaitForSeconds(2);
 			OSCHandler.Instance.ChangeClientScreen("EngineerStation", "power");*/
 		} else if( res == 2){
@@ -89,7 +89,7 @@ public class TransporterSystem: BaseSubsystem , JammingListener {
 	
 				//airlock dumped, play door/hiss sound
 				//spawn a an alien flying out of ship
-				//AudioSource.PlayClipAtPoint(airlockDumpSfx, theShip.transform.position);
+				//UsefulShit.PlayClipAt(airlockDumpSfx, theShip.transform.position);
 				OSCHandler.Instance.DisplayBannerAtClient("EngineerStation", "!!WARNING!!", "DUMPING AIRLOCK CONTENTS..", 2000);
 				yield return new WaitForSeconds(1.6f);
 				Instantiate(ejectedDudePrefab, theShip.transform.position, theShip.transform.rotation);

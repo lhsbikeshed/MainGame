@@ -76,7 +76,7 @@ public class DoorScript: MonoBehaviour{
 			changeTime = Time.fixedTime;
 			if(airlockEffect){ effectObject.start(); }
 			if(shutterClip != null){
-				AudioSource.PlayClipAtPoint(shutterClip, transform.position);
+				UsefulShit.PlayClipAt(shutterClip, transform.position);
 			}
 		}
 	}
@@ -86,7 +86,7 @@ public class DoorScript: MonoBehaviour{
 			state = DoorState.CLOSING;
 			changeTime = Time.fixedTime;
 			if(shutterClip != null){
-				AudioSource.PlayClipAtPoint(shutterClip, transform.position);
+				UsefulShit.PlayClipAt(shutterClip, transform.position);
 			}
 		}
 	}

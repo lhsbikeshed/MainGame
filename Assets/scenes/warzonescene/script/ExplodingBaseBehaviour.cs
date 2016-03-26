@@ -57,7 +57,7 @@ public class ExplodingBaseBehaviour:MonoBehaviour{
 	}
 	
 	public void finalExplosion(){
-		AudioSource.PlayClipAtPoint(finalExplosionSound, transform.position);
+		UsefulShit.PlayClipAt(finalExplosionSound, transform.position);
 		bigExplosion.Explode();
 		for(int t = 0; t < rockVelocity.Length; t++){
 			rockVelocity[t] *= 10.0f;

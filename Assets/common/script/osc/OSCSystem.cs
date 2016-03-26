@@ -244,7 +244,7 @@ public class OSCSystem:MonoBehaviour{
 			OSCHandler.Instance.RevertClientScreen("CommsStation", lastCommsScreen);
 			commsOnline = false;
 		}
-		AudioSource.PlayClipAtPoint(hailingSound, playerShip.transform.position);
+		UsefulShit.PlayClipAt(hailingSound, playerShip.transform.position);
 		OSCMessage msg2 = new OSCMessage("/clientscreen/CommsStation/setMovieMode");
 
 		msg2.Append(filename);
@@ -271,7 +271,7 @@ public class OSCSystem:MonoBehaviour{
 				Debug.Log ("played nonexistent clip : " + fileName);
 				yield break;
 			}
-			AudioSource.PlayClipAtPoint(hailingSound, playerShip.transform.position);
+			UsefulShit.PlayClipAt(hailingSound, playerShip.transform.position);
 			OSCHandler.Instance.ChangeClientScreen("CommsStation", "audioDisplay");
 			lastCommsScreen = "audioDisplay";
 			yield return  new WaitForSeconds(2);
@@ -291,7 +291,7 @@ public class OSCSystem:MonoBehaviour{
 	public void incomingCall(bool isAudio){
 		if(!commsOnline){
 
-			AudioSource.PlayClipAtPoint(hailingSound, playerShip.transform.position);
+			UsefulShit.PlayClipAt(hailingSound, playerShip.transform.position);
 			
 			OSCMessage msg = new OSCMessage("/clientscreen/CommsStation/setCameraMode");
 			OSCHandler.Instance.SendMessageToClient("CommsStation", msg);

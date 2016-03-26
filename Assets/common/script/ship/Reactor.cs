@@ -97,7 +97,7 @@ public class Reactor: MonoBehaviour
 
 			//is there a sound for this?
 			if(v >= 0 && v < 3){
-				AudioSource.PlayClipAtPoint(fuelSounds[v],transform.position);
+				UsefulShit.PlayClipAt(fuelSounds[v],transform.position);
 			}
 
 		
@@ -225,7 +225,7 @@ public class Reactor: MonoBehaviour
 						OSCHandler.Instance.RevertClientScreen ("TacticalStation", "selfdestruct");			
 						OSCHandler.Instance.RevertClientScreen ("EngineerStation", "selfdestruct");	
 						OSCHandler.Instance.RevertClientScreen ("CommsStation", "selfdestruct");		
-						//AudioSource.PlayClipAtPoint(destructAbort, transform.position);
+						//UsefulShit.PlayClipAt(destructAbort, transform.position);
 						CabinEffects.Instance ().QueueVoiceOver (destructAbort, 0);
 				}	
 		
@@ -242,7 +242,7 @@ public class Reactor: MonoBehaviour
 				if (!overloading) {
 						overloading = true;
 						overloadStart = Time.fixedTime;
-						//AudioSource.PlayClipAtPoint(destructStart, transform.position);
+						//UsefulShit.PlayClipAt(destructStart, transform.position);
 						CabinEffects.Instance ().QueueVoiceOver (destructStart, 0);
 			
 						overloadTime = seconds;
@@ -287,13 +287,13 @@ public class Reactor: MonoBehaviour
 		public IEnumerator playWarning (int warningId)
 		{
 				if (warningId == 0) {
-						//AudioSource.PlayClipAtPoint(warningClips[0], transform.position);
+						//UsefulShit.PlayClipAt(warningClips[0], transform.position);
 				} else if (warningId == 1) {
-						//AudioSource.PlayClipAtPoint(warningClips[1], transform.position);
+						//UsefulShit.PlayClipAt(warningClips[1], transform.position);
 						yield return new WaitForSeconds (warningClips [1].length + 0.5f);
 						StartCoroutine (reactorFailure ());
 				} else if (warningId == 2) {
-						//AudioSource.PlayClipAtPoint(warningClips[2], transform.position);
+						//UsefulShit.PlayClipAt(warningClips[2], transform.position);
 						yield return new WaitForSeconds (warningClips [2].length + 0.8f);
 						reactorOverload ();
 				}
@@ -328,7 +328,7 @@ public class Reactor: MonoBehaviour
 						soundSource.Play ();
 						if (firstStart == true) {
 								firstStart = false;
-								//AudioSource.PlayClipAtPoint(firstTimeSound, transform.position);
+								//UsefulShit.PlayClipAt(firstTimeSound, transform.position);
 						}
 		
 						OSCMessage msg = new OSCMessage ("/system/reactor/stateUpdate");		

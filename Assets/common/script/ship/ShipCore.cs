@@ -174,7 +174,7 @@ public class ShipCore:MonoBehaviour{
 			
 				debrisbehaviour d = c.transform.GetComponent<debrisbehaviour>();
 				if(d.hitShip == false){		
-					AudioSource.PlayClipAtPoint( crashSounds[UnityEngine.Random.Range(0, crashSounds.Length)], transform.position);
+					UsefulShit.PlayClipAt( crashSounds[UnityEngine.Random.Range(0, crashSounds.Length)], transform.position);
 					OSCMessage msg = new OSCMessage("/ship/collision");		
 					OSCHandler.Instance.SendMessageToAll(msg);
 					StartCoroutine(damageShip((float)UnityEngine.Random.Range(10,15), "Smashed by starship debris"));
@@ -182,7 +182,7 @@ public class ShipCore:MonoBehaviour{
 				}
 			} else {
 			
-				AudioSource.PlayClipAtPoint( crashSounds[UnityEngine.Random.Range(0, crashSounds.Length)], transform.position);
+				UsefulShit.PlayClipAt( crashSounds[UnityEngine.Random.Range(0, crashSounds.Length)], transform.position);
 				float damage = c.impactForceSum.magnitude;
 				if(damage > 50){
 					damage *= .005f;
@@ -421,7 +421,7 @@ public class ShipCore:MonoBehaviour{
 			if(lastExplosionSfxTime + nextExplosionSfxTime < Time.fixedTime){
 				lastExplosionSfxTime = Time.fixedTime;
 				nextExplosionSfxTime = UnityEngine.Random.Range(1,5) / 10.0f;
-				AudioSource.PlayClipAtPoint(explosionSfx[Mathf.FloorToInt((float)UnityEngine.Random.Range(0, explosionSfx.Length) )], transform.position);
+				UsefulShit.PlayClipAt(explosionSfx[Mathf.FloorToInt((float)UnityEngine.Random.Range(0, explosionSfx.Length) )], transform.position);
 				Transform t = (UnityEngine.Transform)Instantiate(explosionPrefab, transform.position + UnityEngine.Random.onUnitSphere * 2.0f, Quaternion.identity);
 				t.GetComponent<ParticleSystem>().Play();
 			}

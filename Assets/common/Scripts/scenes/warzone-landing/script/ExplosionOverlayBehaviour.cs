@@ -115,7 +115,7 @@ public class ExplosionOverlayBehaviour : MonoBehaviour {
 				
 				lastHeartBeat = Time.fixedTime;
 				if(inBeat == false){	//just play the sound once
-					AudioSource.PlayClipAtPoint(heartBeatSfx, theShip.transform.position);
+					UsefulShit.PlayClipAt(heartBeatSfx, theShip.transform.position);
 					OSCMessage msg = new OSCMessage("/ship/effect/heartbeat");
 					OSCHandler.Instance.SendMessageToAll(msg);
 					

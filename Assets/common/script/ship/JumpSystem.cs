@@ -87,7 +87,7 @@ public class JumpSystem: BaseSubsystem
 		soundSource.pitch = 1.0f;
 		soundSource.clip = openSound;
 		soundSource.Play();
-		AudioSource.PlayClipAtPoint(initialisedSound, transform.position);
+		UsefulShit.PlayClipAt(initialisedSound, transform.position);
 		jumpEffects.setJumpEffectState(true);
 
 	}

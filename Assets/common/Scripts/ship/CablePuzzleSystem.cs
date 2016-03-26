@@ -105,7 +105,7 @@ public class CablePuzzleSystem : MonoBehaviour {
 			return;
 		}
 		if(hasBeenCompleted ==  false){
-			AudioSource.PlayClipAtPoint(failClip, transform.position);
+			UsefulShit.PlayClipAt(failClip, transform.position);
 		}
 		//OSCHandler.Instance.SendMessageToAll(new OSCMessage("BITCHES"));
 		//power off all screens

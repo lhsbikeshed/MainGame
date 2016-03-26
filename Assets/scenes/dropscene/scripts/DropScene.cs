@@ -139,7 +139,7 @@ public class DropScene: GenericScene {
 		altitude =  Vector3.Distance(planet.position, skyCam.position) * 10;
 		prevFrameAltitude = altitude;
 		
-		AudioSource.PlayClipAtPoint(jumpFail, theShip.transform.position);
+		UsefulShit.PlayClipAt(jumpFail, theShip.transform.position);
 		
 		//set up turbulence stuff
 		lastTurbulence = Time.fixedTime + 3.0f;
@@ -284,9 +284,9 @@ public class DropScene: GenericScene {
 				lastWarningTime = Time.fixedTime;
 				warningTimer = map(altitude, maxAltitude, minAltitude, 4.0f,2.0f);
 				if(altitude < 28000){
-					AudioSource.PlayClipAtPoint(altitudeWarning, theShip.transform.position);
+					UsefulShit.PlayClipAt(altitudeWarning, theShip.transform.position);
 				} else {
-					AudioSource.PlayClipAtPoint(warningLoop, theShip.transform.position);
+					UsefulShit.PlayClipAt(warningLoop, theShip.transform.position);
 				}
 				if(UnityEngine.Random.Range(0,100) < 15){
 					StartCoroutine(theShip.GetComponent<ShipCore>().damageShip(0.0f, "Hull Smashed By Atmosphere"));
@@ -332,7 +332,7 @@ public class DropScene: GenericScene {
 			
 			OSCHandler.Instance.SendMessageToAll(new OSCMessage("/scene/drop/structuralFailure"));
 		
-			AudioSource.PlayClipAtPoint(explodeSound, theShip.transform.position);
+			UsefulShit.PlayClipAt(explodeSound, theShip.transform.position);
 			
 			yield return new WaitForSeconds(16.0f);
 			StartCoroutine(theShip.GetComponent<ShipCore>().damageShip(1000.0f, "Burnt by the fires of unplanned re-entry"));

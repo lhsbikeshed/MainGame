@@ -37,7 +37,7 @@ public class CometEvent:HyperSpaceEvent{
 			yield return new WaitForSeconds(8f);
 			cometVel = new Vector3(0.0f,0.0f,0.0f);
 			//yield WaitForSeconds(2f);
-			AudioSource.PlayClipAtPoint(gravityFailSfx, transform.position);
+			UsefulShit.PlayClipAt(gravityFailSfx, transform.position);
 		}
 	}
 	

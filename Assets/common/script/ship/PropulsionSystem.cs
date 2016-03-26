@@ -199,10 +199,10 @@ public class PropulsionSystem: BaseSubsystem
 			thrustReverser = state;
 			if(state){
 				//deploy noise
-				AudioSource.PlayClipAtPoint(thrustOutSound, transform.position);
+				UsefulShit.PlayClipAt(thrustOutSound, transform.position);
 			} else {
 				//retract noise
-				AudioSource.PlayClipAtPoint(thrustInSound, transform.position);
+				UsefulShit.PlayClipAt(thrustInSound, transform.position);
 			}
 		}
 	}

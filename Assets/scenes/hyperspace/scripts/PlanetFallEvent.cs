@@ -30,7 +30,7 @@ public class PlanetFallEvent:HyperSpaceEvent{
 			
 			
 			
-			AudioSource.PlayClipAtPoint(gravityFailSfx, transform.position);
+			UsefulShit.PlayClipAt(gravityFailSfx, transform.position);
 			fallingTowardPlanet = true;
 			yield return new WaitForSeconds(0);
 		}

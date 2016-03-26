@@ -292,7 +292,7 @@ public class EnemyShipBehaviour: TargettableObject {
 			Quaternion toShip = Quaternion.LookRotation((lookPos - transform.position).normalized, theShip.up);
 			scannerBeam.rotation = toShip;
 			if(scanSoundPlaying == false){
-				AudioSource.PlayClipAtPoint(scanPlayerEffect, theShip.position);
+				UsefulShit.PlayClipAt(scanPlayerEffect, theShip.position);
 				scanSoundPlaying = true;
 			}
 			yield return new WaitForSeconds(4.0f);
