@@ -6,6 +6,13 @@ using System.Globalization;
 public class ShipCamera:MonoBehaviour{
 	
 	public Camera previewCamera;
+
+    public float testFov = 85.0f;
+
+    protected float _fov = 85.0f;
+    public float fov { get { return _fov; }
+                       set { setFovs(value); _fov = value; }
+    }
 	
 	public bool shaking = false;
 	public float shakeAmount = 0.05f;
@@ -27,8 +34,6 @@ public class ShipCamera:MonoBehaviour{
 	float shakeTime;
 	float shakeStart;
 	bool timedShaking = false;
-
-	float currentFov = 85f;
 
 
 	public static ShipCamera instance;
@@ -84,7 +89,7 @@ public class ShipCamera:MonoBehaviour{
                 canopyCamera.rect = tmp_cs4;
 			}
 		}
-		currentFov = cameras[0].fieldOfView;
+		_fov = cameras[0].fieldOfView;
 		getSkyboxCamera();
 	}
 	
@@ -107,6 +112,8 @@ public class ShipCamera:MonoBehaviour{
 	
 	
 	public void Update() {
+
+        fov = testFov;
 		if(shakeTest){
 			shakeTest = false;
 			shakeFor(1);
@@ -133,19 +140,16 @@ public class ShipCamera:MonoBehaviour{
 		
 	}
 	
-	public void setFovs(float fov){
+	protected void setFovs(float fov){
 		foreach(Camera c in cameras){
 			c.fieldOfView = fov;
 		}
 		if(skyboxCamera != null){
 			skyboxCamera.fieldOfView = fov;
 		}
-		currentFov = fov;
+		
 	}
-
-	public float getFov(){
-		return currentFov;
-	}
+   
 	
 	public void FixedUpdate(){
 		if(shakeTime + shakeStart > Time.fixedTime){

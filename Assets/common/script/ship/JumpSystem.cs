@@ -60,7 +60,7 @@ public class JumpSystem: BaseSubsystem
 		jumpEffects.setJumpEffectState(false);
 		if(didWeWarpIn){
 			restoreFov = true;
-			shipCamera.setFovs(180.0f);
+			shipCamera.fov = 180.0f;
 		}
 		setFlatSpace(false);	//we arent in a gate or somewhere we can jump
 		jumpBlocked = false;
@@ -190,7 +190,7 @@ public class JumpSystem: BaseSubsystem
 		}
 		if(timeSinceJumpStart > 2){	//turn on effects at 2 seconds	
 			
-			shipCamera.setFovs(85 + ((Time.fixedTime - jumpStartTime - 2) / 3.0f ) * 30);
+			shipCamera.fov = (85 + ((Time.fixedTime - jumpStartTime - 2) / 3.0f ) * 30);
 		}
 			
 		//JUMP!
@@ -211,9 +211,9 @@ public class JumpSystem: BaseSubsystem
 	
 	//restore fov after a jump - not used until i split the guilayer and game into seperate cameras
 	if (restoreFov){
-		shipCamera.setFovs( Mathf.Lerp(shipCamera.getFov(),85.0f,Time.deltaTime * 5.0f) );
-		if (shipCamera.getFov() <= 85.1f){
-			shipCamera.setFovs(85.0f);
+		shipCamera.fov = ( Mathf.Lerp(shipCamera.fov,85.0f,Time.deltaTime * 5.0f) );
+		if (shipCamera.fov <= 85.1f){
+			shipCamera.fov = (85.0f);
 			restoreFov = false;
 			didWeWarpIn = false;
 
@@ -229,7 +229,7 @@ public class JumpSystem: BaseSubsystem
 
 			jumpDest = ""; //players will have to plot again to escape
 			jumpEffects.setJumpEffectState(false);
-			shipCamera.setFovs(180.0f);
+			shipCamera.fov = (180.0f);
 		}
 	}   
 	
