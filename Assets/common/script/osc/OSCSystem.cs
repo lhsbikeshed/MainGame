@@ -226,12 +226,11 @@ public class OSCSystem:MonoBehaviour{
 	}
 
 	public void hangupCall(){
+		OSCHandler.Instance.SendMessageToAll(new OSCMessage("/ship/comms/hangupCall"));
 		if(commsOnline){
-			OSCHandler.Instance.RevertClientScreen("CommsStation", lastCommsScreen);
 			commsOnline = false;
 			
 			
-			OSCHandler.Instance.SendMessageToAll(new OSCMessage("/ship/comms/hangupCall"));
 			AudioSource asource = GetComponent<AudioSource>();
 			if(asource != null){
 				Destroy (asource);
@@ -240,18 +239,13 @@ public class OSCSystem:MonoBehaviour{
 	}
 
 	public void incomingCall(string filename){
-		if(commsOnline){
-			OSCHandler.Instance.RevertClientScreen("CommsStation", lastCommsScreen);
-			commsOnline = false;
-		}
+		
 		UsefulShit.PlayClipAt(hailingSound, playerShip.transform.position);
 		OSCMessage msg2 = new OSCMessage("/clientscreen/CommsStation/setMovieMode");
 
 		msg2.Append(filename);
 		OSCHandler.Instance.SendMessageToClient("CommsStation", msg2);
 		
-		OSCHandler.Instance.ChangeClientScreen("CommsStation", "videoDisplay");
-		lastCommsScreen = "videoDisplay";
 		commsOnline = true;	
 		
 		//now tell all of the clients that a call is coming in. Eventually replace all of the above with this message
@@ -272,8 +266,7 @@ public class OSCSystem:MonoBehaviour{
 				yield break;
 			}
 			UsefulShit.PlayClipAt(hailingSound, playerShip.transform.position);
-			OSCHandler.Instance.ChangeClientScreen("CommsStation", "audioDisplay");
-			lastCommsScreen = "audioDisplay";
+			
 			yield return  new WaitForSeconds(2);
 
 			commsOnline = true;
@@ -289,20 +282,14 @@ public class OSCSystem:MonoBehaviour{
 	}
 
 	public void incomingCall(bool isAudio){
+		OSCMessage msg = new OSCMessage("/ship/comms/incomingCall");
+		OSCHandler.Instance.SendMessageToAll(msg);
 		if(!commsOnline){
 
-			UsefulShit.PlayClipAt(hailingSound, playerShip.transform.position);
+			//UsefulShit.PlayClipAt(hailingSound, playerShip.transform.position);
 			
-			OSCMessage msg = new OSCMessage("/clientscreen/CommsStation/setCameraMode");
-			OSCHandler.Instance.SendMessageToClient("CommsStation", msg);
 			
-			if(isAudio){
-				OSCHandler.Instance.ChangeClientScreen("CommsStation", "audioDisplay");
-				lastCommsScreen = "audioDisplay";
-			} else {
-				OSCHandler.Instance.ChangeClientScreen("CommsStation", "videoDisplay");
-				lastCommsScreen = "videoDisplay";
-			}
+			
 			commsOnline = true;
 		}
 	}

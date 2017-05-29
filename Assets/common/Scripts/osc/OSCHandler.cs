@@ -157,11 +157,7 @@ public class OSCHandler : MonoBehaviour
 		clientScreens["PilotStation"].Add (new ScreenItem("docking", false));
 
 		clientScreens["TacticalStation"] = new List<ScreenItem>();
-		clientScreens["TacticalStation"].Add (new ScreenItem("weapons", false));
-
-		clientScreens["CommsStation"] = new List<ScreenItem>();
-		clientScreens["CommsStation"].Add (new ScreenItem("idleDisplay", false));
-		
+		clientScreens["TacticalStation"].Add (new ScreenItem("weapons", false));	
 
 	}
 	

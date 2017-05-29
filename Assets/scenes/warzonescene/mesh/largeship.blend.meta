@@ -1,317 +1,173 @@
 fileFormatVersion: 2
 guid: c520d650ff87335459b269cc19cb964b
 ModelImporter:
+  serializedVersion: 19
   fileIDToRecycleName:
+    100000: Ship_009
+    100002: //RootNode
+    100004: Ship_001
+    100006: Ship_008
+    100008: Ship
+    100010: Ship_007
+    100012: Ship_014
+    100014: Ship_011
+    100016: Ship_010
+    100018: Ship_005
+    100020: Ship_002
+    100022: Ship_012
+    100024: Ship_015
+    100026: Ship_016
+    100028: Ship_017
+    100030: Ship_018
+    100032: Ship_019
+    100034: Ship_004
+    100036: Ship_006
+    100038: Ship_003
+    100040: Ship_013
+    400000: Ship_009
+    400002: //RootNode
+    400004: Ship_001
+    400006: Ship_008
+    400008: Ship
+    400010: Ship_007
+    400012: Ship_014
+    400014: Ship_011
+    400016: Ship_010
+    400018: Ship_005
+    400020: Ship_002
+    400022: Ship_012
+    400024: Ship_015
+    400026: Ship_016
+    400028: Ship_017
+    400030: Ship_018
+    400032: Ship_019
+    400034: Ship_004
+    400036: Ship_006
+    400038: Ship_003
+    400040: Ship_013
+    2300000: Ship_009
+    2300002: Ship_001
+    2300004: Ship_008
+    2300006: Ship
+    2300008: Ship_007
+    2300010: Ship_014
+    2300012: Ship_011
+    2300014: Ship_010
+    2300016: Ship_005
+    2300018: Ship_002
+    2300020: Ship_012
+    2300022: Ship_015
+    2300024: Ship_016
+    2300026: Ship_017
+    2300028: Ship_018
+    2300030: Ship_019
+    2300032: Ship_004
+    2300034: Ship_006
+    2300036: Ship_003
+    2300038: Ship_013
+    3300000: Ship_009
+    3300002: Ship_001
+    3300004: Ship_008
+    3300006: Ship
+    3300008: Ship_007
+    3300010: Ship_014
+    3300012: Ship_011
+    3300014: Ship_010
+    3300016: Ship_005
+    3300018: Ship_002
+    3300020: Ship_012
+    3300022: Ship_015
+    3300024: Ship_016
+    3300026: Ship_017
+    3300028: Ship_018
+    3300030: Ship_019
+    3300032: Ship_004
+    3300034: Ship_006
+    3300036: Ship_003
+    3300038: Ship_013
     4300000: Ship_006
     4300002: Ship_004
+    4300004: Ship_019
+    4300006: Ship_018
+    4300008: Ship_017
+    4300010: Ship_016
+    4300012: Ship_015
+    4300014: Ship_014
+    4300016: Ship_013
     4300018: Ship_012
+    4300020: Ship_011
+    4300022: Ship_010
     4300024: Ship_009
+    4300026: Ship_008
+    4300028: Ship_007
+    4300030: Ship_005
     4300032: Ship_003
     4300034: Ship_002
     4300036: Ship_001
     4300038: Ship
-    7400000: Default Take //// largeship
-  serializedVersion: 10
+    7400000: Default Take
+    11100000: //RootNode
   materials:
     importMaterials: 1
     materialName: 0
     materialSearch: 1
   animations:
-    generateAnimations: 3
+    legacyGenerateAnimations: 3
     bakeSimulation: 0
-    splitAnimations: 1
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
     animationCompression: 1
-    animationRotationError: .5
-    animationPositionError: .5
-    animationScaleError: .5
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
     animationWrapMode: 0
+    extraExposedTransformPaths: []
     clipAnimations: []
+    isReadable: 1
   meshes:
     lODScreenPercentages: []
     globalScale: 1
     meshCompression: 0
     addColliders: 0
+    importBlendShapes: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMesh: 0
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
+    useFileScale: 0
   tangentSpace:
     normalSmoothAngle: 60
-    splitTangentsAcrossUV: 1
     normalImportMode: 0
-    tangentImportMode: 1
-  textMetaNamesToFileIDs:
-    //RootNode:
-      data:
-        first: 1
-        second: a2860100
-      data:
-        first: 4
-        second: 821a0600
-      data:
-        first: 111
-        second: 605fa900
-    Ship:
-      data:
-        first: 1
-        second: a8860100
-      data:
-        first: 4
-        second: 881a0600
-      data:
-        first: 23
-        second: 66182300
-      data:
-        first: 33
-        second: a65a3200
-    Ship_001:
-      data:
-        first: 1
-        second: a4860100
-      data:
-        first: 4
-        second: 841a0600
-      data:
-        first: 23
-        second: 62182300
-      data:
-        first: 33
-        second: a25a3200
-    Ship_002:
-      data:
-        first: 1
-        second: b4860100
-      data:
-        first: 4
-        second: 941a0600
-      data:
-        first: 23
-        second: 72182300
-      data:
-        first: 33
-        second: b25a3200
-    Ship_003:
-      data:
-        first: 1
-        second: c6860100
-      data:
-        first: 4
-        second: a61a0600
-      data:
-        first: 23
-        second: 84182300
-      data:
-        first: 33
-        second: c45a3200
-    Ship_004:
-      data:
-        first: 1
-        second: c2860100
-      data:
-        first: 4
-        second: a21a0600
-      data:
-        first: 23
-        second: 80182300
-      data:
-        first: 33
-        second: c05a3200
-    Ship_005:
-      data:
-        first: 1
-        second: b2860100
-      data:
-        first: 4
-        second: 921a0600
-      data:
-        first: 23
-        second: 70182300
-      data:
-        first: 33
-        second: b05a3200
-    Ship_006:
-      data:
-        first: 1
-        second: c4860100
-      data:
-        first: 4
-        second: a41a0600
-      data:
-        first: 23
-        second: 82182300
-      data:
-        first: 33
-        second: c25a3200
-    Ship_007:
-      data:
-        first: 1
-        second: aa860100
-      data:
-        first: 4
-        second: 8a1a0600
-      data:
-        first: 23
-        second: 68182300
-      data:
-        first: 33
-        second: a85a3200
-    Ship_008:
-      data:
-        first: 1
-        second: a6860100
-      data:
-        first: 4
-        second: 861a0600
-      data:
-        first: 23
-        second: 64182300
-      data:
-        first: 33
-        second: a45a3200
-    Ship_009:
-      data:
-        first: 1
-        second: a0860100
-      data:
-        first: 4
-        second: 801a0600
-      data:
-        first: 23
-        second: 60182300
-      data:
-        first: 33
-        second: a05a3200
-    Ship_010:
-      data:
-        first: 1
-        second: b0860100
-      data:
-        first: 4
-        second: 901a0600
-      data:
-        first: 23
-        second: 6e182300
-      data:
-        first: 33
-        second: ae5a3200
-    Ship_011:
-      data:
-        first: 1
-        second: ae860100
-      data:
-        first: 4
-        second: 8e1a0600
-      data:
-        first: 23
-        second: 6c182300
-      data:
-        first: 33
-        second: ac5a3200
-    Ship_012:
-      data:
-        first: 1
-        second: b6860100
-      data:
-        first: 4
-        second: 961a0600
-      data:
-        first: 23
-        second: 74182300
-      data:
-        first: 33
-        second: b45a3200
-    Ship_013:
-      data:
-        first: 1
-        second: c8860100
-      data:
-        first: 4
-        second: a81a0600
-      data:
-        first: 23
-        second: 86182300
-      data:
-        first: 33
-        second: c65a3200
-    Ship_014:
-      data:
-        first: 1
-        second: ac860100
-      data:
-        first: 4
-        second: 8c1a0600
-      data:
-        first: 23
-        second: 6a182300
-      data:
-        first: 33
-        second: aa5a3200
-    Ship_015:
-      data:
-        first: 1
-        second: b8860100
-      data:
-        first: 4
-        second: 981a0600
-      data:
-        first: 23
-        second: 76182300
-      data:
-        first: 33
-        second: b65a3200
-    Ship_016:
-      data:
-        first: 1
-        second: ba860100
-      data:
-        first: 4
-        second: 9a1a0600
-      data:
-        first: 23
-        second: 78182300
-      data:
-        first: 33
-        second: b85a3200
-    Ship_017:
-      data:
-        first: 1
-        second: bc860100
-      data:
-        first: 4
-        second: 9c1a0600
-      data:
-        first: 23
-        second: 7a182300
-      data:
-        first: 33
-        second: ba5a3200
-    Ship_018:
-      data:
-        first: 1
-        second: be860100
-      data:
-        first: 4
-        second: 9e1a0600
-      data:
-        first: 23
-        second: 7c182300
-      data:
-        first: 33
-        second: bc5a3200
-    Ship_019:
-      data:
-        first: 1
-        second: c0860100
-      data:
-        first: 4
-        second: a01a0600
-      data:
-        first: 23
-        second: 7e182300
-      data:
-        first: 33
-        second: be5a3200
+    tangentImportMode: 4
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 1
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

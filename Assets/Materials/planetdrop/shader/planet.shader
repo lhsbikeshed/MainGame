@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+
 Shader "SlinDev/Planet"
 {
     Properties
@@ -50,7 +52,7 @@ Shader "SlinDev/Planet"
                    
                     o.pos = mul (UNITY_MATRIX_MVP, v.vertex);
                     o.normal = v.normal;
-                    o.worldvertpos = mul(_Object2World, v.vertex).xyz;
+                    o.worldvertpos = mul(unity_ObjectToWorld, v.vertex).xyz;
                     o.texcoord = TRANSFORM_TEX(v.texcoord, _MainTex);
                    
                     return o;
@@ -109,7 +111,7 @@ Shader "SlinDev/Planet"
                     v.vertex.xyz += v.normal*_Size;
                     o.pos = mul (UNITY_MATRIX_MVP, v.vertex);
                     o.normal = v.normal;
-                    o.worldvertpos = mul(_Object2World, v.vertex);
+                    o.worldvertpos = mul(unity_ObjectToWorld, v.vertex);
                    
                     return o;
                 }
